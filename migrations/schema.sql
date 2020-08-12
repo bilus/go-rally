@@ -42,7 +42,7 @@ CREATE TABLE public.posts (
     id uuid NOT NULL,
     title character varying(255) NOT NULL,
     body text NOT NULL,
-    votes integer DEFAULT 0 NOT NULL,
+    votes integer NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
 );

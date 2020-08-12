@@ -2,6 +2,6 @@ create_table("posts") {
 	t.Column("id", "uuid", {primary: true})
 	t.Column("title", "string", {})
 	t.Column("body", "text", {})
-	t.Column("votes", "integer", {"default": 0})
+	t.Column("votes", "integer", {})
 	t.Timestamps()
 }
