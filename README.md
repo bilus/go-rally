@@ -33,3 +33,14 @@ We recommend you heading over to [http://gobuffalo.io](http://gobuffalo.io) and 
 Good luck!
 
 [Powered by Buffalo](http://gobuffalo.io)
+
+## TODO
+
+- [ ] Downvoting
+- [ ] Only author can delete/edit their message
+- [ ] Downvoting only if upvoted
+- [ ] Upvoting up to the available budget
+- [ ] Google sign on
+- [ ] Markdown
+- [ ] Styling
+- [ ] Or admin...

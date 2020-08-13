@@ -62,6 +62,7 @@ func App() *buffalo.App {
 		app.GET("/", HomeHandler)
 
 		app.Resource("/posts", PostsResource{})
+		app.POST("/posts/{post_id}/votes", VotesCreate)
 		app.ServeFiles("/", assetsBox) // serve files from the public directory
 	}
 

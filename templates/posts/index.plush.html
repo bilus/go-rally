@@ -8,22 +8,9 @@
 </div>
 
 <table class="table table-hover table-bordered">
-  <thead class="thead-light">
-    <th>Title</th><th>Votes</th>
-    <th>&nbsp;</th>
-  </thead>
   <tbody>
     <%= for (post) in posts { %>
-      <tr>
-        <td class="align-middle"><%= post.Title %></td><td class="align-middle"><%= post.Votes %></td>
-        <td>
-          <div class="float-right">
-            <%= linkTo(postPath({ post_id: post.ID }), {class: "btn btn-info", body: "View"}) %>
-            <%= linkTo(editPostPath({ post_id: post.ID }), {class: "btn btn-warning", body: "Edit"}) %>
-            <%= linkTo(postPath({ post_id: post.ID }), {class: "btn btn-danger", "data-method": "DELETE", "data-confirm": "Are you sure?", body: "Destroy"}) %>
-          </div>
-        </td>
-      </tr>
+      <%= partial("posts/row.html", { "post": post }) %>
     <% } %>
   </tbody>
 </table>
