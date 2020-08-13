@@ -60,7 +60,7 @@ func App() *buffalo.App {
 		// Setup and use translations:
 		app.Use(translations())
 
-		app.GET("/", HomeHandler)
+		app.GET("/", PostsResource{}.List)
 
 		app.Resource("/posts", PostsResource{})
 		app.POST("/posts/{post_id}/votes", VotesCreate)

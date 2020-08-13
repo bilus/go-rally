@@ -40,7 +40,7 @@ Good luck!
 
 - [X] Login using form
 - [X] Login using Google actually logs you in
-- [ ] Posts pages are protected
+- [x] Posts pages are protected
 - [ ] Create new users when signing on using Google
 - [ ] Option to create regex for matching allowed email addresses for automatic sign up ^
 - [ ] Store Google UserID and use it instead of email to match
