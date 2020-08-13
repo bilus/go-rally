@@ -54,11 +54,6 @@ func AuthCallback(c buffalo.Context) error {
 	return Login(&user, c)
 }
 
-// AuthLanding shows a landing page to login
-func AuthLanding(c buffalo.Context) error {
-	return c.Render(200, r.HTML("auth/landing.plush.html"))
-}
-
 // AuthNew loads the signin page
 func AuthNew(c buffalo.Context) error {
 	c.Set("user", models.User{})
