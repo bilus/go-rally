@@ -38,9 +38,14 @@ Good luck!
 
 ## TODO
 
-- [ ] Login using form
-- [ ] Integrate login with Google sign in
-- [ ] Creating new users (option to disable using env)
+- [X] Login using form
+- [X] Login using Google actually logs you in
+- [ ] Posts pages are protected
+- [ ] Create new users when signing on using Google
+- [ ] Option to create regex for matching allowed email addresses for automatic sign up ^
+- [ ] Store Google UserID and use it instead of email to match
+- [ ] Logout
+- [ ] Option to disable sign ups using env
 - [ ] Downvoting
 - [ ] Only author can delete/edit their message
 - [ ] Downvoting only if upvoted
@@ -48,4 +53,4 @@ Good luck!
 - [ ] Google sign on
 - [ ] Markdown
 - [ ] Styling
-- [ ] Or admin...
+- [ ] Admin can delete/edit any posts

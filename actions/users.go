@@ -34,10 +34,19 @@ func UsersCreate(c buffalo.Context) error {
 		return c.Render(200, r.HTML("users/new.plush.html"))
 	}
 
-	c.Session().Set("current_user_id", u.ID)
-	c.Flash().Add("success", "Welcome to Buffalo!")
+	return Login(u, c)
+}
 
-	return c.Redirect(302, "/")
+func Login(u *models.User, c buffalo.Context) error {
+	c.Session().Set("current_user_id", u.ID)
+	c.Flash().Add("success", "Welcome Back to Buffalo!")
+
+	redirectURL := "/"
+	if redir, ok := c.Session().Get("redirectURL").(string); ok && redir != "" {
+		redirectURL = redir
+	}
+
+	return c.Redirect(302, redirectURL)
 }
 
 // SetCurrentUser attempts to find a user based on the current_user_id

@@ -28,12 +28,30 @@ func init() {
 }
 
 func AuthCallback(c buffalo.Context) error {
-	user, err := gothic.CompleteUserAuth(c.Response(), c.Request())
+	profile, err := gothic.CompleteUserAuth(c.Response(), c.Request())
 	if err != nil {
 		return c.Error(401, err)
 	}
-	// Do something with the user, maybe register them/sign them in
-	return c.Render(200, r.JSON(user))
+	tx := c.Value("tx").(*pop.Connection)
+	q := tx.Where("email = ?", profile.Email)
+	user := models.User{}
+	err = q.First(&user)
+	if err != nil {
+		if errors.Cause(err) == sql.ErrNoRows {
+			verrs := validate.NewErrors()
+			verrs.Add("email", "no such user")
+
+			c.Set("errors", verrs)
+			user.Email = profile.Email
+			c.Set("user", &user)
+
+			return c.Render(http.StatusUnauthorized, r.HTML("auth/new.plush.html"))
+		}
+
+		return err
+	}
+
+	return Login(&user, c)
 }
 
 // AuthLanding shows a landing page to login
@@ -83,15 +101,8 @@ func AuthCreate(c buffalo.Context) error {
 	if err != nil {
 		return bad()
 	}
-	c.Session().Set("current_user_id", u.ID)
-	c.Flash().Add("success", "Welcome Back to Buffalo!")
 
-	redirectURL := "/"
-	if redir, ok := c.Session().Get("redirectURL").(string); ok && redir != "" {
-		redirectURL = redir
-	}
-
-	return c.Redirect(302, redirectURL)
+	return Login(u, c)
 }
 
 // AuthDestroy clears the session and logs a user out
