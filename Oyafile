@@ -6,4 +6,4 @@ buffalo: |
   buffalo $@
 
 browse: |
-  open http://127.0.0.1  # Localhost won't work with Google auth.
+  open http://127.0.0.1:3000  # Localhost won't work with Google auth.

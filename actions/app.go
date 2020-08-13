@@ -5,6 +5,7 @@ import (
 	"github.com/gobuffalo/envy"
 	forcessl "github.com/gobuffalo/mw-forcessl"
 	paramlogger "github.com/gobuffalo/mw-paramlogger"
+	"github.com/markbates/goth/gothic"
 	"github.com/unrolled/secure"
 
 	"rally/models"
@@ -13,8 +14,6 @@ import (
 	csrf "github.com/gobuffalo/mw-csrf"
 	i18n "github.com/gobuffalo/mw-i18n"
 	"github.com/gobuffalo/packr/v2"
-
-	"github.com/markbates/goth/gothic"
 )
 
 // ENV is used to help switch settings based on where the
@@ -65,9 +64,28 @@ func App() *buffalo.App {
 
 		app.Resource("/posts", PostsResource{})
 		app.POST("/posts/{post_id}/votes", VotesCreate)
+
+		//AuthMiddlewares
+		app.Use(SetCurrentUser)
+		app.Use(Authorize)
+
+		//Routes for Auth
 		auth := app.Group("/auth")
-		auth.GET("/{provider}", buffalo.WrapHandlerFunc(gothic.BeginAuthHandler))
+		auth.GET("/", AuthLanding)
+		auth.GET("/new", AuthNew)
+		auth.POST("/", AuthCreate)
+		auth.DELETE("/", AuthDestroy)
+		authProviderNew := buffalo.WrapHandlerFunc(gothic.BeginAuthHandler)
+		auth.GET("/{provider}", authProviderNew)
 		auth.GET("/{provider}/callback", AuthCallback)
+		auth.Middleware.Skip(Authorize, AuthLanding, AuthNew, AuthCreate, authProviderNew, AuthCallback)
+
+		//Routes for User registration
+		users := app.Group("/users")
+		users.GET("/new", UsersNew)
+		users.POST("/", UsersCreate)
+		users.Middleware.Remove(Authorize)
+
 		app.ServeFiles("/", assetsBox) // serve files from the public directory
 	}
 

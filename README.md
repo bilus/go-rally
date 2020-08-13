@@ -38,6 +38,9 @@ Good luck!
 
 ## TODO
 
+- [ ] Login using form
+- [ ] Integrate login with Google sign in
+- [ ] Creating new users (option to disable using env)
 - [ ] Downvoting
 - [ ] Only author can delete/edit their message
 - [ ] Downvoting only if upvoted
