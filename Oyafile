@@ -1,0 +1,9 @@
+Project: github.com/bilus/rally2
+
+buffalo: |
+  export GOOGLE_KEY=${Oya[google.key]}
+  export GOOGLE_SECRET=${Oya[google.secret]}
+  buffalo $@
+
+browse: |
+  open http://127.0.0.1  # Localhost won't work with Google auth.
