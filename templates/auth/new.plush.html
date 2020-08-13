@@ -24,6 +24,7 @@
       <%= f.InputTag("Password", {type: "password"}) %>
     <button class="btn btn-success">Sign In!</button>
     <%= linkTo(authProviderPath({ provider: "google" }), { body: "Google" }) %>
+    <%= linkTo(newUsersPath()){ %>Register<% } %>
     <% } %>
   </div>
 </div>
