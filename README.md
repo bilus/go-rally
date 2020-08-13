@@ -52,6 +52,15 @@ Good luck!
 - [ ] Downvoting only if upvoted
 - [ ] Upvoting up to the available budget
 - [ ] Google sign on
-- [ ] Markdown
+- [ ] Good embedded editor
+- [ ] Tenancy
 - [ ] Styling
 - [ ] Admin can delete/edit any posts
+
+## Design ideas
+
+1. http://preview.viui18.com/clarity/index.html
+1. https://colorlib.com/preview/theme/safario/
+1. https://colorlib.com/preview/#podcast
+1. https://www.vectorstock.com/royalty-free-vector/brainstorm-and-creative-idea-concept-vector-20635223
+1. https://www.vectorstock.com/royalty-free-vectors/bulb-puzzle-vectors
