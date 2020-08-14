@@ -38,17 +38,22 @@ func AuthCallback(c buffalo.Context) error {
 	err = q.First(&user)
 	if err != nil {
 		if errors.Cause(err) == sql.ErrNoRows {
-			verrs := validate.NewErrors()
-			verrs.Add("email", "no such user")
-
-			c.Set("errors", verrs)
 			user.Email = profile.Email
-			c.Set("user", &user)
+			user.GoogleUserID = profile.UserID // TODO: Extend to other providers.
+			verrs, err := tx.ValidateAndCreate(&user)
+			if err != nil {
+				return err
+			}
+			if verrs.Count() > 0 {
+				c.Set("errors", verrs)
+				c.Set("user", &user)
 
-			return c.Render(http.StatusUnauthorized, r.HTML("auth/new.plush.html"))
+				return c.Render(http.StatusUnauthorized, r.HTML("auth/new.plush.html"))
+			}
+
+		} else {
+			return err
 		}
-
-		return err
 	}
 
 	return Login(&user, c)

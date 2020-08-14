@@ -21,6 +21,8 @@ type User struct {
 	Email        string    `json:"email" db:"email"`
 	PasswordHash string    `json:"password_hash" db:"password_hash"`
 
+	GoogleUserID string `json:"-" db:"-"`
+
 	Password             string `json:"-" db:"-"`
 	PasswordConfirmation string `json:"-" db:"-"`
 }
@@ -58,7 +60,6 @@ func (u *User) Validate(tx *pop.Connection) (*validate.Errors, error) {
 	var err error
 	return validate.Validate(
 		&validators.StringIsPresent{Field: u.Email, Name: "Email"},
-		&validators.StringIsPresent{Field: u.PasswordHash, Name: "PasswordHash"},
 		// check to see if the email address is already taken:
 		&validators.FuncValidator{
 			Field:   u.Email,
@@ -83,6 +84,10 @@ func (u *User) Validate(tx *pop.Connection) (*validate.Errors, error) {
 // ValidateCreate gets run every time you call "pop.ValidateAndCreate" method.
 // This method is not required and may be deleted.
 func (u *User) ValidateCreate(tx *pop.Connection) (*validate.Errors, error) {
+	if len(u.GoogleUserID) > 0 {
+		// Third-party OAuth2, no password.
+		return validate.Validate(), nil
+	}
 	var err error
 	return validate.Validate(
 		&validators.StringIsPresent{Field: u.Password, Name: "Password"},

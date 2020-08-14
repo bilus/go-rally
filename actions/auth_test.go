@@ -3,6 +3,9 @@ package actions
 import (
 	"net/http"
 	"rally/models"
+
+	"github.com/markbates/goth"
+	"github.com/markbates/goth/gothic"
 )
 
 func (as *ActionSuite) createUser() (*models.User, error) {
@@ -27,6 +30,15 @@ func (as *ActionSuite) authenticate() {
 	u, err := as.createUser()
 	as.NoError(err)
 	as.login(u)
+}
+
+func (as *ActionSuite) stubbingCompleteUserAuth(u goth.User, err error, f func()) {
+	oldHandler := gothic.CompleteUserAuth
+	gothic.CompleteUserAuth = func(res http.ResponseWriter, req *http.Request) (goth.User, error) {
+		return u, err
+	}
+	f()
+	gothic.CompleteUserAuth = oldHandler
 }
 
 func (as *ActionSuite) Test_Auth_New() {
@@ -90,4 +102,43 @@ func (as *ActionSuite) Test_Auth_Redirect() {
 			as.Equal(res.Location(), tcase.resultLocation)
 		})
 	}
+}
+
+func (as *ActionSuite) Test_Auth_Google() {
+	res := as.HTML("/auth/google").Get()
+	as.Equal(307, res.Code)
+}
+
+func (as *ActionSuite) Test_Auth_Callback_ExistingUser() {
+	u, err := as.createUser()
+	as.NoError(err)
+	as.stubbingCompleteUserAuth(
+		goth.User{
+			Email:  u.Email,
+			UserID: u.GoogleUserID,
+		},
+		nil,
+		func() {
+			res := as.HTML("/auth/google/callback").Get()
+			as.Equal(302, res.Code)
+			as.Equal("/", res.Location())
+		})
+}
+func (as *ActionSuite) Test_Auth_Callback_NewUser() {
+	as.stubbingCompleteUserAuth(
+		goth.User{
+			Email:  "nosuchuser@example.com",
+			UserID: "123",
+		},
+		nil,
+		func() {
+			res := as.HTML("/auth/google/callback").Get()
+			as.Equal(302, res.Code)
+			as.Equal("/", res.Location())
+		})
+
+	var u models.User
+	err := as.DB.Where("email = ?", "nosuchuser@example.com").First(&u)
+	as.NoError(err)
+	as.Equal("nosuchuser@example.com", u.Email)
 }
