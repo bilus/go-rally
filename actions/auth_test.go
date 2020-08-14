@@ -18,6 +18,17 @@ func (as *ActionSuite) createUser() (*models.User, error) {
 	return u, err
 }
 
+func (as *ActionSuite) login(u *models.User) {
+	res := as.HTML("/auth").Post(u)
+	as.Equal(302, res.Code)
+}
+
+func (as *ActionSuite) authenticate() {
+	u, err := as.createUser()
+	as.NoError(err)
+	as.login(u)
+}
+
 func (as *ActionSuite) Test_Auth_New() {
 	res := as.HTML("/auth/new").Get()
 	as.Equal(200, res.Code)
