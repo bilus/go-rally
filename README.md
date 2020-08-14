@@ -42,7 +42,7 @@ Good luck!
 - [X] Login using Google actually logs you in
 - [x] Posts pages are protected
 - [X] Logout
-- [ ] Make tests pass
+- [X] Make tests pass
 - [ ] Create new users when signing on using Google
 - [ ] Option to create regex for matching allowed email addresses for automatic sign up ^
 - [ ] Store Google UserID and use it instead of email to match

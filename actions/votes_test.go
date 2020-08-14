@@ -5,18 +5,6 @@ import (
 	"rally/models"
 )
 
-func (as *ActionSuite) createPost() *models.Post {
-	p := &models.Post{
-		Title: "Lorem",
-		Body:  "Ipsum.",
-	}
-
-	verrs, err := as.DB.ValidateAndCreate(p)
-	as.False(verrs.HasAny())
-	as.NoError(err)
-	return p
-}
-
 func (as *ActionSuite) Test_Votes_Create() {
 	as.authenticate()
 	p := as.createPost()
@@ -27,5 +15,5 @@ func (as *ActionSuite) Test_Votes_Create() {
 	var p1 models.Post
 	err := as.DB.Find(&p1, p.ID)
 	as.NoError(err)
-	as.Equal(1, p1.Votes)
+	as.Equal(p.Votes+1, p1.Votes)
 }

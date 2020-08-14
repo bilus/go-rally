@@ -1,5 +1,5 @@
-      <tr data-post-id="<%= post.ID %>">
-          <td class="align-middle"><%= post.Title %></td>
+      <tr class="post-row" data-post-id="<%= post.ID %>">
+          <td class="title align-middle"><%= post.Title %></td>
           <td class="align-middle"><%= remoteLinkTo(postVotesPath({ post_id: post.ID}), { body: "Upvote", "data-method": "POST" }) %></td>
           <td class="align-middle"><%= post.Votes %></td>
         <td>

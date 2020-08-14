@@ -3,6 +3,9 @@ module rally
 go 1.12
 
 require (
+	github.com/Pallinder/go-randomdata v1.2.0
+	github.com/PuerkitoBio/goquery v1.5.1
+	github.com/gin-gonic/gin v1.6.3
 	github.com/gobuffalo/buffalo v0.16.8
 	github.com/gobuffalo/buffalo-auth v1.3.1 // indirect
 	github.com/gobuffalo/buffalo-goth v1.3.0 // indirect
