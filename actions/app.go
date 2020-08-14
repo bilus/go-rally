@@ -3,6 +3,7 @@ package actions
 import (
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/envy"
+	csrf "github.com/gobuffalo/mw-csrf"
 	forcessl "github.com/gobuffalo/mw-forcessl"
 	paramlogger "github.com/gobuffalo/mw-paramlogger"
 	"github.com/markbates/goth/gothic"
@@ -49,7 +50,7 @@ func App() *buffalo.App {
 
 		// Protect against CSRF attacks. https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)
 		// Remove to disable this.
-		// app.Use(csrf.New)
+		app.Use(csrf.New)
 
 		// Wraps each request in a transaction.
 		//  c.Value("tx").(*pop.Connection)
@@ -59,14 +60,14 @@ func App() *buffalo.App {
 		// Setup and use translations:
 		app.Use(translations())
 
+		//AuthMiddlewares
+		app.Use(SetCurrentUser)
+		app.Use(Authorize)
+
 		app.GET("/", PostsResource{}.List)
 
 		app.Resource("/posts", PostsResource{})
 		app.POST("/posts/{post_id}/votes", VotesCreate)
-
-		//AuthMiddlewares
-		app.Use(SetCurrentUser)
-		app.Use(Authorize)
 
 		//Routes for Auth
 		auth := app.Group("/auth")
