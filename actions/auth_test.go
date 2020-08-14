@@ -18,12 +18,6 @@ func (as *ActionSuite) createUser() (*models.User, error) {
 	return u, err
 }
 
-func (as *ActionSuite) Test_Auth_Signin() {
-	res := as.HTML("/auth/").Get()
-	as.Equal(200, res.Code)
-	as.Contains(res.Body.String(), `<a href="/auth/new/">Sign In</a>`)
-}
-
 func (as *ActionSuite) Test_Auth_New() {
 	res := as.HTML("/auth/new").Get()
 	as.Equal(200, res.Code)
