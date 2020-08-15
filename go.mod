@@ -16,6 +16,7 @@ require (
 	github.com/gobuffalo/mw-forcessl v0.0.0-20200131175327-94b2bd771862
 	github.com/gobuffalo/mw-i18n v1.1.0
 	github.com/gobuffalo/mw-paramlogger v1.0.0
+	github.com/gobuffalo/nulls v0.2.0
 	github.com/gobuffalo/packr/v2 v2.8.0
 	github.com/gobuffalo/pop v4.13.1+incompatible
 	github.com/gobuffalo/pop/v5 v5.2.3

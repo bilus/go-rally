@@ -10,6 +10,7 @@ import (
 	"rally/models"
 
 	"github.com/gobuffalo/buffalo"
+	"github.com/gobuffalo/nulls"
 	"github.com/gobuffalo/pop/v5"
 	"github.com/gobuffalo/validate"
 	"github.com/markbates/goth"
@@ -36,13 +37,13 @@ func AuthCallback(c buffalo.Context) error {
 		return c.Error(401, err)
 	}
 	tx := c.Value("tx").(*pop.Connection)
-	q := tx.Where("email = ?", profile.Email)
+	q := tx.Where("google_user_id = ?", profile.UserID)
 	user := models.User{}
 	err = q.First(&user)
 	if err != nil {
 		if errors.Cause(err) == sql.ErrNoRows {
 			user.Email = profile.Email
-			user.GoogleUserID = profile.UserID // TODO: Extend to other providers.
+			user.GoogleUserID = nulls.NewString(profile.UserID) // TODO: Extend to other providers.
 			verrs, err := tx.ValidateAndCreate(&user)
 			if err != nil {
 				return err
@@ -99,8 +100,12 @@ func AuthCreate(c buffalo.Context) error {
 		return errors.WithStack(err)
 	}
 
+	if !u.PasswordHash.Valid {
+		return bad()
+	}
+
 	// confirm that the given password matches the hashed password from the db
-	err = bcrypt.CompareHashAndPassword([]byte(u.PasswordHash), []byte(u.Password))
+	err = bcrypt.CompareHashAndPassword([]byte(u.PasswordHash.String), []byte(u.Password))
 	if err != nil {
 		return bad()
 	}

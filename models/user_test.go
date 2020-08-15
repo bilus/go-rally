@@ -11,12 +11,13 @@ func (ms *ModelSuite) Test_User_Create() {
 		PasswordConfirmation: "password",
 	}
 
-	ms.Zero(u.PasswordHash)
+	ms.False(u.PasswordHash.Valid)
 
 	verrs, err := u.Create(ms.DB)
 	ms.NoError(err)
 	ms.False(verrs.HasAny())
-	ms.NotZero(u.PasswordHash)
+	ms.True(u.PasswordHash.Valid)
+	ms.NotZero(u.PasswordHash.String)
 
 	count, err = ms.DB.Count("users")
 	ms.NoError(err)
@@ -32,7 +33,7 @@ func (ms *ModelSuite) Test_User_Create_ValidationErrors() {
 		Password: "password",
 	}
 
-	ms.Zero(u.PasswordHash)
+	ms.False(u.PasswordHash.Valid)
 
 	verrs, err := u.Create(ms.DB)
 	ms.NoError(err)
@@ -54,12 +55,12 @@ func (ms *ModelSuite) Test_User_Create_UserExists() {
 		PasswordConfirmation: "password",
 	}
 
-	ms.Zero(u.PasswordHash)
+	ms.False(u.PasswordHash.Valid)
 
 	verrs, err := u.Create(ms.DB)
 	ms.NoError(err)
 	ms.False(verrs.HasAny())
-	ms.NotZero(u.PasswordHash)
+	ms.True(u.PasswordHash.Valid)
 
 	count, err = ms.DB.Count("users")
 	ms.NoError(err)

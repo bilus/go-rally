@@ -45,7 +45,7 @@ Good luck!
 - [X] Make tests pass
 - [X] Create new users when signing on using Google
 - [X] Option to restrict Google sign in to a particular domain
-- [ ] Store Google UserID and use it instead of email to match
+- [X] Store Google UserID and use it instead of email to match
 - [ ] Option to disable sign ups using env
 - [ ] Downvoting
 - [ ] Only author can delete/edit their message

@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"rally/models"
 
+	"github.com/gobuffalo/nulls"
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/gothic"
 )
@@ -13,6 +14,7 @@ func (as *ActionSuite) createUser() (*models.User, error) {
 		Email:                "mark@example.com",
 		Password:             "password",
 		PasswordConfirmation: "password",
+		GoogleUserID:         nulls.NewString("123"),
 	}
 
 	verrs, err := u.Create(as.DB)
@@ -114,8 +116,7 @@ func (as *ActionSuite) Test_Auth_Callback_ExistingUser() {
 	as.NoError(err)
 	as.stubbingCompleteUserAuth(
 		goth.User{
-			Email:  u.Email,
-			UserID: u.GoogleUserID,
+			UserID: u.GoogleUserID.String,
 		},
 		nil,
 		func() {
@@ -124,7 +125,8 @@ func (as *ActionSuite) Test_Auth_Callback_ExistingUser() {
 			as.Equal("/", res.Location())
 		})
 }
-func (as *ActionSuite) Test_Auth_Callback_NewUser() {
+
+func (as *ActionSuite) Test_Auth_Callback_CreatesNewUser() {
 	as.stubbingCompleteUserAuth(
 		goth.User{
 			Email:  "nosuchuser@example.com",
@@ -141,4 +143,6 @@ func (as *ActionSuite) Test_Auth_Callback_NewUser() {
 	err := as.DB.Where("email = ?", "nosuchuser@example.com").First(&u)
 	as.NoError(err)
 	as.Equal("nosuchuser@example.com", u.Email)
+	as.True(u.GoogleUserID.Valid)
+	as.Equal("123", u.GoogleUserID.String)
 }

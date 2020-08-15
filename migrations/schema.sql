@@ -68,9 +68,10 @@ ALTER TABLE public.schema_migration OWNER TO postgres;
 CREATE TABLE public.users (
     id uuid NOT NULL,
     email character varying(255) NOT NULL,
-    password_hash character varying(255) NOT NULL,
+    password_hash character varying(255),
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    google_user_id character varying(255)
 );
 
 

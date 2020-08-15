@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/gobuffalo/nulls"
 	"github.com/gobuffalo/pop/v5"
 	"github.com/gobuffalo/validate/v3"
 	"github.com/gobuffalo/validate/v3/validators"
@@ -15,13 +16,13 @@ import (
 
 //User is a generated model from buffalo-auth, it serves as the base for username/password authentication.
 type User struct {
-	ID           uuid.UUID `json:"id" db:"id"`
-	CreatedAt    time.Time `json:"created_at" db:"created_at"`
-	UpdatedAt    time.Time `json:"updated_at" db:"updated_at"`
-	Email        string    `json:"email" db:"email"`
-	PasswordHash string    `json:"password_hash" db:"password_hash"`
+	ID           uuid.UUID    `json:"id" db:"id"`
+	CreatedAt    time.Time    `json:"created_at" db:"created_at"`
+	UpdatedAt    time.Time    `json:"updated_at" db:"updated_at"`
+	Email        string       `json:"email" db:"email"`
+	PasswordHash nulls.String `json:"password_hash" db:"password_hash"`
 
-	GoogleUserID string `json:"-" db:"-"`
+	GoogleUserID nulls.String `json:"google_user_id" db:"google_user_id"`
 
 	Password             string `json:"-" db:"-"`
 	PasswordConfirmation string `json:"-" db:"-"`
@@ -35,7 +36,7 @@ func (u *User) Create(tx *pop.Connection) (*validate.Errors, error) {
 	if err != nil {
 		return validate.NewErrors(), errors.WithStack(err)
 	}
-	u.PasswordHash = string(ph)
+	u.PasswordHash = nulls.NewString(string(ph))
 	return tx.ValidateAndCreate(u)
 }
 
@@ -84,7 +85,7 @@ func (u *User) Validate(tx *pop.Connection) (*validate.Errors, error) {
 // ValidateCreate gets run every time you call "pop.ValidateAndCreate" method.
 // This method is not required and may be deleted.
 func (u *User) ValidateCreate(tx *pop.Connection) (*validate.Errors, error) {
-	if len(u.GoogleUserID) > 0 {
+	if u.GoogleUserID.Valid {
 		// Third-party OAuth2, no password.
 		return validate.Validate(), nil
 	}
