@@ -22,9 +22,12 @@ import (
 func init() {
 	gothic.Store = App().SessionStore
 
-	goth.UseProviders(
-		google.New(os.Getenv("GOOGLE_KEY"), os.Getenv("GOOGLE_SECRET"), fmt.Sprintf("%s%s", App().Host, "/auth/google/callback")),
-	)
+	google := google.New(os.Getenv("GOOGLE_KEY"), os.Getenv("GOOGLE_SECRET"), fmt.Sprintf("%s%s", App().Host, "/auth/google/callback"))
+	googleHostedDomain := os.Getenv("GOOGLE_HOSTED_DOMAIN")
+	if len(googleHostedDomain) > 0 {
+		google.SetHostedDomain(googleHostedDomain)
+	}
+	goth.UseProviders(google)
 }
 
 func AuthCallback(c buffalo.Context) error {
