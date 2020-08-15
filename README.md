@@ -47,8 +47,8 @@ Good luck!
 - [X] Option to restrict Google sign in to a particular domain
 - [X] Store Google UserID and use it instead of email to match
 - [X] Option to disable sign ups using env
+- [X] Only author can delete/edit their message
 - [ ] Downvoting
-- [ ] Only author can delete/edit their message
 - [ ] Downvoting only if upvoted
 - [ ] Upvoting up to the available budget
 - [ ] Good embedded editor

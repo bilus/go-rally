@@ -28,10 +28,11 @@ func (as *ActionSuite) login(u *models.User) {
 	as.Equal(302, res.Code)
 }
 
-func (as *ActionSuite) authenticate() {
+func (as *ActionSuite) authenticate() *models.User {
 	u, err := as.createUser()
 	as.NoError(err)
 	as.login(u)
+	return u
 }
 
 func (as *ActionSuite) stubbingCompleteUserAuth(u goth.User, err error, f func()) {

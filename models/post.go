@@ -18,6 +18,9 @@ type Post struct {
 	Votes     int       `json:"votes" db:"votes"`
 	CreatedAt time.Time `json:"created_at" db:"created_at"`
 	UpdatedAt time.Time `json:"updated_at" db:"updated_at"`
+
+	AuthorID uuid.UUID `json:"-" db:"author_id"`
+	Author   User      `json:"author,omitempty" belongs_to:"user" db:"-"`
 }
 
 // String is not required by pop and may be deleted

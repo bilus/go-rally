@@ -1,18 +1,24 @@
 package models
 
-func validPost() *Post {
+// NOTE: At least one user must exist.
+func (ms *ModelSuite) validPost() *Post {
+	var u User
+	ms.NoError(ms.DB.First(&u))
 	return &Post{
-		Title: "Lorem",
-		Body:  "Ipsum.",
+		Title:    "Lorem",
+		Body:     "Ipsum.",
+		AuthorID: u.ID,
 	}
 }
 
 func (ms *ModelSuite) Test_Post_Create() {
+	ms.LoadFixture("default")
+
 	count, err := ms.DB.Count("posts")
 	ms.NoError(err)
 	ms.Equal(0, count)
 
-	p := validPost()
+	p := ms.validPost()
 
 	verrs, err := ms.DB.ValidateAndCreate(p)
 	ms.NoError(err)
@@ -24,7 +30,9 @@ func (ms *ModelSuite) Test_Post_Create() {
 }
 
 func (ms *ModelSuite) Test_Post_RequiresTitle() {
-	p := validPost()
+	ms.LoadFixture("default")
+
+	p := ms.validPost()
 	p.Title = ""
 
 	verrs, err := ms.DB.ValidateAndCreate(p)
@@ -33,7 +41,9 @@ func (ms *ModelSuite) Test_Post_RequiresTitle() {
 }
 
 func (ms *ModelSuite) Test_Post_RequiresBody() {
-	p := validPost()
+	ms.LoadFixture("default")
+
+	p := ms.validPost()
 	p.Body = ""
 
 	verrs, err := ms.DB.ValidateAndCreate(p)

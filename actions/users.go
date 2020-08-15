@@ -58,7 +58,9 @@ func SetCurrentUser(next buffalo.Handler) buffalo.Handler {
 			tx := c.Value("tx").(*pop.Connection)
 			err := tx.Find(u, uid)
 			if err != nil {
-				return errors.WithStack(err)
+				c.Session().Delete("current_user_id") // User deleted?
+				c.Set("current_user", nil)
+				return next(c)
 			}
 			c.Set("current_user", u)
 		}
@@ -82,4 +84,12 @@ func Authorize(next buffalo.Handler) buffalo.Handler {
 		}
 		return next(c)
 	}
+}
+
+func CurrentUser(c buffalo.Context) (*models.User, error) {
+	u, ok := c.Value("current_user").(*models.User)
+	if !ok {
+		return nil, errors.New("current user in session has incorrect type")
+	}
+	return u, nil
 }

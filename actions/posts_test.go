@@ -1,6 +1,7 @@
 package actions
 
 import (
+	"fmt"
 	"rally/models"
 
 	"github.com/Pallinder/go-randomdata"
@@ -8,10 +9,13 @@ import (
 )
 
 func (as *ActionSuite) validPost() *models.Post {
+	var u models.User
+	as.NoError(as.DB.First(&u))
 	return &models.Post{
-		Title: randomdata.SillyName(),
-		Body:  randomdata.Paragraph(),
-		Votes: randomdata.Number(1, 100),
+		Title:    randomdata.SillyName(),
+		Body:     randomdata.Paragraph(),
+		Votes:    randomdata.Number(1, 100),
+		AuthorID: u.ID,
 	}
 }
 
@@ -37,6 +41,7 @@ func (as *ActionSuite) Test_PostsResource_List_RequiresAuth() {
 }
 
 func (as *ActionSuite) Test_PostsResource_List() {
+	as.LoadFixture("default")
 	as.authenticate()
 	ps := as.createPosts(3)
 	res := as.HTML(as.PostsPath()).Get()
@@ -50,6 +55,7 @@ func (as *ActionSuite) Test_PostsResource_List() {
 }
 
 func (as *ActionSuite) Test_PostsResource_Show() {
+	as.LoadFixture("default")
 	as.authenticate()
 	p := as.createPost()
 	res := as.HTML(as.PostPath(p)).Get()
@@ -57,17 +63,24 @@ func (as *ActionSuite) Test_PostsResource_Show() {
 }
 
 func (as *ActionSuite) Test_PostsResource_Create() {
-	as.authenticate()
+	as.LoadFixture("default")
+	currentUser := as.authenticate()
 	p := as.validPost()
 	res := as.HTML(as.PostsPath()).Post(p)
+	fmt.Println(res.Location())
 	as.Equal(303, res.Code)
 
 	count, err := as.DB.Count("posts")
 	as.NoError(err)
 	as.Equal(1, count)
+
+	var p1 models.Post
+	as.NoError(as.DB.First(&p1))
+	as.Equal(currentUser.ID, p1.AuthorID)
 }
 
 func (as *ActionSuite) Test_PostsResource_Update() {
+	as.LoadFixture("default")
 	as.authenticate()
 	p := as.createPost()
 	p.Title = "New title"
@@ -88,12 +101,14 @@ func (as *ActionSuite) Test_PostsResource_Destroy() {
 }
 
 func (as *ActionSuite) Test_PostsResource_New() {
+	as.LoadFixture("default")
 	as.authenticate()
 	res := as.HTML(as.NewPostsPath()).Get()
 	as.Equal(200, res.Code)
 }
 
 func (as *ActionSuite) Test_PostsResource_Edit() {
+	as.LoadFixture("default")
 	as.authenticate()
 	p := as.createPost()
 	res := as.HTML(as.EditPostPath(p)).Get()

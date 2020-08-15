@@ -44,7 +44,8 @@ CREATE TABLE public.posts (
     body text NOT NULL,
     votes integer NOT NULL,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    author_id uuid NOT NULL
 );
 
 
@@ -98,6 +99,14 @@ ALTER TABLE ONLY public.users
 --
 
 CREATE UNIQUE INDEX schema_migration_version_idx ON public.schema_migration USING btree (version);
+
+
+--
+-- Name: posts posts_users_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.posts
+    ADD CONSTRAINT posts_users_id_fk FOREIGN KEY (author_id) REFERENCES public.users(id) ON UPDATE CASCADE;
 
 
 --

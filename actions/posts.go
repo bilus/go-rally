@@ -107,6 +107,12 @@ func (v PostsResource) Create(c buffalo.Context) error {
 		return err
 	}
 
+	currentUser, err := CurrentUser(c)
+	if err != nil {
+		return err
+	}
+	post.AuthorID = currentUser.ID
+
 	// Get the DB connection from the context
 	tx, ok := c.Value("tx").(*pop.Connection)
 	if !ok {
