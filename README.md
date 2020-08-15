@@ -46,7 +46,7 @@ Good luck!
 - [X] Create new users when signing on using Google
 - [X] Option to restrict Google sign in to a particular domain
 - [X] Store Google UserID and use it instead of email to match
-- [ ] Option to disable sign ups using env
+- [X] Option to disable sign ups using env
 - [ ] Downvoting
 - [ ] Only author can delete/edit their message
 - [ ] Downvoting only if upvoted

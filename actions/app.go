@@ -1,6 +1,8 @@
 package actions
 
 import (
+	"os"
+
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/envy"
 	csrf "github.com/gobuffalo/mw-csrf"
@@ -79,16 +81,31 @@ func App() *buffalo.App {
 		auth.GET("/{provider}/callback", AuthCallback)
 		auth.Middleware.Skip(Authorize, AuthNew, AuthCreate, authProviderNew, AuthCallback)
 
-		//Routes for User registration
-		users := app.Group("/users")
-		users.GET("/new", UsersNew)
-		users.POST("/", UsersCreate)
-		users.Middleware.Remove(Authorize)
+		if isSignupEnabled() {
+			//Routes for User registration
+			users := app.Group("/users")
+
+			users.GET("/new", UsersNew)
+			users.POST("/", UsersCreate)
+			users.Middleware.Remove(Authorize)
+		}
 
 		app.ServeFiles("/", assetsBox) // serve files from the public directory
 	}
 
 	return app
+}
+
+func getEnv(name, def string) string {
+	v, ok := os.LookupEnv(name)
+	if ok {
+		return v
+	}
+	return def
+}
+
+func isSignupEnabled() bool {
+	return getEnv("ENABLE_SIGNUPS", "true") == "true"
 }
 
 // translations will load locale files, set up the translator `actions.T`,

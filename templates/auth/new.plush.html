@@ -22,9 +22,11 @@
     <%= form_for(user, {action: authPath()}) { %>
       <%= f.InputTag("Email") %>
       <%= f.InputTag("Password", {type: "password"}) %>
-    <button class="btn btn-success">Sign In!</button>
-    <%= linkTo(authProviderPath({ provider: "google" }), { body: "Google" }) %>
-    <%= linkTo(newUsersPath()){ %>Register<% } %>
+      <button class="btn btn-success">Sign In!</button>
+      <%= linkTo(authProviderPath({ provider: "google" }), { body: "Google" }) %>
+      <%= if (signupEnabled) {%>
+        <%= linkTo(newUsersPath()){ %>Register<% } %>
+      <% } %>
     <% } %>
   </div>
 </div>

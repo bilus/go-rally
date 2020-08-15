@@ -66,6 +66,7 @@ func AuthCallback(c buffalo.Context) error {
 // AuthNew loads the signin page
 func AuthNew(c buffalo.Context) error {
 	c.Set("user", models.User{})
+	c.Set("signupEnabled", isSignupEnabled())
 	return c.Render(200, r.HTML("auth/new.plush.html"))
 }
 
