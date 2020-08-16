@@ -12,8 +12,6 @@ func (ms *ModelSuite) validPost() *Post {
 }
 
 func (ms *ModelSuite) Test_Post_Create() {
-	ms.LoadFixture("default")
-
 	count, err := ms.DB.Count("posts")
 	ms.NoError(err)
 	ms.Equal(0, count)
@@ -30,8 +28,6 @@ func (ms *ModelSuite) Test_Post_Create() {
 }
 
 func (ms *ModelSuite) Test_Post_RequiresTitle() {
-	ms.LoadFixture("default")
-
 	p := ms.validPost()
 	p.Title = ""
 
@@ -41,8 +37,6 @@ func (ms *ModelSuite) Test_Post_RequiresTitle() {
 }
 
 func (ms *ModelSuite) Test_Post_RequiresBody() {
-	ms.LoadFixture("default")
-
 	p := ms.validPost()
 	p.Body = ""
 

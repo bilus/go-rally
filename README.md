@@ -49,14 +49,17 @@ Good luck!
 - [X] Option to disable sign ups using env
 - [X] Only author can delete/edit their message
 - [X] Hide controls for unauthorized users
-- [ ] Downvoting
-- [ ] Downvoting only if upvoted
+- [X] Downvoting
+- [X] Downvoting only if upvoted
 - [ ] Upvoting up to the available budget
 - [ ] Top/new
 - [ ] Good embedded editor
 - [ ] Tenancy
 - [ ] Styling
 - [ ] Admin can delete/edit any posts
+- [ ] Recalc votes in background
+      so we don't worry about race conditions
+- [ ] Scheduled job to reset available votes
 
 ## Design ideas
 

@@ -9,6 +9,17 @@ import (
 
 type ModelSuite struct {
 	*suite.Model
+
+	users []*User
+}
+
+func (as *ModelSuite) SetupTest() {
+	as.Model.SetupTest()
+
+	as.LoadFixture("default")
+
+	err := as.DB.All(&as.users)
+	as.NoError(err)
 }
 
 func Test_ModelSuite(t *testing.T) {

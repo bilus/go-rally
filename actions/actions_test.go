@@ -1,7 +1,6 @@
 package actions
 
 import (
-	"fmt"
 	"rally/models"
 	"testing"
 
@@ -24,8 +23,6 @@ func (as *ActionSuite) SetupTest() {
 
 	err := as.DB.All(&as.users)
 	as.NoError(err)
-
-	fmt.Println("users", len(as.users))
 }
 
 func (as ActionSuite) JavaScript(u string, args ...interface{}) *httptest.Request {

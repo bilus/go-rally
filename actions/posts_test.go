@@ -16,6 +16,7 @@ func (as *ActionSuite) validPost(author *models.User) *models.Post {
 	}
 }
 
+// TODO: Create Fixtures struct, included in ModelSuite and ActionSuite.
 func (as *ActionSuite) createPost(author *models.User) *models.Post {
 	p := as.validPost(author)
 	verrs, err := as.DB.ValidateAndCreate(p)
