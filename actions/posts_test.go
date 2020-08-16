@@ -46,7 +46,7 @@ func (as *ActionSuite) Test_PostsResource_List() {
 	trs := doc.Find("tr.post-row")
 	as.Equal(len(ps), trs.Length())
 	trs.Each(func(i int, tr *goquery.Selection) {
-		as.Equal(ps[i].Title, tr.Find("td.title").Text())
+		as.Contains(tr.Find("td.title").Text(), ps[i].Title)
 	})
 }
 

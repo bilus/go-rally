@@ -1,12 +1,9 @@
       <tr class="post-row" data-post-id="<%= post.ID %>">
-          <td class="title align-middle"><%= post.Title %></td>
-          <td class="align-middle"><%= remoteLinkTo(postVotesPath({ post_id: post.ID}), { body: "Upvote", "data-method": "POST" }) %></td>
           <td class="align-middle"><%= post.Votes %></td>
-        <td>
-          <div class="float-right">
-            <%= linkTo(postPath({ post_id: post.ID }), {class: "btn btn-info", body: "View"}) %>
-            <%= linkTo(editPostPath({ post_id: post.ID }), {class: "btn btn-warning", body: "Edit"}) %>
-            <%= linkTo(postPath({ post_id: post.ID }), {class: "btn btn-danger", "data-method": "DELETE", "data-confirm": "Are you sure?", body: "Destroy"}) %>
-          </div>
-        </td>
+          <td class="align-middle"><%= remoteLinkTo(postVotesPath({ post_id: post.ID}), { body: "Upvote", "data-method": "POST" }) %></td>
+          <td class="title align-middle">
+              <%= linkTo(postPath({ post_id: post.ID }), {class: ""}) { %>
+                <%= post.Title %>
+              <% } %>
+          </td>
       </tr>
