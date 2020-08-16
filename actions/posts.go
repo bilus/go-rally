@@ -73,12 +73,14 @@ func (v PostsResource) Show(c buffalo.Context) error {
 	post := &models.Post{}
 
 	// To find the Post the parameter post_id is used.
-	if err := tx.Find(post, c.Param("post_id")); err != nil {
+	if err := tx.Eager().Find(post, c.Param("post_id")); err != nil {
 		return c.Error(http.StatusNotFound, err)
 	}
 
 	return responder.Wants("html", func(c buffalo.Context) error {
 		c.Set("post", post)
+		err := authorize(post, c)
+		c.Set("authorized", err == nil)
 
 		return c.Render(http.StatusOK, r.HTML("/posts/show.plush.html"))
 	}).Wants("json", func(c buffalo.Context) error {
