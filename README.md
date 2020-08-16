@@ -51,7 +51,7 @@ Good luck!
 - [X] Hide controls for unauthorized users
 - [X] Downvoting
 - [X] Downvoting only if upvoted
-- [ ] Upvoting up to the available budget
+- [X] Upvoting up to the available budget
 - [ ] Top/new
 - [ ] Good embedded editor
 - [ ] Tenancy

@@ -8,6 +8,7 @@ name = "default"
       id = "a0000000-0000-0000-0000-000000000000"
       email = "u0@example.com"
       google_user_id = "0"
+      votes = 5
       created_at = "<%= now() %>"
       updated_at = "<%= now() %>"
 
@@ -15,5 +16,6 @@ name = "default"
       id = "a1111111-1111-1111-1111-111111111111"
       email = "u1@example.com"
       google_user_id = "1"
+      votes = 5
       created_at = "<%= now() %>"
       updated_at = "<%= now() %>"

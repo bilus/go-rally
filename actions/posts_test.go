@@ -13,6 +13,7 @@ func (as *ActionSuite) validPost(author *models.User) *models.Post {
 		Body:     randomdata.Paragraph(),
 		Votes:    randomdata.Number(1, 100),
 		AuthorID: author.ID,
+		Author:   *author,
 	}
 }
 
@@ -61,6 +62,7 @@ func (as *ActionSuite) Test_PostsResource_Show() {
 func (as *ActionSuite) Test_PostsResource_Create() {
 	u := as.authenticate()
 	p := as.validPost(u)
+
 	res := as.HTML(as.PostsPath()).Post(p)
 	as.Equal(303, res.Code)
 

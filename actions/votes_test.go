@@ -16,6 +16,11 @@ func (as *ActionSuite) Test_Votes_Create() {
 	err := as.DB.Find(&p1, p.ID)
 	as.NoError(err)
 	as.Equal(p.Votes+1, p1.Votes)
+
+	u1 := models.User{}
+	err = as.DB.Find(&u1, u.ID)
+	as.NoError(err)
+	as.Equal(u.Votes-1, u1.Votes)
 }
 
 func (as *ActionSuite) Test_Votes_Destroy() {
@@ -32,6 +37,11 @@ func (as *ActionSuite) Test_Votes_Destroy() {
 	err := as.DB.Find(&p1, p.ID)
 	as.NoError(err)
 	as.Equal(p.Votes, p1.Votes)
+
+	u1 := models.User{}
+	err = as.DB.Find(&u1, u.ID)
+	as.NoError(err)
+	as.Equal(u.Votes, u1.Votes)
 }
 
 func (as *ActionSuite) Test_Votes_Destroy_OnlyUpvoted() {

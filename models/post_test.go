@@ -8,6 +8,7 @@ func (ms *ModelSuite) validPost() *Post {
 		Title:    "Lorem",
 		Body:     "Ipsum.",
 		AuthorID: u.ID,
+		Author:   u,
 	}
 }
 

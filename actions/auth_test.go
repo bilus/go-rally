@@ -15,6 +15,7 @@ func (as *ActionSuite) createUser() (*models.User, error) {
 		Password:             "password",
 		PasswordConfirmation: "password",
 		GoogleUserID:         nulls.NewString("123"),
+		Votes:                5,
 	}
 
 	verrs, err := u.Create(as.DB)
@@ -70,6 +71,7 @@ func (as *ActionSuite) Test_Auth_Create() {
 			res := as.HTML("/auth").Post(&models.User{
 				Email:    tcase.Email,
 				Password: tcase.Password,
+				Votes:    1,
 			})
 
 			as.Equal(tcase.Status, res.Code)
