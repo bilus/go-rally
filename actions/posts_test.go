@@ -80,6 +80,14 @@ func (as *ActionSuite) Test_PostsResource_Update() {
 	as.Equal(303, res.Code)
 }
 
+func (as *ActionSuite) Test_PostsResource_Update_OnlyAuthors() {
+	as.authenticate()
+	p := as.createPost(as.users[1]) // Author != current user.
+	p.Title = "New title"
+	res := as.HTML(as.PostPath(p)).Put(p)
+	as.Equal(401, res.Code)
+}
+
 func (as *ActionSuite) Test_PostsResource_Destroy() {
 	u := as.authenticate()
 	p := as.createPost(u)
@@ -115,4 +123,11 @@ func (as *ActionSuite) Test_PostsResource_Edit() {
 	p := as.createPost(u)
 	res := as.HTML(as.EditPostPath(p)).Get()
 	as.Equal(200, res.Code)
+}
+
+func (as *ActionSuite) Test_PostsResource_Edit_OnlyAuthors() {
+	as.authenticate()
+	p := as.createPost(as.users[1]) // Author != current user.
+	res := as.HTML(as.EditPostPath(p)).Get()
+	as.Equal(401, res.Code)
 }

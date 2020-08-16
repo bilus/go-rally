@@ -171,6 +171,10 @@ func (v PostsResource) Edit(c buffalo.Context) error {
 		return c.Error(http.StatusNotFound, err)
 	}
 
+	if err := authorize(post, c); err != nil {
+		return c.Error(http.StatusUnauthorized, err)
+	}
+
 	c.Set("post", post)
 	return c.Render(http.StatusOK, r.HTML("/posts/edit.plush.html"))
 }
@@ -189,6 +193,10 @@ func (v PostsResource) Update(c buffalo.Context) error {
 
 	if err := tx.Find(post, c.Param("post_id")); err != nil {
 		return c.Error(http.StatusNotFound, err)
+	}
+
+	if err := authorize(post, c); err != nil {
+		return c.Error(http.StatusUnauthorized, err)
 	}
 
 	// Bind Post to the html form elements

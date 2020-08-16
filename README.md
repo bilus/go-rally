@@ -48,6 +48,7 @@ Good luck!
 - [X] Store Google UserID and use it instead of email to match
 - [X] Option to disable sign ups using env
 - [X] Only author can delete/edit their message
+- [ ] Hide controls for unauthorized users
 - [ ] Downvoting
 - [ ] Downvoting only if upvoted
 - [ ] Upvoting up to the available budget
