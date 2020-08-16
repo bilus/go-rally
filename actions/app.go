@@ -70,6 +70,7 @@ func App() *buffalo.App {
 
 		app.Resource("/posts", PostsResource{})
 		app.POST("/posts/{post_id}/votes", VotesCreate)
+		app.DELETE("/posts/{post_id}/votes", VotesDestroy)
 
 		//Routes for Auth
 		auth := app.Group("/auth")
