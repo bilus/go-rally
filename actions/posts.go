@@ -248,6 +248,10 @@ func (v PostsResource) Destroy(c buffalo.Context) error {
 		return c.Error(http.StatusNotFound, err)
 	}
 
+	if err := authorize(post, c); err != nil {
+		return c.Error(http.StatusUnauthorized, err)
+	}
+
 	if err := tx.Destroy(post); err != nil {
 		return err
 	}
@@ -263,4 +267,15 @@ func (v PostsResource) Destroy(c buffalo.Context) error {
 	}).Wants("xml", func(c buffalo.Context) error {
 		return c.Render(http.StatusOK, r.XML(post))
 	}).Respond(c)
+}
+
+func authorize(post *models.Post, c buffalo.Context) error {
+	u, err := CurrentUser(c)
+	if err != nil {
+		return err
+	}
+	if post.AuthorID != u.ID {
+		return fmt.Errorf("no access to post %q", post.ID)
+	}
+	return nil
 }

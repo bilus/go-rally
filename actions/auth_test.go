@@ -24,13 +24,11 @@ func (as *ActionSuite) createUser() (*models.User, error) {
 }
 
 func (as *ActionSuite) login(u *models.User) {
-	res := as.HTML("/auth").Post(u)
-	as.Equal(302, res.Code)
+	as.Session.Set("current_user_id", u.ID)
 }
 
 func (as *ActionSuite) authenticate() *models.User {
-	u, err := as.createUser()
-	as.NoError(err)
+	u := as.users[0]
 	as.login(u)
 	return u
 }

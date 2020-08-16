@@ -1,6 +1,7 @@
 package actions
 
 import (
+	"fmt"
 	"rally/models"
 	"testing"
 
@@ -12,6 +13,19 @@ import (
 
 type ActionSuite struct {
 	*suite.Action
+
+	users []*models.User
+}
+
+func (as *ActionSuite) SetupTest() {
+	as.Action.SetupTest()
+
+	as.LoadFixture("default")
+
+	err := as.DB.All(&as.users)
+	as.NoError(err)
+
+	fmt.Println("users", len(as.users))
 }
 
 func (as ActionSuite) JavaScript(u string, args ...interface{}) *httptest.Request {

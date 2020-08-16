@@ -6,8 +6,8 @@ import (
 )
 
 func (as *ActionSuite) Test_Votes_Create() {
-	as.authenticate()
-	p := as.createPost()
+	u := as.authenticate()
+	p := as.createPost(u)
 
 	res := as.JavaScript(fmt.Sprintf("/posts/%v/votes", p.ID)).Post(nil)
 	as.Equal(200, res.Code)

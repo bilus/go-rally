@@ -1,36 +1,33 @@
 package actions
 
 import (
-	"fmt"
 	"rally/models"
 
 	"github.com/Pallinder/go-randomdata"
 	"github.com/PuerkitoBio/goquery"
 )
 
-func (as *ActionSuite) validPost() *models.Post {
-	var u models.User
-	as.NoError(as.DB.First(&u))
+func (as *ActionSuite) validPost(author *models.User) *models.Post {
 	return &models.Post{
 		Title:    randomdata.SillyName(),
 		Body:     randomdata.Paragraph(),
 		Votes:    randomdata.Number(1, 100),
-		AuthorID: u.ID,
+		AuthorID: author.ID,
 	}
 }
 
-func (as *ActionSuite) createPost() *models.Post {
-	p := as.validPost()
+func (as *ActionSuite) createPost(author *models.User) *models.Post {
+	p := as.validPost(author)
 	verrs, err := as.DB.ValidateAndCreate(p)
 	as.False(verrs.HasAny())
 	as.NoError(err)
 	return p
 }
 
-func (as *ActionSuite) createPosts(n int) []*models.Post {
+func (as *ActionSuite) createPosts(n int, author *models.User) []*models.Post {
 	ps := make([]*models.Post, n)
 	for i := range ps {
-		ps[i] = as.createPost()
+		ps[i] = as.createPost(author)
 	}
 	return ps
 }
@@ -41,9 +38,8 @@ func (as *ActionSuite) Test_PostsResource_List_RequiresAuth() {
 }
 
 func (as *ActionSuite) Test_PostsResource_List() {
-	as.LoadFixture("default")
-	as.authenticate()
-	ps := as.createPosts(3)
+	u := as.authenticate()
+	ps := as.createPosts(3, u)
 	res := as.HTML(as.PostsPath()).Get()
 	as.Equal(200, res.Code)
 	doc := as.DOM(res)
@@ -55,19 +51,16 @@ func (as *ActionSuite) Test_PostsResource_List() {
 }
 
 func (as *ActionSuite) Test_PostsResource_Show() {
-	as.LoadFixture("default")
-	as.authenticate()
-	p := as.createPost()
+	u := as.authenticate()
+	p := as.createPost(u)
 	res := as.HTML(as.PostPath(p)).Get()
 	as.Contains(res.Body.String(), p.Title)
 }
 
 func (as *ActionSuite) Test_PostsResource_Create() {
-	as.LoadFixture("default")
-	currentUser := as.authenticate()
-	p := as.validPost()
+	u := as.authenticate()
+	p := as.validPost(u)
 	res := as.HTML(as.PostsPath()).Post(p)
-	fmt.Println(res.Location())
 	as.Equal(303, res.Code)
 
 	count, err := as.DB.Count("posts")
@@ -76,21 +69,20 @@ func (as *ActionSuite) Test_PostsResource_Create() {
 
 	var p1 models.Post
 	as.NoError(as.DB.First(&p1))
-	as.Equal(currentUser.ID, p1.AuthorID)
+	as.Equal(u.ID, p1.AuthorID)
 }
 
 func (as *ActionSuite) Test_PostsResource_Update() {
-	as.LoadFixture("default")
-	as.authenticate()
-	p := as.createPost()
+	u := as.authenticate()
+	p := as.createPost(u)
 	p.Title = "New title"
 	res := as.HTML(as.PostPath(p)).Put(p)
 	as.Equal(303, res.Code)
 }
 
 func (as *ActionSuite) Test_PostsResource_Destroy() {
-	as.authenticate()
-	p := as.createPost()
+	u := as.authenticate()
+	p := as.createPost(u)
 	p.Title = "New title"
 	res := as.HTML(as.PostPath(p)).Delete()
 	as.Equal(303, res.Code)
@@ -100,17 +92,27 @@ func (as *ActionSuite) Test_PostsResource_Destroy() {
 	as.Equal(0, count)
 }
 
+func (as *ActionSuite) Test_PostsResource_Destroy_OnlyAuthors() {
+	as.authenticate()
+	p := as.createPost(as.users[1]) // Author != current user.
+	p.Title = "New title"
+	res := as.HTML(as.PostPath(p)).Delete()
+	as.Equal(401, res.Code)
+
+	count, err := as.DB.Count("posts")
+	as.NoError(err)
+	as.Equal(1, count)
+}
+
 func (as *ActionSuite) Test_PostsResource_New() {
-	as.LoadFixture("default")
 	as.authenticate()
 	res := as.HTML(as.NewPostsPath()).Get()
 	as.Equal(200, res.Code)
 }
 
 func (as *ActionSuite) Test_PostsResource_Edit() {
-	as.LoadFixture("default")
-	as.authenticate()
-	p := as.createPost()
+	u := as.authenticate()
+	p := as.createPost(u)
 	res := as.HTML(as.EditPostPath(p)).Get()
 	as.Equal(200, res.Code)
 }
