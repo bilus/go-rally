@@ -43,8 +43,8 @@ CREATE TABLE public.posts (
     title character varying(255) NOT NULL,
     body text NOT NULL,
     votes integer NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
     author_id uuid NOT NULL
 );
 

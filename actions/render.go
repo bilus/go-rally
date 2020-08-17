@@ -1,6 +1,9 @@
 package actions
 
 import (
+	"time"
+
+	"github.com/dustin/go-humanize"
 	"github.com/gobuffalo/buffalo/render"
 	"github.com/gobuffalo/packr/v2"
 )
@@ -23,6 +26,9 @@ func init() {
 			// below and import "github.com/gobuffalo/helpers/forms"
 			// forms.FormKey:     forms.Form,
 			// forms.FormForKey:  forms.FormFor,
+			"timeAgo": func(t time.Time) string {
+				return humanize.Time(t)
+			},
 		},
 	})
 }

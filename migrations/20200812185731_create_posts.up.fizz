@@ -3,5 +3,6 @@ create_table("posts") {
 	t.Column("title", "string", {})
 	t.Column("body", "text", {})
 	t.Column("votes", "integer", {})
-	t.Timestamps()
+    t.Column("created_at", "timestamp with time zone", {})
+    t.Column("updated_at", "timestamp with time zone", {})
 }

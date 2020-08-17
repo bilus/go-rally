@@ -7,4 +7,7 @@
                 <%= post.Title %>
               <% } %>
           </td>
+          <td class="align-right time-ago">
+              <%= timeAgo(post.CreatedAt) %>
+          </td>
       </tr>

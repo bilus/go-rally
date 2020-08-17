@@ -54,7 +54,7 @@ Good luck!
 - [X] Upvoting up to the available budget
 - [X] Show user's available votes
 - [X] Top/new
-- [ ] Show time ago post created
+- [X] Show time ago post created
 - [ ] Good embedded editor
 - [ ] Tenancy
 - [ ] Styling
