@@ -13,7 +13,9 @@
 
         <div class="container">
             <%= if (current_user) { %>
+              <%= current_user.Email %>
               <%= linkTo(authPath(), {data-method: "DELETE"}){ %>Sign Out<% } %>
+              <%= partial("user_votes.html") %>
             <% } %>
 
             <%= partial("flash.html") %>

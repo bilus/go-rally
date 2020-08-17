@@ -52,6 +52,7 @@ Good luck!
 - [X] Downvoting
 - [X] Downvoting only if upvoted
 - [X] Upvoting up to the available budget
+- [X] Show user's available votes
 - [ ] Top/new
 - [ ] Good embedded editor
 - [ ] Tenancy

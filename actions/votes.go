@@ -28,6 +28,7 @@ func VotesCreate(c buffalo.Context) error {
 	if err != nil {
 		return err
 	}
+	RefreshCurrentUser(c) // Number of votes changed.
 	if n == 0 {
 		return c.Render(http.StatusUnprocessableEntity, r.JavaScript("votes/fail.js"))
 	}
@@ -105,6 +106,7 @@ func VotesDestroy(c buffalo.Context) error {
 	if err != nil {
 		return err
 	}
+	RefreshCurrentUser(c) // Number of votes changed.
 
 	c.Set("post", post)
 	return c.Render(http.StatusOK, r.JavaScript("votes/create.js"))

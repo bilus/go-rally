@@ -53,17 +53,7 @@ func Login(u *models.User, c buffalo.Context) error {
 // in the session. If one is found it is set on the context.
 func SetCurrentUser(next buffalo.Handler) buffalo.Handler {
 	return func(c buffalo.Context) error {
-		if uid := c.Session().Get("current_user_id"); uid != nil {
-			u := &models.User{}
-			tx := c.Value("tx").(*pop.Connection)
-			err := tx.Find(u, uid)
-			if err != nil {
-				c.Session().Delete("current_user_id") // User deleted?
-				c.Set("current_user", nil)
-				return next(c)
-			}
-			c.Set("current_user", u)
-		}
+		RefreshCurrentUser(c)
 		return next(c)
 	}
 }
@@ -83,6 +73,19 @@ func Authorize(next buffalo.Handler) buffalo.Handler {
 			return c.Redirect(302, "/auth/new")
 		}
 		return next(c)
+	}
+}
+
+func RefreshCurrentUser(c buffalo.Context) {
+	if uid := c.Session().Get("current_user_id"); uid != nil {
+		u := &models.User{}
+		tx := c.Value("tx").(*pop.Connection)
+		err := tx.Find(u, uid)
+		if err != nil {
+			c.Session().Delete("current_user_id") // User deleted?
+			c.Set("current_user", nil)
+		}
+		c.Set("current_user", u)
 	}
 }
 
