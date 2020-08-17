@@ -58,8 +58,6 @@ Good luck!
 - [ ] Tenancy
 - [ ] Styling
 - [ ] Admin can delete/edit any posts
-- [ ] Recalc votes in background
-      so we don't worry about race conditions
 - [ ] Scheduled job to reset available votes
 
 ## Design ideas
