@@ -1,5 +1,7 @@
 <div class="py-4 mb-2">
-  <h3 class="d-inline-block">Posts</h3>
+    <h3 class="d-inline-block">Posts</h3>
+    <%= linkTo(postsPath({order: "top"}), {body: "Top", class: orderClass("top")}) %>
+    <%= linkTo(postsPath({order: "newest"}), {body: "New", class: orderClass("newest")}) %>
   <div class="float-right">
     <%= linkTo(newPostsPath(), {class: "btn btn-primary"}) { %>
       Create New Post

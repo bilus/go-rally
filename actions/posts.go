@@ -42,6 +42,17 @@ func (v PostsResource) List(c buffalo.Context) error {
 	// Default values are "page=1" and "per_page=20".
 	q := tx.PaginateFromParams(c.Params())
 
+	order := c.Param("order")
+	if order == "" {
+		order = "top"
+	}
+	c.Set("orderClass", orderClass(order))
+	if order == "newest" {
+		q = q.Order("created_at DESC")
+	} else {
+		q = q.Order("votes DESC")
+	}
+
 	// Retrieve all Posts from the DB
 	if err := q.All(posts); err != nil {
 		return err
@@ -58,6 +69,15 @@ func (v PostsResource) List(c buffalo.Context) error {
 	}).Wants("xml", func(c buffalo.Context) error {
 		return c.Render(200, r.XML(posts))
 	}).Respond(c)
+}
+
+func orderClass(activeOrder string) func(order string) string {
+	return func(order string) string {
+		if order == activeOrder {
+			return "order-active"
+		}
+		return ""
+	}
 }
 
 // Show gets the data for one Post. This function is mapped to
