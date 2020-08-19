@@ -1,4 +1,7 @@
 <%= f.InputTag("Title") %>
 <%= f.TextAreaTag("Body", {rows: 10}) %>
+<script>
+var easyMDE = new EasyMDE({forceSync: true, promptURLs: true, uploadImage: true});
+</script>
 <%= f.InputTag("Votes") %>
 <button class="btn btn-success" role="submit">Save</button>
