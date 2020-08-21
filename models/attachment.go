@@ -93,3 +93,7 @@ func (a *Attachment) attachmentPath() string {
 	filename := a.ID.String()
 	return filepath.Join(attachmentsDir, filename)
 }
+
+func (a *Attachment) AfterDestroy(c *pop.Connection) error {
+	return os.Remove(a.attachmentPath())
+}

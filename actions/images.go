@@ -62,6 +62,7 @@ func ImagesCreate(c buffalo.Context) error {
 			FilePath: fmt.Sprintf("/posts/%s/images/%s", postId, image.ID),
 		},
 	}
+
 	return c.Render(http.StatusOK, r.JSON(success))
 }
 

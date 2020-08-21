@@ -60,13 +60,21 @@ Good luck!
     - [X] PoC
     - [X] Store images in a configurable dir
     - [X] Links to images -> show
-
-
+    - [X] Delete attachment model -> delete file
+    - [ ] Works for new posts (uuid-gen post id)
+    - [ ] Tests
+- [ ] Comments
+- [ ] Anonymous posts
+- [ ] Styling
+- [ ] Scheduled job to reset available votes
 
 - [ ] Tenancy
-- [ ] Styling
+- [ ] Drafts (?)
+    - [ ] New posts are immediately created as drafts
+    - [ ] Nobody sees drafts
+    - [ ] Author can see a list of their draft posts
+    - [ ] Author can edit/delete drafts
 - [ ] Admin can delete/edit any posts
-- [ ] Scheduled job to reset available votes
 
 ## Design ideas
 
