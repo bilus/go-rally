@@ -54,7 +54,8 @@ func App() *buffalo.App {
 
 		// Protect against CSRF attacks. https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)
 		// Remove to disable this.
-		app.Use(csrf.New)
+		csrf := csrf.New
+		app.Use(csrf)
 
 		// Wraps each request in a transaction.
 		//  c.Value("tx").(*pop.Connection)
@@ -73,6 +74,9 @@ func App() *buffalo.App {
 		app.Resource("/posts", PostsResource{})
 		app.POST("/posts/{post_id}/votes", VotesCreate)
 		app.DELETE("/posts/{post_id}/votes", VotesDestroy)
+		app.POST("/posts/{post_id}/images", ImagesCreate)
+		app.GET("/posts/{post_id}/images/{image_id}", ImagesShow)
+		app.Middleware.Skip(csrf, ImagesCreate) // TODO: Handle csrf token sent by the editor.
 
 		//Routes for Auth
 		auth := app.Group("/auth")

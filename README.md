@@ -55,7 +55,14 @@ Good luck!
 - [X] Show user's available votes
 - [X] Top/new
 - [X] Show time ago post created
-- [ ] Good embedded editor
+- [X] Good embedded editor
+- [ ] Support pasting images
+    - [X] PoC
+    - [X] Store images in a configurable dir
+    - [X] Links to images -> show
+
+
+
 - [ ] Tenancy
 - [ ] Styling
 - [ ] Admin can delete/edit any posts

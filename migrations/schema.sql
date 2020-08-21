@@ -35,6 +35,21 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
+-- Name: attachments; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.attachments (
+    id uuid NOT NULL,
+    post_id uuid NOT NULL,
+    filename character varying(255) NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.attachments OWNER TO postgres;
+
+--
 -- Name: posts; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -123,6 +138,14 @@ ALTER TABLE ONLY public.votes ALTER COLUMN id SET DEFAULT nextval('public.votes_
 
 
 --
+-- Name: attachments attachments_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.attachments
+    ADD CONSTRAINT attachments_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: posts posts_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -151,6 +174,14 @@ ALTER TABLE ONLY public.votes
 --
 
 CREATE UNIQUE INDEX schema_migration_version_idx ON public.schema_migration USING btree (version);
+
+
+--
+-- Name: attachments attachments_post_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.attachments
+    ADD CONSTRAINT attachments_post_id_fkey FOREIGN KEY (post_id) REFERENCES public.posts(id) ON DELETE CASCADE;
 
 
 --
