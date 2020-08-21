@@ -4,13 +4,31 @@ import (
 	"encoding/json"
 	"io"
 	"os"
+	"path/filepath"
 	"time"
+
+	"log"
 
 	"github.com/gobuffalo/pop/v5"
 	"github.com/gobuffalo/validate/v3"
 	"github.com/gobuffalo/validate/v3/validators"
 	"github.com/gofrs/uuid"
 )
+
+var attachmentsDir string
+
+func init() {
+	// TODO: Yuck! Need better configuration management.
+	var found bool
+	attachmentsDir, found = os.LookupEnv("ATTACHMENTS_DIR")
+	if !found {
+		attachmentsDir = "/var/rally/attachments"
+	}
+	err := os.MkdirAll(attachmentsDir, os.ModePerm)
+	if err != nil {
+		log.Fatalf("error trying to create attachments dir: %v", err)
+	}
+}
 
 // Attachment is used by pop to map your attachments database table to your go code.
 type Attachment struct {
@@ -59,14 +77,19 @@ func (a *Attachment) ValidateUpdate(tx *pop.Connection) (*validate.Errors, error
 // Open opens the attachment for reading.
 // Note: The returned ReadCloser must be closed.
 func (a *Attachment) Open() (io.ReadCloser, error) {
-	return os.Open(a.ID.String())
+	return os.Open(a.attachmentPath())
 }
 
 func (a *Attachment) Save(r io.Reader) error {
-	w, err := os.Create(a.ID.String())
+	w, err := os.Create(a.attachmentPath())
 	if err != nil {
 		return err
 	}
 	_, err = io.Copy(w, r)
 	return err
+}
+
+func (a *Attachment) attachmentPath() string {
+	filename := a.ID.String()
+	return filepath.Join(attachmentsDir, filename)
 }

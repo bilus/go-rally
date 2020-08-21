@@ -3,6 +3,7 @@ Project: github.com/bilus/rally2
 buffalo: |
   export GOOGLE_KEY=${Oya[google.key]}
   export GOOGLE_SECRET=${Oya[google.secret]}
+  export ATTACHMENTS_DIR="./attachments"
   buffalo $@
 
 browse: |
