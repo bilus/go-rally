@@ -69,7 +69,15 @@ func App() *buffalo.App {
 		app.Use(SetCurrentUser)
 		app.Use(Authorize)
 
-		app.GET("/", PostsResource{}.List)
+		postsResource := PostsResource{}
+		app.GET("/", postsResource.List)
+
+		app.GET("/posts/new", postsResource.New)
+		app.POST("/posts", postsResource.Create)
+		app.GET("/posts/{post_id}/edit", postsResource.Edit)
+		app.GET("/posts/{post_id}", postsResource.Show)
+		app.PUT("/posts/{post_id}", postsResource.Update)
+		app.DELETE("/posts/{post_id}", postsResource.Destroy)
 
 		app.Resource("/posts", PostsResource{})
 		app.POST("/posts/{post_id}/votes", VotesCreate)

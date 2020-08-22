@@ -24,7 +24,6 @@ import (
 
 // PostsResource is the resource for the Post model
 type PostsResource struct {
-	buffalo.Resource
 }
 
 // List gets all Posts. This function is mapped to the path
