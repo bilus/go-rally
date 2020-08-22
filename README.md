@@ -61,19 +61,21 @@ Good luck!
     - [X] Store images in a configurable dir
     - [X] Links to images -> show
     - [X] Delete attachment model -> delete file
-    - [ ] Works for new posts (uuid-gen post id)
+    - [ ] BLOCKED: Drafts implemented
     - [ ] Tests
+- [ ] Drafts (?)
+    - [X] New posts are immediately created as drafts
+    - [ ] Nobody sees drafts
+    - [ ] Draft can be saved
+    - [ ] Draft can be published, post can be unpublished
+    - [ ] Author can see a list of their draft posts
+    - [ ] Author can edit/delete drafts
 - [ ] Comments
 - [ ] Anonymous posts
 - [ ] Styling
 - [ ] Scheduled job to reset available votes
 
 - [ ] Tenancy
-- [ ] Drafts (?)
-    - [ ] New posts are immediately created as drafts
-    - [ ] Nobody sees drafts
-    - [ ] Author can see a list of their draft posts
-    - [ ] Author can edit/delete drafts
 - [ ] Admin can delete/edit any posts
 
 ## Design ideas

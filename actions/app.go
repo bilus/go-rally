@@ -72,7 +72,6 @@ func App() *buffalo.App {
 		postsResource := PostsResource{}
 		app.GET("/", postsResource.List)
 
-		app.GET("/posts/new", postsResource.New)
 		app.POST("/posts", postsResource.Create)
 		app.GET("/posts/{post_id}/edit", postsResource.Edit)
 		app.GET("/posts/{post_id}", postsResource.Show)

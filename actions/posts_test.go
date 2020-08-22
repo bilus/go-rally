@@ -4,7 +4,6 @@ import (
 	"rally/models"
 
 	"github.com/Pallinder/go-randomdata"
-	"github.com/PuerkitoBio/goquery"
 )
 
 func (as *ActionSuite) validPost(author *models.User) *models.Post {
@@ -15,6 +14,14 @@ func (as *ActionSuite) validPost(author *models.User) *models.Post {
 		AuthorID: author.ID,
 		Author:   *author,
 	}
+}
+
+func (as *ActionSuite) emptPostDraft(author *models.User) *models.Post {
+	p := as.validPost(author)
+	p.Draft = true
+	p.Title = ""
+	p.Body = ""
+	return p
 }
 
 // TODO: Create Fixtures struct, included in ModelSuite and ActionSuite.
@@ -47,9 +54,6 @@ func (as *ActionSuite) Test_PostsResource_List() {
 	doc := as.DOM(res)
 	trs := doc.Find("tr.post-row")
 	as.Equal(len(ps), trs.Length())
-	trs.Each(func(i int, tr *goquery.Selection) {
-		as.Contains(tr.Find("td.title").Text(), ps[i].Title)
-	})
 }
 
 func (as *ActionSuite) Test_PostsResource_Show() {
@@ -59,12 +63,12 @@ func (as *ActionSuite) Test_PostsResource_Show() {
 	as.Contains(res.Body.String(), p.Title)
 }
 
-func (as *ActionSuite) Test_PostsResource_Create() {
+func (as *ActionSuite) Test_PostsResource_CreateDraft() {
 	u := as.authenticate()
-	p := as.validPost(u)
+	p := as.emptPostDraft(u)
 
 	res := as.HTML(as.PostsPath()).Post(p)
-	as.Equal(303, res.Code)
+	as.Equal(200, res.Code)
 
 	count, err := as.DB.Count("posts")
 	as.NoError(err)
@@ -113,12 +117,6 @@ func (as *ActionSuite) Test_PostsResource_Destroy_OnlyAuthors() {
 	count, err := as.DB.Count("posts")
 	as.NoError(err)
 	as.Equal(1, count)
-}
-
-func (as *ActionSuite) Test_PostsResource_New() {
-	as.authenticate()
-	res := as.HTML(as.NewPostsPath()).Get()
-	as.Equal(200, res.Code)
 }
 
 func (as *ActionSuite) Test_PostsResource_Edit() {

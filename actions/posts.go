@@ -109,24 +109,11 @@ func (v PostsResource) Show(c buffalo.Context) error {
 	}).Respond(c)
 }
 
-// New renders the form for creating a new Post.
-// This function is mapped to the path GET /posts/new
-func (v PostsResource) New(c buffalo.Context) error {
-	c.Set("post", &models.Post{})
-
-	return c.Render(http.StatusOK, r.HTML("/posts/new.plush.html"))
-}
-
 // Create adds a Post to the DB. This function is mapped to the
 // path POST /posts
 func (v PostsResource) Create(c buffalo.Context) error {
 	// Allocate an empty Post
-	post := &models.Post{}
-
-	// Bind post to the html form elements
-	if err := c.Bind(post); err != nil {
-		return err
-	}
+	post := &models.Post{Draft: true}
 
 	currentUser, err := CurrentUser(c)
 	if err != nil {
@@ -147,33 +134,12 @@ func (v PostsResource) Create(c buffalo.Context) error {
 	}
 
 	if verrs.HasAny() {
-		return responder.Wants("html", func(c buffalo.Context) error {
-			// Make the errors available inside the html template
-			c.Set("errors", verrs)
-
-			// Render again the new.html template that the user can
-			// correct the input.
-			c.Set("post", post)
-
-			return c.Render(http.StatusUnprocessableEntity, r.HTML("/posts/new.plush.html"))
-		}).Wants("json", func(c buffalo.Context) error {
-			return c.Render(http.StatusUnprocessableEntity, r.JSON(verrs))
-		}).Wants("xml", func(c buffalo.Context) error {
-			return c.Render(http.StatusUnprocessableEntity, r.XML(verrs))
-		}).Respond(c)
+		return fmt.Errorf("validation failed when creating an empty new draft: %q", verrs.String())
 	}
 
-	return responder.Wants("html", func(c buffalo.Context) error {
-		// If there are no errors set a success message
-		c.Flash().Add("success", T.Translate(c, "post.created.success"))
+	c.Set("post", post)
 
-		// and redirect to the show page
-		return c.Redirect(http.StatusSeeOther, "/posts/%v", post.ID)
-	}).Wants("json", func(c buffalo.Context) error {
-		return c.Render(http.StatusCreated, r.JSON(post))
-	}).Wants("xml", func(c buffalo.Context) error {
-		return c.Render(http.StatusCreated, r.XML(post))
-	}).Respond(c)
+	return c.Render(http.StatusOK, r.JavaScript("/posts/create.plush.js"))
 }
 
 // Edit renders a edit form for a Post. This function is

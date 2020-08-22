@@ -21,6 +21,8 @@ type Post struct {
 
 	AuthorID uuid.UUID `json:"-" db:"author_id"`
 	Author   User      `json:"author,omitempty" belongs_to:"user" db:"-"`
+
+	Draft bool `json:"draft" db:"draft"`
 }
 
 // String is not required by pop and may be deleted
@@ -41,6 +43,10 @@ func (p Posts) String() string {
 // Validate gets run every time you call a "pop.Validate*" (pop.ValidateAndSave, pop.ValidateAndCreate, pop.ValidateAndUpdate) method.
 // This method is not required and may be deleted.
 func (p *Post) Validate(tx *pop.Connection) (*validate.Errors, error) {
+	if p.Draft {
+		return validate.Validate(), nil
+	}
+
 	return validate.Validate(
 		&validators.StringIsPresent{Field: p.Title, Name: "Title"},
 		&validators.StringIsPresent{Field: p.Body, Name: "Body"},

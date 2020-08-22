@@ -1,0 +1,1 @@
+add_column("posts", "draft", "boolean", {default: false})

@@ -3,8 +3,8 @@
     <%= linkTo(postsPath({order: "top"}), {body: "Top", class: orderClass("top")}) %>
     <%= linkTo(postsPath({order: "newest"}), {body: "New", class: orderClass("newest")}) %>
   <div class="float-right">
-    <%= linkTo(newPostsPath(), {class: "btn btn-primary"}) { %>
-      Create New Post
+    <%= remoteLinkTo(postsPath(), {class: "btn btn-primary", data-method: "POST"}) { %>
+      New Draft
     <% } %>
   </div>
 </div>

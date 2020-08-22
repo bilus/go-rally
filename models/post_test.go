@@ -45,3 +45,14 @@ func (ms *ModelSuite) Test_Post_RequiresBody() {
 	ms.NoError(err)
 	ms.True(verrs.HasAny())
 }
+
+func (ms *ModelSuite) Test_Post_DraftRequiresNoTitleNorBody() {
+	p := ms.validPost()
+	p.Draft = true
+	p.Title = ""
+	p.Body = ""
+
+	verrs, err := ms.DB.ValidateAndCreate(p)
+	ms.NoError(err)
+	ms.False(verrs.HasAny())
+}

@@ -27,6 +27,7 @@ require (
 	github.com/gobuffalo/validate/v3 v3.1.0
 	github.com/gobuffalo/x v0.0.0-20190224155809-6bb134105960
 	github.com/gofrs/uuid v3.2.0+incompatible
+	github.com/johncgriffin/yogofn v0.0.0-20170613212352-43d7b79df9f1 // indirect
 	github.com/karrick/godirwalk v1.15.8 // indirect
 	github.com/markbates/goth v1.64.2
 	github.com/markbates/grift v1.5.0
