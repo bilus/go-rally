@@ -22,7 +22,7 @@ func init() {
 	var found bool
 	attachmentsDir, found = os.LookupEnv("ATTACHMENTS_DIR")
 	if !found {
-		attachmentsDir = "/var/rally/attachments"
+		attachmentsDir = "/tmp/rally/attachments"
 	}
 	err := os.MkdirAll(attachmentsDir, os.ModePerm)
 	if err != nil {
