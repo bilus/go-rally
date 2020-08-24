@@ -66,8 +66,9 @@ Good luck!
 - [ ] Drafts (?)
     - [X] New posts are immediately created as drafts
     - [X] Nobody sees drafts
-    - [ ] Draft can be saved
-    - [ ] Draft can be published, post can be unpublished
+    - [X] Draft can be saved
+    - [X] Draft can be published, post can be unpublished
+    - [X] Draft can be deleted while editing
     - [ ] Author can see a list of their draft posts
     - [ ] Author can edit/delete drafts
 - [ ] Comments

@@ -7,3 +7,5 @@
                             imageCSRFToken: "<%= authenticity_token %>"});
 </script>
 <button class="btn btn-success" role="submit">Save</button>
+
+<%= f.CheckboxTag("Draft", {label: "Draft", unchecked: false}) %>
