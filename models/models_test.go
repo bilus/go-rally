@@ -1,6 +1,8 @@
 package models
 
 import (
+	"io/ioutil"
+	"os"
 	"testing"
 
 	"github.com/gobuffalo/packr/v2"
@@ -11,6 +13,8 @@ type ModelSuite struct {
 	*suite.Model
 
 	users []*User
+
+	tempDir string
 }
 
 func (as *ModelSuite) SetupTest() {
@@ -20,6 +24,13 @@ func (as *ModelSuite) SetupTest() {
 
 	err := as.DB.All(&as.users)
 	as.NoError(err)
+
+	as.tempDir, err = ioutil.TempDir("", "rally")
+	as.NoError(err)
+}
+
+func (as *ModelSuite) TearDownTest() {
+	os.RemoveAll(as.tempDir)
 }
 
 func Test_ModelSuite(t *testing.T) {

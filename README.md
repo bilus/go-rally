@@ -56,13 +56,13 @@ Good luck!
 - [X] Top/new
 - [X] Show time ago post created
 - [X] Good embedded editor
-- [ ] Support pasting images
+- [X] Support pasting images
     - [X] PoC
     - [X] Store images in a configurable dir
     - [X] Links to images -> show
     - [X] Delete attachment model -> delete file
-    - [ ] BLOCKED: Drafts implemented
-    - [ ] Tests
+    - [X] BLOCKED: Drafts implemented
+    - [X] Tests
 - [X] Drafts
     - [X] New posts are immediately created as drafts
     - [X] Nobody sees drafts
@@ -71,8 +71,8 @@ Good luck!
     - [X] Draft can be deleted while editing
     - [X] Author can see a list of their draft posts
     - [X] Author can edit/delete drafts
-- [ ] Comments
 - [ ] Anonymous posts
+- [ ] Comments
 - [ ] Styling
 - [ ] Scheduled job to reset available votes
 
