@@ -51,11 +51,25 @@ func (as *ActionSuite) Test_PostsResource_List() {
 	u := as.authenticate()
 	ps := as.createPosts(3, u, false)
 	as.createPosts(1, u, true) // Drafts - hidden.
-	res := as.HTML(as.PostsPath()).Get()
+	res := as.HTML(as.PostsPath(nil)).Get()
 	as.Equal(200, res.Code)
 	doc := as.DOM(res)
 	trs := doc.Find("tr.post-row")
 	as.Equal(len(ps), trs.Length())
+}
+
+func (as *ActionSuite) Test_PostsResource_ListOwnDrafts() {
+	u := as.authenticate()
+	as.createPosts(3, u, false)          // Published - hidden
+	drafts := as.createPosts(1, u, true) // Drafts - visible.
+	u2, err := as.createUser()
+	as.NoError(err)
+	as.createPosts(2, u2, true) // Other user's drafts - hidden
+	res := as.HTML(as.PostsPath(Opts{"drafts": true})).Get()
+	as.Equal(200, res.Code)
+	doc := as.DOM(res)
+	trs := doc.Find("tr.post-row")
+	as.Equal(len(drafts), trs.Length())
 }
 
 func (as *ActionSuite) Test_PostsResource_Show() {
@@ -69,7 +83,7 @@ func (as *ActionSuite) Test_PostsResource_CreateDraft() {
 	u := as.authenticate()
 	p := as.emptPostDraft(u)
 
-	res := as.HTML(as.PostsPath()).Post(p)
+	res := as.HTML(as.PostsPath(nil)).Post(p)
 	as.Equal(200, res.Code)
 
 	count, err := as.DB.Count("posts")

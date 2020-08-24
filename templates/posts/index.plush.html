@@ -6,6 +6,8 @@
     <%= remoteLinkTo(postsPath(), {class: "btn btn-primary", data-method: "POST"}) { %>
       New Draft
     <% } %>
+    <%= linkTo(postsPath({drafts: true}), {body: "Drafts"}) %>
+
   </div>
 </div>
 

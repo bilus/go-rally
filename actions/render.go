@@ -29,6 +29,13 @@ func init() {
 			"timeAgo": func(t time.Time) string {
 				return humanize.Time(t)
 			},
+			"safeTitle": func(t string) string {
+				if t == "" {
+					return "Untitled"
+				} else {
+					return t
+				}
+			},
 		},
 	})
 }

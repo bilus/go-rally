@@ -37,7 +37,9 @@ func (as ActionSuite) DOM(res *httptest.Response) *goquery.Document {
 	return doc
 }
 
-func (as ActionSuite) Path(name string, opts map[string]interface{}) string {
+type Opts map[string]interface{}
+
+func (as ActionSuite) Path(name string, opts Opts) string {
 	buildPath, ok := as.App.RouteHelpers()[name]
 	as.True(ok)
 	path, err := buildPath(opts)
@@ -46,11 +48,11 @@ func (as ActionSuite) Path(name string, opts map[string]interface{}) string {
 }
 
 func (as ActionSuite) PostPath(p *models.Post) string {
-	return as.Path("postPath", map[string]interface{}{"post_id": p.ID})
+	return as.Path("postPath", Opts{"post_id": p.ID})
 }
 
-func (as ActionSuite) PostsPath() string {
-	return as.Path("postsPath", nil)
+func (as ActionSuite) PostsPath(opts Opts) string {
+	return as.Path("postsPath", opts)
 }
 
 func (as ActionSuite) NewPostsPath() string {
@@ -58,7 +60,7 @@ func (as ActionSuite) NewPostsPath() string {
 }
 
 func (as ActionSuite) EditPostPath(p *models.Post) string {
-	return as.Path("editPostPath", map[string]interface{}{"post_id": p.ID})
+	return as.Path("editPostPath", Opts{"post_id": p.ID})
 }
 
 func Test_ActionSuite(t *testing.T) {

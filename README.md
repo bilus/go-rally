@@ -63,14 +63,14 @@ Good luck!
     - [X] Delete attachment model -> delete file
     - [ ] BLOCKED: Drafts implemented
     - [ ] Tests
-- [ ] Drafts (?)
+- [X] Drafts
     - [X] New posts are immediately created as drafts
     - [X] Nobody sees drafts
     - [X] Draft can be saved
     - [X] Draft can be published, post can be unpublished
     - [X] Draft can be deleted while editing
-    - [ ] Author can see a list of their draft posts
-    - [ ] Author can edit/delete drafts
+    - [X] Author can see a list of their draft posts
+    - [X] Author can edit/delete drafts
 - [ ] Comments
 - [ ] Anonymous posts
 - [ ] Styling

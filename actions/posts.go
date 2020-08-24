@@ -39,7 +39,18 @@ func (v PostsResource) List(c buffalo.Context) error {
 
 	// Paginate results. Params "page" and "per_page" control pagination.
 	// Default values are "page=1" and "per_page=20".
-	q := tx.PaginateFromParams(c.Params()).Where("NOT draft")
+	q := tx.PaginateFromParams(c.Params())
+
+	drafts := c.Param("drafts")
+	if drafts == "true" {
+		currentUser, err := CurrentUser(c)
+		if err != nil {
+			return err
+		}
+		q = q.Where("draft AND author_id = ?", currentUser.ID)
+	} else {
+		q = q.Where("NOT draft")
+	}
 
 	order := c.Param("order")
 	if order == "" {
