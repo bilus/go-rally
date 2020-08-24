@@ -7,7 +7,7 @@ import (
 
 func (as *ActionSuite) Test_Votes_Create() {
 	u := as.authenticate()
-	p := as.createPost(u)
+	p := as.createPost(u, false)
 
 	res := as.JavaScript(fmt.Sprintf("/posts/%v/votes", p.ID)).Post(nil)
 	as.Equal(200, res.Code)
@@ -25,7 +25,7 @@ func (as *ActionSuite) Test_Votes_Create() {
 
 func (as *ActionSuite) Test_Votes_Destroy() {
 	u := as.authenticate()
-	p := as.createPost(u)
+	p := as.createPost(u, false)
 
 	res := as.JavaScript(fmt.Sprintf("/posts/%v/votes", p.ID)).Post(nil)
 	as.Equal(200, res.Code)
@@ -46,7 +46,7 @@ func (as *ActionSuite) Test_Votes_Destroy() {
 
 func (as *ActionSuite) Test_Votes_Destroy_OnlyUpvoted() {
 	u := as.authenticate()
-	p := as.createPost(u)
+	p := as.createPost(u, false)
 
 	res := as.JavaScript(fmt.Sprintf("/posts/%v/votes", p.ID)).Delete()
 	as.Equal(422, res.Code)

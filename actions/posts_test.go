@@ -25,18 +25,19 @@ func (as *ActionSuite) emptPostDraft(author *models.User) *models.Post {
 }
 
 // TODO: Create Fixtures struct, included in ModelSuite and ActionSuite.
-func (as *ActionSuite) createPost(author *models.User) *models.Post {
+func (as *ActionSuite) createPost(author *models.User, draft bool) *models.Post {
 	p := as.validPost(author)
+	p.Draft = draft
 	verrs, err := as.DB.ValidateAndCreate(p)
 	as.False(verrs.HasAny())
 	as.NoError(err)
 	return p
 }
 
-func (as *ActionSuite) createPosts(n int, author *models.User) []*models.Post {
+func (as *ActionSuite) createPosts(n int, author *models.User, drafts bool) []*models.Post {
 	ps := make([]*models.Post, n)
 	for i := range ps {
-		ps[i] = as.createPost(author)
+		ps[i] = as.createPost(author, drafts)
 	}
 	return ps
 }
@@ -48,7 +49,8 @@ func (as *ActionSuite) Test_PostsResource_List_RequiresAuth() {
 
 func (as *ActionSuite) Test_PostsResource_List() {
 	u := as.authenticate()
-	ps := as.createPosts(3, u)
+	ps := as.createPosts(3, u, false)
+	as.createPosts(1, u, true) // Drafts - hidden.
 	res := as.HTML(as.PostsPath()).Get()
 	as.Equal(200, res.Code)
 	doc := as.DOM(res)
@@ -58,7 +60,7 @@ func (as *ActionSuite) Test_PostsResource_List() {
 
 func (as *ActionSuite) Test_PostsResource_Show() {
 	u := as.authenticate()
-	p := as.createPost(u)
+	p := as.createPost(u, false)
 	res := as.HTML(as.PostPath(p)).Get()
 	as.Contains(res.Body.String(), p.Title)
 }
@@ -81,7 +83,7 @@ func (as *ActionSuite) Test_PostsResource_CreateDraft() {
 
 func (as *ActionSuite) Test_PostsResource_Update() {
 	u := as.authenticate()
-	p := as.createPost(u)
+	p := as.createPost(u, false)
 	p.Title = "New title"
 	res := as.HTML(as.PostPath(p)).Put(p)
 	as.Equal(303, res.Code)
@@ -89,7 +91,7 @@ func (as *ActionSuite) Test_PostsResource_Update() {
 
 func (as *ActionSuite) Test_PostsResource_Update_OnlyAuthors() {
 	as.authenticate()
-	p := as.createPost(as.users[1]) // Author != current user.
+	p := as.createPost(as.users[1], false) // Author != current user.
 	p.Title = "New title"
 	res := as.HTML(as.PostPath(p)).Put(p)
 	as.Equal(401, res.Code)
@@ -97,7 +99,7 @@ func (as *ActionSuite) Test_PostsResource_Update_OnlyAuthors() {
 
 func (as *ActionSuite) Test_PostsResource_Destroy() {
 	u := as.authenticate()
-	p := as.createPost(u)
+	p := as.createPost(u, false)
 	p.Title = "New title"
 	res := as.HTML(as.PostPath(p)).Delete()
 	as.Equal(303, res.Code)
@@ -109,7 +111,7 @@ func (as *ActionSuite) Test_PostsResource_Destroy() {
 
 func (as *ActionSuite) Test_PostsResource_Destroy_OnlyAuthors() {
 	as.authenticate()
-	p := as.createPost(as.users[1]) // Author != current user.
+	p := as.createPost(as.users[1], false) // Author != current user.
 	p.Title = "New title"
 	res := as.HTML(as.PostPath(p)).Delete()
 	as.Equal(401, res.Code)
@@ -121,14 +123,14 @@ func (as *ActionSuite) Test_PostsResource_Destroy_OnlyAuthors() {
 
 func (as *ActionSuite) Test_PostsResource_Edit() {
 	u := as.authenticate()
-	p := as.createPost(u)
+	p := as.createPost(u, false)
 	res := as.HTML(as.EditPostPath(p)).Get()
 	as.Equal(200, res.Code)
 }
 
 func (as *ActionSuite) Test_PostsResource_Edit_OnlyAuthors() {
 	as.authenticate()
-	p := as.createPost(as.users[1]) // Author != current user.
+	p := as.createPost(as.users[1], false) // Author != current user.
 	res := as.HTML(as.EditPostPath(p)).Get()
 	as.Equal(401, res.Code)
 }

@@ -65,7 +65,7 @@ Good luck!
     - [ ] Tests
 - [ ] Drafts (?)
     - [X] New posts are immediately created as drafts
-    - [ ] Nobody sees drafts
+    - [X] Nobody sees drafts
     - [ ] Draft can be saved
     - [ ] Draft can be published, post can be unpublished
     - [ ] Author can see a list of their draft posts
