@@ -71,7 +71,7 @@ Good luck!
     - [X] Draft can be deleted while editing
     - [X] Author can see a list of their draft posts
     - [X] Author can edit/delete drafts
-- [ ] Anonymous posts
+- [X] Anonymous posts
 - [ ] Comments
 - [ ] Styling
 - [ ] Scheduled job to reset available votes

@@ -61,7 +61,8 @@ CREATE TABLE public.posts (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     author_id uuid NOT NULL,
-    draft boolean DEFAULT false NOT NULL
+    draft boolean DEFAULT false NOT NULL,
+    anonymous boolean DEFAULT false NOT NULL
 );
 
 

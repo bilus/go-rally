@@ -22,7 +22,8 @@ type Post struct {
 	AuthorID uuid.UUID `json:"-" db:"author_id"`
 	Author   User      `json:"author,omitempty" belongs_to:"user" db:"-"`
 
-	Draft bool `json:"draft" db:"draft"`
+	Draft     bool `json:"draft" db:"draft"`
+	Anonymous bool `json:"anonymous" db:"anonymous"` // TODO: When set, Author should not be marshalled to JSON.
 }
 
 // String is not required by pop and may be deleted

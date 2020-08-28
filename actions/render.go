@@ -1,6 +1,7 @@
 package actions
 
 import (
+	"rally/models"
 	"time"
 
 	"github.com/dustin/go-humanize"
@@ -35,6 +36,13 @@ func init() {
 				} else {
 					return t
 				}
+			},
+			"postAuthor": func(post *models.Post) string {
+				if post.Anonymous {
+					return "Anonymous"
+				}
+
+				return post.Author.Email
 			},
 		},
 	})

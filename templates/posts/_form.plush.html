@@ -6,6 +6,8 @@
                             imageUploadEndpoint: "<%= postImagesPath({post_id: post.ID}) %>",
                             imageCSRFToken: "<%= authenticity_token %>"});
 </script>
-<button class="btn btn-success" role="submit">Save</button>
 
+<%= f.CheckboxTag("Anonymous", {label: "Anonymous post", unchecked: false}) %>
 <%= f.CheckboxTag("Draft", {label: "Draft", unchecked: false}) %>
+
+<button class="btn btn-success" role="submit">Save</button>
