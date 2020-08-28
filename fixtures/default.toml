@@ -19,3 +19,15 @@ name = "default"
       votes = 5
       created_at = "<%= now() %>"
       updated_at = "<%= now() %>"
+
+  [[scenario.table]]
+    name = "posts"
+
+    [[scenario.table.row]]
+      id = "b0000000-0000-0000-0000-000000000000"
+      title = "Lorem ipsum"
+      body = "Lorem ipsum sic"
+      author_id = "a0000000-0000-0000-0000-000000000000"
+      votes = 0
+      created_at = "<%= now() %>"
+      updated_at = "<%= now() %>"

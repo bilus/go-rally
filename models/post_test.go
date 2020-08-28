@@ -13,9 +13,8 @@ func (ms *ModelSuite) validPost() *Post {
 }
 
 func (ms *ModelSuite) Test_Post_Create() {
-	count, err := ms.DB.Count("posts")
+	originalCount, err := ms.DB.Count("posts")
 	ms.NoError(err)
-	ms.Equal(0, count)
 
 	p := ms.validPost()
 
@@ -23,9 +22,9 @@ func (ms *ModelSuite) Test_Post_Create() {
 	ms.NoError(err)
 	ms.False(verrs.HasAny())
 
-	count, err = ms.DB.Count("posts")
+	count, err := ms.DB.Count("posts")
 	ms.NoError(err)
-	ms.Equal(1, count)
+	ms.Equal(originalCount+1, count)
 }
 
 func (ms *ModelSuite) Test_Post_RequiresTitle() {
