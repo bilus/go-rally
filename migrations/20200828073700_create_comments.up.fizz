@@ -1,0 +1,9 @@
+create_table("comments") {
+	t.Column("id", "uuid", {primary: true})
+	t.Column("post_id", "uuid", {})
+    t.ForeignKey("post_id", {"posts": ["id"]}, {"on_delete": "cascade"})
+	t.Column("author_id", "uuid", {})
+    t.ForeignKey("author_id", {"users": ["id"]}, {"on_delete": "cascade"})
+	t.Column("body", "text", {})
+	t.Timestamps()
+}

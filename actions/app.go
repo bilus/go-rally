@@ -104,6 +104,7 @@ func App() *buffalo.App {
 			users.Middleware.Remove(Authorize)
 		}
 
+		app.Resource("/comments", CommentsResource{})
 		app.ServeFiles("/", assetsBox) // serve files from the public directory
 	}
 
