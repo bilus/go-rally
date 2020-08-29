@@ -1,5 +1,7 @@
-<tr>
-    <td>
-        <%= markdown(comment.Body) %>
-    </td>
-</tr>
+<li class="media media-small">
+    <img class="mr-3" src='<%= commentAvatarURL(comment) %>' alt='<%= commentAuthor(comment) %>'>
+    <div class="media-body">
+        <h6 class="mt-0"><%= commentAuthor(comment) %> <span class="time-ago"><%= timeAgo(comment.CreatedAt) %></h6>
+            <%= markdown(comment.Body) %>
+    </div>
+</li>

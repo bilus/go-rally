@@ -5,5 +5,6 @@ create_table("comments") {
 	t.Column("author_id", "uuid", {})
     t.ForeignKey("author_id", {"users": ["id"]}, {"on_delete": "cascade"})
 	t.Column("body", "text", {})
-	t.Timestamps()
+    t.Column("created_at", "timestamp with time zone", {})
+    t.Column("updated_at", "timestamp with time zone", {})
 }

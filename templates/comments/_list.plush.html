@@ -1,20 +1,20 @@
 <div class="py-4 mb-2">
-    <h3 class="d-inline-block">Comments</h3>
+    <h5 class="d-inline-block">Comments</h5>
 </div>
 
-<table id="comment-list" class="table table-hover table-bordered">
-    <tbody>
-        <%= for (comment) in comments { %>
-        <tr>
-            <td>
+<ul id="comment-list" class="list-unstyled">
+    <%= for (comment) in comments { %>
+    <li class="media media-small">
+        <img class="mr-3" src='<%= commentAvatarURL(comment) %>' alt='<%= commentAuthor(comment) %>'>
+        <div class="media-body">
+            <h6 class="mt-0"><%= commentAuthor(comment) %> <span class="time-ago"><%= timeAgo(comment.CreatedAt) %></h6>
                 <%= markdown(comment.Body) %>
-            </td>
-        </tr>
-        <% } %>
-    </tbody>
-</table>
+        </div>
+    </li>
+    <% } %>
+</ul>
 
 <%= remoteFormFor(comment, {action: postCommentsPath({post_id: comment.PostID}), method: "POST"}) { %>
-<%= f.TextAreaTag("Body", {rows: 4}) %>
-<button class="btn btn-success" role="submit">Post</button>
+<%= f.TextAreaTag("Body", {rows: 4, label: "New comment"}) %>
+<button class="btn btn-sm btn-success" role="submit">Submit</button>
 <% } %>

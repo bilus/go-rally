@@ -1,59 +1,37 @@
 <div class="py-4 mb-2">
-  <h3 class="d-inline-block">Post Details</h3>
 
-  <div class="float-right">
-    <%= linkTo(postsPath(), {class: "btn btn-info"}) { %>
-      Back to all Posts
-    <% } %>
-    <%= if (authorized) { %>
-      <%= linkTo(editPostPath({ post_id: post.ID }), {class: "btn btn-warning", body: "Edit"}) %>
-      <%= linkTo(postPath({ post_id: post.ID }), {class: "btn btn-danger", "data-method": "DELETE", "data-confirm": "Are you sure?", body: "Destroy"}) %>
-    <% } %>
-  </div>
+    <div class="float-right">
+        <%= linkTo(postsPath(), {class: "btn btn-info"}) { %>
+        Back to all Posts
+        <% } %>
+        <%= if (authorized) { %>
+        <%= linkTo(editPostPath({ post_id: post.ID }), {class: "btn btn-warning", body: "Edit"}) %>
+        <%= linkTo(postPath({ post_id: post.ID }), {class: "btn btn-danger", "data-method": "DELETE", "data-confirm": "Are you sure?", body: "Destroy"}) %>
+        <% } %>
+    </div>
+</div>
+
+
+<div class="media">
+    <img class="mr-3" src='<%= postAvatarURL(post) %>' alt="<%= postAuthor(post) %>">
+    <div class="media-body">
+        <h3 class="d-inline-block"><%= post.Title %></h3>
+        <h6 class="mt-0"><%= postAuthor(post) %> <span class="time-ago"><%= timeAgo(post.CreatedAt) %></span></h6>
+        <%= markdown(post.Body) %>
+    </div>
 </div>
 
 
 
-<ul class="list-group mb-2 ">
-
-
-  <li class="list-group-item pb-1">
-    <label class="small d-block">Author</label>
-    <p class="d-inline-block"><%= postAuthor(post) %></p>
-  </li>
-
-
-  <li class="list-group-item pb-1">
-    <label class="small d-block">Title</label>
-    <p class="d-inline-block"><%= post.Title %></p>
-  </li>
-
-
-
-  <li class="list-group-item pb-1">
-    <label class="small d-block">Body</label>
-    <p class="d-inline-block"><%= markdown(post.Body) %></p>
-  </li>
-
-
-
-  <li class="list-group-item pb-1">
-    <label class="small d-block">Votes</label>
-    <p class="d-inline-block"><%= post.Votes %></p>
-  </li>
-
-
-</ul>
-
 <div id="comments">
 
-<script type="text/javascript">
- window.onload = function () {
-     $.ajax({
-         method: 'GET',
-         url: '<%= postCommentsPath({post_id: post.ID}) %>',
-         dataType: 'script',
-         contentType: 'text/javascript'
-     });
-  }
-</script>
+    <script type="text/javascript">
+     window.onload = function () {
+         $.ajax({
+             method: 'GET',
+             url: '<%= postCommentsPath({post_id: post.ID}) %>',
+             dataType: 'script',
+             contentType: 'text/javascript'
+         });
+     }
+    </script>

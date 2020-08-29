@@ -1,6 +1,8 @@
 package actions
 
 import (
+	"fmt"
+	"net/url"
 	"rally/models"
 	"time"
 
@@ -44,6 +46,43 @@ func init() {
 
 				return post.Author.Email
 			},
+			"postAvatarURL": func(post *models.Post) string {
+				if post.Anonymous {
+					return avatarURL("Anonymous", "large")
+				}
+				return avatarURL(post.Author.Email, "large")
+			},
+			"commentAuthor": func(comment interface{}) string {
+				c := toCommentPtr(comment)
+				return c.Author.Email
+			},
+			"commentAvatarURL": func(comment interface{}) string {
+				c := toCommentPtr(comment)
+				return avatarURL(c.Author.Email, "small")
+			},
+			"avatarURL": avatarURL,
 		},
 	})
+}
+
+func avatarURL(seed, size string) string {
+	var px int
+	if size == "large" {
+		px = 64
+	} else {
+		px = 32
+	}
+	return fmt.Sprintf("https://avatars.dicebear.com/api/bottts/%v.com.svg?colorful=1&w=%v&h=%v&deterministic=1", url.QueryEscape(seed), px, px)
+}
+
+func toCommentPtr(comment interface{}) *models.Comment {
+	ptr, ok := comment.(*models.Comment)
+	if ok {
+		return ptr
+	}
+	val, ok := comment.(models.Comment)
+	if ok {
+		return &val
+	}
+	panic("Expecting models.Comment or *models.Comment")
 }

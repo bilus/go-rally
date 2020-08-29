@@ -75,9 +75,12 @@ Good luck!
 - [ ] Comments
     - [X] List under post
     - [X] Adding -> show
-    - [ ] Show author email
+    - [X] Show author email for listed comments
+    - [X] Basic markdown (no editor)
     - [ ] Author can delete
-    - [ ] Basic markdown (no editor)
+    - [ ] Anonymous
+    - [ ] Spinner when loading
+- [ ] Multiple boards
 - [ ] Styling
 - [ ] Scheduled job to reset available votes
 

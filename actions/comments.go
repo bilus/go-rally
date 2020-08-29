@@ -49,7 +49,7 @@ func (v CommentsResource) List(c buffalo.Context) error {
 	q := tx.PaginateFromParams(c.Params())
 
 	// Retrieve all Comments from the DB
-	if err := q.Where("post_id = ?", postID).Order("created_at").All(comments); err != nil {
+	if err := q.Where("post_id = ?", postID).Order("created_at").Eager().All(comments); err != nil {
 		return err
 	}
 
@@ -122,15 +122,13 @@ func (v CommentsResource) Create(c buffalo.Context) error {
 		return err
 	}
 	comment.AuthorID = currentUser.ID
+	comment.Author = *currentUser
 	postID, err := uuid.FromString(c.Param("post_id"))
 	if err != nil {
 		return err
 	}
 
 	comment.PostID = postID
-	fmt.Println("post_id =", postID)
-
-	fmt.Println(comment)
 
 	// Get the DB connection from the context
 	tx, ok := c.Value("tx").(*pop.Connection)
