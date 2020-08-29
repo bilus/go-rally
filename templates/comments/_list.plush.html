@@ -1,0 +1,20 @@
+<div class="py-4 mb-2">
+    <h3 class="d-inline-block">Comments</h3>
+</div>
+
+<table id="comment-list" class="table table-hover table-bordered">
+    <tbody>
+        <%= for (comment) in comments { %>
+        <tr>
+            <td>
+                <%= markdown(comment.Body) %>
+            </td>
+        </tr>
+        <% } %>
+    </tbody>
+</table>
+
+<%= remoteFormFor(comment, {action: postCommentsPath({post_id: comment.PostID}), method: "POST"}) { %>
+<%= f.TextAreaTag("Body", {rows: 4}) %>
+<button class="btn btn-success" role="submit">Post</button>
+<% } %>

@@ -44,3 +44,16 @@
 
 
 </ul>
+
+<div id="comments">
+
+<script type="text/javascript">
+ window.onload = function () {
+     $.ajax({
+         method: 'GET',
+         url: '<%= postCommentsPath({post_id: post.ID}) %>',
+         dataType: 'script',
+         contentType: 'text/javascript'
+     });
+  }
+</script>

@@ -85,6 +85,10 @@ func App() *buffalo.App {
 		app.GET("/posts/{post_id}/images/{image_id}", ImagesShow)
 		app.Middleware.Skip(csrf, ImagesCreate) // TODO: Handle csrf token sent by the editor.
 
+		commentsResource := CommentsResource{}
+		app.GET("/posts/{post_id}/comments", commentsResource.List)
+		app.POST("/posts/{post_id}/comments", commentsResource.Create)
+
 		//Routes for Auth
 		auth := app.Group("/auth")
 		auth.GET("/new", AuthNew)
@@ -104,7 +108,6 @@ func App() *buffalo.App {
 			users.Middleware.Remove(Authorize)
 		}
 
-		app.Resource("/comments", CommentsResource{})
 		app.ServeFiles("/", assetsBox) // serve files from the public directory
 	}
 

@@ -73,6 +73,11 @@ Good luck!
     - [X] Author can edit/delete drafts
 - [X] Anonymous posts
 - [ ] Comments
+    - [X] List under post
+    - [X] Adding -> show
+    - [ ] Show author email
+    - [ ] Author can delete
+    - [ ] Basic markdown (no editor)
 - [ ] Styling
 - [ ] Scheduled job to reset available votes
 
