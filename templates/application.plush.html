@@ -14,7 +14,7 @@
     </head>
     <body>
         <header>
-            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -23,22 +23,19 @@
                         <i class="fa fa-lightbulb"></i>
                     </a>
                     <ul class="navbar-nav mr-auto mr-2 mt-lg-0">
-
-                        <%= if (current_user) { %>
-                        <span class="navbar-text">
-                            <%= current_user.Email %>
-                        </span>
-
-                        <li class="nav-item active">
-                            <%= linkTo(postsPath({drafts: true}), {body: "My drafts", class: "nav-link"}) %>
-                        </li>
-                        <% } %>
                     </ul>
 
                     <ul class="navbar-nav mr-auto mr-2 mr-lg-0">
                         <%= if (current_user) { %>
+                        <span class="navbar-text">
+                            <img src='<%= userAvatarURL("tiny") %>' alt='<%= current_user.Email %>' data-toggle="tooltip" title='<%= current_user.Email %>'></img>
+                        </span>
                         <li class="nav-item active">
-                            <%= linkTo(authPath(), {data-method: "DELETE", class: "nav-link"}){ %>Sign Out<% } %>
+                            <%= linkTo(postsPath({drafts: true}), {body: "My drafts", class: "nav-link"}) %>
+                        </li>
+
+                        <li class="nav-item">
+                            <%= linkTo(authPath(), {data-method: "DELETE", class: "nav-link"}){ %>Sign out<% } %>
                         </li>
                         <% } %>
                     </ul>

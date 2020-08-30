@@ -61,9 +61,9 @@ func init() {
 				}
 				p := toPostPtr(post)
 				if p.Anonymous {
-					return avatarURL(anonymousAvatarSeed, size)
+					return avatarURL(anonymousAvatarSeed, size, false)
 				}
-				return avatarURL(p.Author.Email, size)
+				return avatarURL(p.Author.Email, size, false)
 			},
 			"commentAuthor": func(comment interface{}) string {
 				c := toCommentPtr(comment)
@@ -75,9 +75,9 @@ func init() {
 			"commentAvatarURL": func(comment interface{}) string {
 				c := toCommentPtr(comment)
 				if c.Anonymous {
-					return avatarURL(anonymousAvatarSeed, "small")
+					return avatarURL(anonymousAvatarSeed, "small", false)
 				}
-				return avatarURL(c.Author.Email, "small")
+				return avatarURL(c.Author.Email, "small", false)
 			},
 			"avatarURL": avatarURL,
 			"maybePluralize": func(noun string, count int) string {
@@ -85,6 +85,13 @@ func init() {
 					return noun
 				}
 				return flect.Pluralize(noun)
+			},
+			"userAvatarURL": func(size string, help plush.HelperContext) string {
+				u, err := CurrentUser(help)
+				if err != nil {
+					return ""
+				}
+				return avatarURL(u.Email, size, true)
 			},
 			"canManageComment": func(comment interface{}, help plush.HelperContext) bool {
 				return canManageComment(comment, help.Context)
@@ -96,14 +103,20 @@ func init() {
 	})
 }
 
-func avatarURL(seed, size string) string {
+func avatarURL(seed, size string, round bool) string {
 	var px int
 	if size == "large" {
 		px = 64
-	} else {
+	} else if size == "small" {
 		px = 32
+	} else {
+		px = 24
 	}
-	return fmt.Sprintf("https://avatars.dicebear.com/api/bottts/%v.com.svg?colorful=1&w=%v&h=%v&deterministic=1", url.QueryEscape(seed), px, px)
+	var opts string
+	if round {
+		opts = "&b=%%23ffffff&m=8&r=50"
+	}
+	return fmt.Sprintf("https://avatars.dicebear.com/api/bottts/%v.com.svg?colorful=1&w=%v&h=%v&deterministic=1%v", url.QueryEscape(seed), px, px, opts)
 }
 
 func toCommentPtr(comment interface{}) *models.Comment {
