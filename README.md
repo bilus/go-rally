@@ -80,10 +80,27 @@ Good luck!
     - [X] Author can delete
     - [X] Anonymous
     - [X] Spinner when loading
-- [ ] Multiple boards
 - [ ] Styling
+- [ ] Better urls
+    - [ ] Board slugs
+    - [ ] Post slugs
 - [ ] Scheduled job to reset available votes
-
+    - [ ] PoC job
+    - [ ] Configurable schedule and num of votes
+    - [ ] New users have votes
+- [ ] Deploy
+- [ ] Multiple boards
+    - [ ] Board resource
+    - [ ] User can create a new board
+    - [ ] Posts are associated with a board
+    - [ ] Board owner can delete the board (= creator)
+    - [ ] Owners can add other owners
+    - [ ] Board list
+    - [ ] Changing board title
+    - [ ] Vote budget is per-board, not global
+    - [ ] When creating board, you specify voting policy
+       - [ ] Vote refill schedule + num votes
+       - [ ] Vote limit can be turned off
 - [ ] Tenancy
 - [ ] Admin can delete/edit any posts
 
