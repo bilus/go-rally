@@ -49,7 +49,7 @@ func init() {
 			},
 			"postAvatarURL": func(post *models.Post) string {
 				if post.Anonymous {
-					return avatarURL("Anonymous", "large")
+					return avatarURL("anonymous@example.com", "large")
 				}
 				return avatarURL(post.Author.Email, "large")
 			},
