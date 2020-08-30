@@ -59,7 +59,8 @@ CREATE TABLE public.comments (
     author_id uuid NOT NULL,
     body text NOT NULL,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    anonymous boolean DEFAULT false NOT NULL
 );
 
 

@@ -1,0 +1,1 @@
+add_column("comments", "anonymous", "boolean", {default: false})

@@ -17,6 +17,10 @@ import (
 var r *render.Engine
 var assetsBox = packr.New("app:assets", "../public")
 
+const anonymousName = "Anonymous"
+const anonymousAvatarSeed = "anonymous@example.com"
+const untitled = "Untitled"
+
 func init() {
 	r = render.New(render.Options{
 		// HTML layout to be used for all HTML requests:
@@ -37,30 +41,36 @@ func init() {
 			},
 			"safeTitle": func(t string) string {
 				if t == "" {
-					return "Untitled"
+					return untitled
 				} else {
 					return t
 				}
 			},
 			"postAuthor": func(post *models.Post) string {
 				if post.Anonymous {
-					return "Anonymous"
+					return anonymousName
 				}
 
 				return post.Author.Email
 			},
 			"postAvatarURL": func(post *models.Post) string {
 				if post.Anonymous {
-					return avatarURL("anonymous@example.com", "large")
+					return avatarURL(anonymousAvatarSeed, "large")
 				}
 				return avatarURL(post.Author.Email, "large")
 			},
 			"commentAuthor": func(comment interface{}) string {
 				c := toCommentPtr(comment)
+				if c.Anonymous {
+					return anonymousName
+				}
 				return c.Author.Email
 			},
 			"commentAvatarURL": func(comment interface{}) string {
 				c := toCommentPtr(comment)
+				if c.Anonymous {
+					return avatarURL(anonymousAvatarSeed, "small")
+				}
 				return avatarURL(c.Author.Email, "small")
 			},
 			"avatarURL": avatarURL,

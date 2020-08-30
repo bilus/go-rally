@@ -17,6 +17,7 @@ type Comment struct {
 	AuthorID  uuid.UUID `json:"-" db:"author_id"`
 	Author    User      `json:"author,omitempty" belongs_to:"user" db:"-"`
 	Body      string    `json:"body" db:"body"`
+	Anonymous bool      `json:"anonymous" db:"anonymous"` // TODO: When set, Author should not be marshalled to JSON.
 	CreatedAt time.Time `json:"created_at" db:"created_at"`
 	UpdatedAt time.Time `json:"updated_at" db:"updated_at"`
 }
