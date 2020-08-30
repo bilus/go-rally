@@ -78,7 +78,7 @@ Good luck!
     - [X] Show author email for listed comments
     - [X] Basic markdown (no editor)
     - [X] Author can delete
-    - [ ] Anonymous
+    - [X] Anonymous
     - [ ] Spinner when loading
 - [ ] Multiple boards
 - [ ] Styling
