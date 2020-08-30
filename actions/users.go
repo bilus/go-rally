@@ -40,7 +40,6 @@ func UsersCreate(c buffalo.Context) error {
 
 func Login(u *models.User, c buffalo.Context) error {
 	c.Session().Set("current_user_id", u.ID)
-	c.Flash().Add("success", "Welcome Back to Buffalo!")
 
 	redirectURL := "/"
 	if redir, ok := c.Session().Get("redirectURL").(string); ok && redir != "" {
