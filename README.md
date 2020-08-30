@@ -72,14 +72,14 @@ Good luck!
     - [X] Author can see a list of their draft posts
     - [X] Author can edit/delete drafts
 - [X] Anonymous posts
-- [ ] Comments
+- [X] Comments
     - [X] List under post
     - [X] Adding -> show
     - [X] Show author email for listed comments
     - [X] Basic markdown (no editor)
     - [X] Author can delete
-    - [ ] Anonymous
-    - [ ] Spinner when loading
+    - [X] Anonymous
+    - [X] Spinner when loading
 - [ ] Multiple boards
 - [ ] Styling
 - [ ] Scheduled job to reset available votes

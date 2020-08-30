@@ -24,14 +24,19 @@
 
 
 <div id="comments">
+    <div class="d-flex align-items-center">
+        <span class="text-secondary">Loading comments...</span>
+        <div class="spinner-border ml-auto text-secondary" role="status" aria-hidden="true"></div>
+    </div>
+</div>
 
-    <script type="text/javascript">
-     window.onload = function () {
-         $.ajax({
-             method: 'GET',
-             url: '<%= postCommentsPath({post_id: post.ID}) %>',
-             dataType: 'script',
-             contentType: 'text/javascript'
-         });
-     }
-    </script>
+<script type="text/javascript">
+ window.onload = function () {
+     $.ajax({
+         method: 'GET',
+         url: '<%= postCommentsPath({post_id: post.ID}) %>',
+         dataType: 'script',
+         contentType: 'text/javascript'
+     });
+ }
+</script>
