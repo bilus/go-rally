@@ -3,6 +3,17 @@
 
 @import "buffalo";
 
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin: 0;
+    padding: 25px;
+    background: #fff!important;
+}
+
 .order-active {
     color: black;
 }
@@ -34,6 +45,46 @@
     display: none;
 }
 
-.breadcrumb {
-    background: none;
+.main {
+    padding-bottom: 30px!important;
+}
+
+.editor-toolbar .separator {
+    padding: 0!important; /* conflict between easymd & material theme */
+}
+
+.clickable {
+    cursor: pointer!important;
+}
+
+.raised {
+  border-radius: 6px;
+  // box-shadow: 0 8px 12px 1px rgba(0, 0, 0, 0.14), 0 3px 15px 2px rgba(0, 0, 0, 0.12), 0 4px 5px -2px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 6px 1px rgba(0, 0, 0, 0.14), 0 1px 7px 1px rgba(0, 0, 0, 0.12), 0 1px 1px -1px rgba(0, 0, 0, 0.2);
+}
+
+tr.spacer {
+    height: 1em;
+}
+
+.post-view {
+    min-height: 400px!important;
+}
+
+ol.breadcrumb {
+    display: none!important; /* TODO: See if we need them and if we do, add them everywhere */
+}
+
+.post-list-nav .col {
+    padding-left: 0;
+}
+
+.post-list-nav .nav-pills {
+    padding: 0;
+}
+
+.post-list-nav .nav-pills .nav-link {
+    padding: 3px!important;
+    font-size: 11px!important;
+    min-width: 60px!important;
 }

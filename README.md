@@ -80,7 +80,8 @@ Good luck!
     - [X] Author can delete
     - [X] Anonymous
     - [X] Spinner when loading
-- [ ] Styling
+- [X] Styling
+- [ ] BUG: Navbar collapsing but no hamburger menu
 - [ ] Better urls
     - [ ] Board slugs
     - [ ] Post slugs
@@ -104,10 +105,11 @@ Good luck!
 - [ ] Tenancy
 - [ ] Admin can delete/edit any posts
 
+## Template
+
+1. https://demos.creative-tim.com/material-kit/docs/2.1/getting-started/introduction.html?_ga=2.91541151.440348291.1598815666-986970519.1598815666
+
 ## Design ideas
 
-1. http://preview.viui18.com/clarity/index.html
-1. https://colorlib.com/preview/theme/safario/
-1. https://colorlib.com/preview/#podcast
 1. https://www.vectorstock.com/royalty-free-vector/brainstorm-and-creative-idea-concept-vector-20635223
 1. https://www.vectorstock.com/royalty-free-vectors/bulb-puzzle-vectors

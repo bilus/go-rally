@@ -11,30 +11,54 @@
     </nav>
 </div>
 <% } else { %>
+<div class="py-4 mb-2">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/"><i class="fa fa-home"></i></a></li>
+            <li class="breadcrumb-item active" aria-current="page">
+                <%= linkTo(postsPath(), {body: "Pains & WTFs"}) %>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Post</li>
+        </ol>
+    </nav>
+</div>
 <% } %>
 
-<div class="media">
+<div class="media raised p-5 post-view">
     <img class="mr-3" src='<%= postAvatarURL(post) %>' alt="<%= postAuthor(post) %>">
     <div class="media-body">
-        <h3 class="d-inline-block w-100">
-            <%= post.Title %>
-            <%= if (canManagePost(post)) { %>
-            <div class="float-right">
-                <%= linkTo(editPostPath({ post_id: post.ID }), {class: "btn btn-primary btn-sm", body: "Edit"}) %>
-                <%= linkTo(postPath({ post_id: post.ID }), {class: "btn btn-danger btn-sm", "data-method": "DELETE", "data-confirm": "Are you sure?"}) { %>
-                <i class="fa fa-trash-alt"></i>
-                <% } %>
+        <div class="container">
+            <div class="row">
+                <div class="col-9">
+                    <h3 class="d-inline-block w-100">
+                        <%= safeTitle(post.Title) %>
+                        <%= if (post.Draft) { %>
+                        (Draft)
+                        <% } %>
+                    </h3>
+                    <h6 class="mt-0"><%= postAuthor(post) %> <span class="time-ago"><%= timeAgo(post.CreatedAt) %></span></h6>
+                </div>
+                <div class="col-3 text-right">
+                    <%= if (canManagePost(post)) { %>
+                    <%= linkTo(editPostPath({ post_id: post.ID }), {class: "btn btn-primary btn-sm", body: "Edit"}) %>
+                    <%= linkTo(postPath({ post_id: post.ID }), {class: "btn btn-danger btn-sm", "data-method": "DELETE", "data-confirm": "Are you sure?"}) { %>
+                    <i class="fa fa-trash-alt"></i>
+                    <% } %>
+                    <% } %>
+                </div>
             </div>
-            <% } %>
-        </h3>
-        <h6 class="mt-0"><%= postAuthor(post) %> <span class="time-ago"><%= timeAgo(post.CreatedAt) %></span></h6>
-        <%= markdown(post.Body) %>
+            <div class="row">
+                <div class="col">
+                    <%= markdown(post.Body) %>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
 
 
-<div id="comments">
+<div id="comments" class="mt-5">
     <div class="spinner">
         <div class="d-flex align-items-center">
             <span class="text-secondary">Loading comments...</span>

@@ -89,7 +89,7 @@ func (v PostsResource) List(c buffalo.Context) error {
 func orderClass(activeOrder string) func(order string) string {
 	return func(order string) string {
 		if order == activeOrder {
-			return "order-active"
+			return "active"
 		}
 		return ""
 	}

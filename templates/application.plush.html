@@ -1,28 +1,38 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta charset="utf-8">
+        <meta content="width=device-width, initial-scale=1.0, name="viewport" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
         <title>?!</title>
         <%= stylesheetTag("application.css") %>
         <meta name="csrf-param" content="authenticity_token" />
         <meta name="csrf-token" content="<%= authenticity_token %>" />
         <link rel="icon" href="<%= assetPath("images/favicon.ico") %>">
 
+        <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
+        <link href="/css/material-kit.min.css?v=2.0.7" rel="stylesheet" />
         <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
         <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
     </head>
     <body>
-        <header>
-            <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
-                    <a href="/" class="navbar-brand d-flex align-items-center">
+        <nav class="navbar navbar-expand-lg bg-primary">
+            <div class="container">
+                <a href="/" class="navbar-brand">
+                    <div class="logo-image">
                         <i class="fa fa-lightbulb"></i>
-                    </a>
+                    </div>
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-bar navbar-kebab"></span>
+                    <span class="navbar-toggler-bar navbar-kebab"></span>
+                    <span class="navbar-toggler-bar navbar-kebab"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav mr-auto mr-2 mt-lg-0">
+                        <li class="nav-item">
+                            <%= linkTo(postsPath(), {body: "Pains & WTFs", class: "nav-link"}) %>
+                        </li>
                     </ul>
 
                     <ul class="navbar-nav mr-auto mr-2 mr-lg-0">
@@ -30,7 +40,7 @@
                         <span class="navbar-text">
                             <img src='<%= userAvatarURL("tiny") %>' alt='<%= current_user.Email %>' data-toggle="tooltip" title='<%= current_user.Email %>'></img>
                         </span>
-                        <li class="nav-item active">
+                        <li class="nav-item">
                             <%= linkTo(postsPath({drafts: true}), {body: "My drafts", class: "nav-link"}) %>
                         </li>
 
@@ -40,8 +50,8 @@
                         <% } %>
                     </ul>
                 </div>
-            </nav>
-        </header>
+            </div>
+        </nav>
         <main role="main">
             <div class="container">
                 <!-- <%= partial("flash.html") %> -->

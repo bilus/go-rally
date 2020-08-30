@@ -1,25 +1,24 @@
-<tr class="post-row" data-post-id="<%= post.ID %>">
+<tr class="post-row raised" data-post-id="<%= post.ID %>">
     <td class="align-middle text-center font-weight-bold votes">
         <%= remoteLinkTo(postVotesPath({ post_id: post.ID}), { "data-method": "POST" }) { %>
         <i class="fa fa-caret-up"></i>
         <% } %>
-        <h6 class="num-votes">
+        <h5 class="num-votes">
             <%= post.Votes %>
-        </h6>
+        </h5>
         <%= remoteLinkTo(postVotesPath({ post_id: post.ID}), { "data-method": "DELETE" }) { %>
         <i class="fa fa-caret-down"></i>
         <% } %>
     </td>
-    <td class="title align-middle">
-        <h6>
+    <td class="title align-middle clickable" data-href='<%= postPath({post_id: post.ID}) %>'>
+        <h4>
             <%= linkTo(postPath({ post_id: post.ID }), {class: ""}) { %>
             <%= safeTitle(post.Title) %>
             <% } %>
-        </h6>
+        </h4>
     </td>
     <td class="align-middle font-weight-light text-nowrap text-truncate">
-        <img class="mr-3" src='<%= postAvatarURL(post, "small") %>' alt="<%= postAuthor(post) %>">
-        <%= postAuthor(post) %>
+        <img class="mr-3" src='<%= postAvatarURL(post, "small") %>' alt="<%= postAuthor(post) %>" data-toggle="tooltip" title="<%= postAuthor(post) %>">
     </td>
     <td class="align-middle time-ago text-nowrap text-truncate">
         <%= timeAgo(post.CreatedAt) %>

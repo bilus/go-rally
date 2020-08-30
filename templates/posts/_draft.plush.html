@@ -1,10 +1,10 @@
-<tr class="post-row" data-post-id="<%= post.ID %>">
+<tr class="post-row clickable" data-post-id="<%= post.ID %>" data-href='<%= postPath({ post_id: post.ID }) %>'>
     <td class="title align-middle">
-        <h6>
+        <h5>
             <%= linkTo(postPath({ post_id: post.ID }), {class: ""}) { %>
             <%= safeTitle(post.Title) %>
             <% } %>
-        </h6>
+        </h5>
     </td>
     <td class="align-middle time-ago text-nowrap text-truncate">
         <%= timeAgo(post.CreatedAt) %>
