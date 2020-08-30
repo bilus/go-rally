@@ -1,10 +1,10 @@
-<li class="media media-small">
+<li class="media media-small" data-comment-id="<%= comment.ID %>">
     <img class="mr-3" src='<%= commentAvatarURL(comment) %>' alt='<%= commentAuthor(comment) %>'>
     <div class="media-body">
         <h6 class="mt-0">
             <%= commentAuthor(comment) %> <span class="time-ago"><%= timeAgo(comment.CreatedAt) %>
-            <%= if (canManagePost(comment)) { %>
-                <%= remoteLinkTo(postCommentPath({ post_id: comment.PostID, comment_id: comment.ID }), { "data-method": "DELETE" }) { %>
+            <%= if (canManageComment(comment)) { %>
+                <%= remoteLinkTo(postCommentPath({ post_id: comment.PostID, comment_id: comment.ID }), { "data-method": "DELETE", data-confirm: "Are you sure?" }) { %>
                     Delete
                 <% } %>
             <% } %>

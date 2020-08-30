@@ -280,6 +280,10 @@ func (v CommentsResource) Destroy(c buffalo.Context) error {
 		return c.Error(http.StatusNotFound, err)
 	}
 
+	if err := authorizeCommentManagement(comment, c); err != nil {
+		return c.Error(http.StatusUnauthorized, err)
+	}
+
 	if err := tx.Destroy(comment); err != nil {
 		return err
 	}
@@ -290,6 +294,9 @@ func (v CommentsResource) Destroy(c buffalo.Context) error {
 
 		// Redirect to the index page
 		return c.Redirect(http.StatusSeeOther, "/comments")
+	}).Wants("javascript", func(c buffalo.Context) error {
+		c.Set("comment", comment)
+		return c.Render(http.StatusOK, r.JavaScript("comments/destroyed.js"))
 	}).Wants("json", func(c buffalo.Context) error {
 		return c.Render(http.StatusOK, r.JSON(comment))
 	}).Wants("xml", func(c buffalo.Context) error {
@@ -300,4 +307,11 @@ func (v CommentsResource) Destroy(c buffalo.Context) error {
 func listComments(q *pop.Query, postID uuid.UUID, comments *models.Comments) error {
 	// Retrieve all Comments from the DB
 	return q.Where("post_id = ?", postID).Order("created_at").Eager().All(comments)
+}
+
+func authorizeCommentManagement(comment *models.Comment, c buffalo.Context) error {
+	if !canManageComment(comment, c) {
+		return fmt.Errorf("no access to comment %q", comment.ID)
+	}
+	return nil
 }
