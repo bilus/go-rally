@@ -41,8 +41,8 @@ func (v PostsResource) List(c buffalo.Context) error {
 	// Default values are "page=1" and "per_page=20".
 	q := tx.PaginateFromParams(c.Params())
 
-	drafts := c.Param("drafts")
-	if drafts == "true" {
+	drafts := c.Param("drafts") == "true"
+	if drafts {
 		currentUser, err := CurrentUser(c)
 		if err != nil {
 			return err
@@ -73,7 +73,12 @@ func (v PostsResource) List(c buffalo.Context) error {
 		c.Set("pagination", q.Paginator)
 
 		c.Set("posts", posts)
-		return c.Render(http.StatusOK, r.HTML("/posts/index.plush.html"))
+		c.Set("drafts", drafts)
+		if drafts {
+			return c.Render(http.StatusOK, r.HTML("/posts/drafts.plush.html"))
+		} else {
+			return c.Render(http.StatusOK, r.HTML("/posts/index.plush.html"))
+		}
 	}).Wants("json", func(c buffalo.Context) error {
 		return c.Render(200, r.JSON(posts))
 	}).Wants("xml", func(c buffalo.Context) error {

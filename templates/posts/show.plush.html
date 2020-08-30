@@ -1,21 +1,32 @@
+<%= if (post.Draft) { %>
 <div class="py-4 mb-2">
-
-    <div class="float-right">
-        <%= linkTo(postsPath(), {class: "btn btn-info"}) { %>
-        Back to all Posts
-        <% } %>
-        <%= if (canManagePost(post)) { %>
-        <%= linkTo(editPostPath({ post_id: post.ID }), {class: "btn btn-warning", body: "Edit"}) %>
-        <%= linkTo(postPath({ post_id: post.ID }), {class: "btn btn-danger", "data-method": "DELETE", "data-confirm": "Are you sure?", body: "Destroy"}) %>
-        <% } %>
-    </div>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">
+                <%= linkTo(postsPath({drafts: true}), {body: "My drafts"}) %>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Draft</li>
+        </ol>
+    </nav>
 </div>
-
+<% } else { %>
+<% } %>
 
 <div class="media">
     <img class="mr-3" src='<%= postAvatarURL(post) %>' alt="<%= postAuthor(post) %>">
     <div class="media-body">
-        <h3 class="d-inline-block"><%= post.Title %></h3>
+        <h3 class="d-inline-block w-100">
+            <%= post.Title %>
+            <%= if (canManagePost(post)) { %>
+            <div class="float-right">
+                <%= linkTo(editPostPath({ post_id: post.ID }), {class: "btn btn-primary btn-sm", body: "Edit"}) %>
+                <%= linkTo(postPath({ post_id: post.ID }), {class: "btn btn-danger btn-sm", "data-method": "DELETE", "data-confirm": "Are you sure?"}) { %>
+                <i class="fa fa-trash-alt"></i>
+                <% } %>
+            </div>
+            <% } %>
+        </h3>
         <h6 class="mt-0"><%= postAuthor(post) %> <span class="time-ago"><%= timeAgo(post.CreatedAt) %></span></h6>
         <%= markdown(post.Body) %>
     </div>
@@ -24,19 +35,26 @@
 
 
 <div id="comments">
-    <div class="d-flex align-items-center">
-        <span class="text-secondary">Loading comments...</span>
-        <div class="spinner-border ml-auto text-secondary" role="status" aria-hidden="true"></div>
+    <div class="spinner">
+        <div class="d-flex align-items-center">
+            <span class="text-secondary">Loading comments...</span>
+            <div class="spinner-border ml-auto text-secondary" role="status" aria-hidden="true"></div>
+        </div>
     </div>
 </div>
 
 <script type="text/javascript">
  window.onload = function () {
-     $.ajax({
-         method: 'GET',
-         url: '<%= postCommentsPath({post_id: post.ID}) %>',
-         dataType: 'script',
-         contentType: 'text/javascript'
-     });
+     <%= if (!post.Draft) { %>
+         $.ajax({
+             method: 'GET',
+             url: '<%= postCommentsPath({post_id: post.ID}) %>',
+             dataType: 'script',
+             contentType: 'text/javascript',
+             beforeSend: function() {
+                 $("#comments spinner").show();
+             }
+         });
+         <% } %>
  }
 </script>

@@ -1,5 +1,9 @@
 <div class="py-4 mb-2">
+    <%= if (drafts) { %>
+    <h3 class="d-inline-block">Drafts</h3>
+    <% } else { %>
     <h3 class="d-inline-block">Pains &amp; WTFs</h3>
+    <% } %>
     <div class="float-right">
         <%= remoteLinkTo(postsPath(), {class: "btn btn-primary", data-method: "POST"}) { %>
         <i class="fa fa-plus"></i>

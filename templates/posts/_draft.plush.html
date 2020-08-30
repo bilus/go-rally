@@ -1,0 +1,12 @@
+<tr class="post-row" data-post-id="<%= post.ID %>">
+    <td class="title align-middle">
+        <h6>
+            <%= linkTo(postPath({ post_id: post.ID }), {class: ""}) { %>
+            <%= safeTitle(post.Title) %>
+            <% } %>
+        </h6>
+    </td>
+    <td class="align-middle time-ago text-nowrap text-truncate">
+        <%= timeAgo(post.CreatedAt) %>
+    </td>
+</tr>
