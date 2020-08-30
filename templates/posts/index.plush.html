@@ -6,13 +6,17 @@
         <% } %>
     </div>
 </div>
-
-<%= linkTo(postsPath({order: "top"}), {body: "Top", class: orderClass("top")}) %>
-<%= linkTo(postsPath({order: "newest"}), {body: "New", class: orderClass("newest")}) %>
-<div class="float-right user-votes">
-    <%= partial("user_votes.html") %>
-</div>
-<table class="table table-hover table-small">
+<nav class="navbar navbar-light bg-light">
+    <div class="float-left">
+        <%= linkTo(postsPath({order: "top"}), {body: "Top", class: orderClass("top")}) %>
+        |
+        <%= linkTo(postsPath({order: "newest"}), {body: "Newest", class: orderClass("newest")}) %>
+    </div>
+    <div class="float-right text-secondary">
+        <%= partial("user_votes.html") %>
+    </div>
+</nav>
+<table class="table table-hover table-small table-noborders">
     <tbody>
         <%= for (post) in posts { %>
         <%= partial("posts/row.html", { "post": post }) %>

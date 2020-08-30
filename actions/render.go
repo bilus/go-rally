@@ -46,18 +46,24 @@ func init() {
 					return t
 				}
 			},
-			"postAuthor": func(post *models.Post) string {
-				if post.Anonymous {
+			"postAuthor": func(post interface{}) string {
+				p := toPostPtr(post)
+
+				if p.Anonymous {
 					return anonymousName
 				}
 
-				return post.Author.Email
+				return p.Author.Email
 			},
-			"postAvatarURL": func(post *models.Post) string {
-				if post.Anonymous {
-					return avatarURL(anonymousAvatarSeed, "large")
+			"postAvatarURL": func(post interface{}, size string) string {
+				if size == "" {
+					size = "large"
 				}
-				return avatarURL(post.Author.Email, "large")
+				p := toPostPtr(post)
+				if p.Anonymous {
+					return avatarURL(anonymousAvatarSeed, size)
+				}
+				return avatarURL(p.Author.Email, size)
 			},
 			"commentAuthor": func(comment interface{}) string {
 				c := toCommentPtr(comment)

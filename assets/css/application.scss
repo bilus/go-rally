@@ -14,3 +14,18 @@
 .time-ago {
     color: grey!important;
 }
+
+.table-noborders td {
+    border-top: none!important;
+}
+
+.num-votes {
+    margin: 0;
+    font-weight: bold;
+    margin: -10px 0;
+}
+
+.votes a {
+    color: black;
+    font-size: 2em;
+}

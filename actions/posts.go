@@ -64,7 +64,7 @@ func (v PostsResource) List(c buffalo.Context) error {
 	}
 
 	// Retrieve all Posts from the DB
-	if err := q.All(posts); err != nil {
+	if err := q.Eager().All(posts); err != nil {
 		return err
 	}
 
