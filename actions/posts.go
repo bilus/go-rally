@@ -109,9 +109,6 @@ func (v PostsResource) Show(c buffalo.Context) error {
 
 	return responder.Wants("html", func(c buffalo.Context) error {
 		c.Set("post", post)
-		err := authorize(post, c)
-		c.Set("authorized", err == nil)
-
 		return c.Render(http.StatusOK, r.HTML("/posts/show.plush.html"))
 	}).Wants("json", func(c buffalo.Context) error {
 		return c.Render(200, r.JSON(post))
@@ -169,7 +166,7 @@ func (v PostsResource) Edit(c buffalo.Context) error {
 		return c.Error(http.StatusNotFound, err)
 	}
 
-	if err := authorize(post, c); err != nil {
+	if err := authorizePostManagement(post, c); err != nil {
 		return c.Error(http.StatusUnauthorized, err)
 	}
 
@@ -193,7 +190,7 @@ func (v PostsResource) Update(c buffalo.Context) error {
 		return c.Error(http.StatusNotFound, err)
 	}
 
-	if err := authorize(post, c); err != nil {
+	if err := authorizePostManagement(post, c); err != nil {
 		return c.Error(http.StatusUnauthorized, err)
 	}
 
@@ -254,7 +251,7 @@ func (v PostsResource) Destroy(c buffalo.Context) error {
 		return c.Error(http.StatusNotFound, err)
 	}
 
-	if err := authorize(post, c); err != nil {
+	if err := authorizePostManagement(post, c); err != nil {
 		return c.Error(http.StatusUnauthorized, err)
 	}
 
@@ -275,12 +272,8 @@ func (v PostsResource) Destroy(c buffalo.Context) error {
 	}).Respond(c)
 }
 
-func authorize(post *models.Post, c buffalo.Context) error {
-	u, err := CurrentUser(c)
-	if err != nil {
-		return err
-	}
-	if post.AuthorID != u.ID {
+func authorizePostManagement(post *models.Post, c buffalo.Context) error {
+	if !canManagePost(post, c) {
 		return fmt.Errorf("no access to post %q", post.ID)
 	}
 	return nil

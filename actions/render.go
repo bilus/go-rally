@@ -1,6 +1,7 @@
 package actions
 
 import (
+	"context"
 	"fmt"
 	"net/url"
 	"rally/models"
@@ -10,6 +11,7 @@ import (
 	"github.com/gobuffalo/buffalo/render"
 	"github.com/gobuffalo/flect"
 	"github.com/gobuffalo/packr/v2"
+	"github.com/gobuffalo/plush/v4"
 )
 
 var r *render.Engine
@@ -68,6 +70,12 @@ func init() {
 				}
 				return flect.Pluralize(noun)
 			},
+			"canManageComment": func(comment interface{}, help plush.HelperContext) bool {
+				return canManageComment(comment, help.Context)
+			},
+			"canManagePost": func(post interface{}, help plush.HelperContext) bool {
+				return canManagePost(post, help.Context) // Crashes otherwise.
+			},
 		},
 	})
 }
@@ -92,4 +100,34 @@ func toCommentPtr(comment interface{}) *models.Comment {
 		return &val
 	}
 	panic("Expecting models.Comment or *models.Comment")
+}
+
+func toPostPtr(post interface{}) *models.Post {
+	ptr, ok := post.(*models.Post)
+	if ok {
+		return ptr
+	}
+	val, ok := post.(models.Post)
+	if ok {
+		return &val
+	}
+	panic("Expecting models.Post or *models.Post")
+}
+
+func canManageComment(comment interface{}, help context.Context) bool {
+	c := toCommentPtr(comment)
+	u, err := CurrentUser(help)
+	if err != nil {
+		return false
+	}
+	return c.AuthorID == u.ID
+}
+
+func canManagePost(post interface{}, help context.Context) bool {
+	p := toPostPtr(post)
+	u, err := CurrentUser(help)
+	if err != nil {
+		return false
+	}
+	return p.AuthorID == u.ID
 }

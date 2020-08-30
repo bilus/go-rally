@@ -1,6 +1,7 @@
 package actions
 
 import (
+	"context"
 	"rally/models"
 
 	"github.com/gobuffalo/buffalo"
@@ -89,7 +90,7 @@ func RefreshCurrentUser(c buffalo.Context) {
 	}
 }
 
-func CurrentUser(c buffalo.Context) (*models.User, error) {
+func CurrentUser(c context.Context) (*models.User, error) {
 	u, ok := c.Value("current_user").(*models.User)
 	if !ok {
 		return nil, errors.New("current user in session has incorrect type")

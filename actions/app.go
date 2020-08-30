@@ -88,6 +88,7 @@ func App() *buffalo.App {
 		commentsResource := CommentsResource{}
 		app.GET("/posts/{post_id}/comments", commentsResource.List)
 		app.POST("/posts/{post_id}/comments", commentsResource.Create)
+		app.DELETE("/posts/{post_id}/comments/{comment_id}", commentsResource.Destroy)
 
 		//Routes for Auth
 		auth := app.Group("/auth")
