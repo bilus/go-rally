@@ -8,6 +8,7 @@ import (
 
 	"github.com/dustin/go-humanize"
 	"github.com/gobuffalo/buffalo/render"
+	"github.com/gobuffalo/flect"
 	"github.com/gobuffalo/packr/v2"
 )
 
@@ -61,6 +62,12 @@ func init() {
 				return avatarURL(c.Author.Email, "small")
 			},
 			"avatarURL": avatarURL,
+			"maybePluralize": func(noun string, count int) string {
+				if count == 1 {
+					return noun
+				}
+				return flect.Pluralize(noun)
+			},
 		},
 	})
 }

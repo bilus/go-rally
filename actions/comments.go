@@ -41,19 +41,18 @@ func (v CommentsResource) List(c buffalo.Context) error {
 	if err != nil {
 		return nil
 	}
+	q := tx.PaginateFromParams(c.Params())
 
 	comments := &models.Comments{}
 
-	// Paginate results. Params "page" and "per_page" control pagination.
-	// Default values are "page=1" and "per_page=20".
-	q := tx.PaginateFromParams(c.Params())
-
-	// Retrieve all Comments from the DB
-	if err := q.Where("post_id = ?", postID).Order("created_at").Eager().All(comments); err != nil {
+	if err := listComments(q, postID, comments); err != nil {
 		return err
 	}
 
 	return responder.Wants("html", func(c buffalo.Context) error {
+		// Paginate results. Params "page" and "per_page" control pagination.
+		// Default values are "page=1" and "per_page=20".
+
 		// Add the paginator to the context so it can be used in the template.
 		c.Set("pagination", q.Paginator)
 		c.Set("comments", comments)
@@ -173,6 +172,13 @@ func (v CommentsResource) Create(c buffalo.Context) error {
 		return c.Redirect(http.StatusSeeOther, "/comments/%v", comment.ID)
 	}).Wants("javascript", func(c buffalo.Context) error {
 		c.Set("comment", comment)
+
+		comments := &models.Comments{}
+		if err := listComments(pop.Q(tx), postID, comments); err != nil {
+			return err
+		}
+		c.Set("comments", comments)
+
 		return c.Render(http.StatusCreated, r.JavaScript("comments/created.js")) // TODO:
 	}).Wants("json", func(c buffalo.Context) error {
 		return c.Render(http.StatusCreated, r.JSON(comment))
@@ -289,4 +295,9 @@ func (v CommentsResource) Destroy(c buffalo.Context) error {
 	}).Wants("xml", func(c buffalo.Context) error {
 		return c.Render(http.StatusOK, r.XML(comment))
 	}).Respond(c)
+}
+
+func listComments(q *pop.Query, postID uuid.UUID, comments *models.Comments) error {
+	// Retrieve all Comments from the DB
+	return q.Where("post_id = ?", postID).Order("created_at").Eager().All(comments)
 }

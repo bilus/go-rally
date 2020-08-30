@@ -1,5 +1,12 @@
+<%= remoteFormFor(comment, {action: postCommentsPath({post_id: comment.PostID}), method: "POST"}) { %>
+<%= f.TextAreaTag("Body", {rows: 4, label: "New comment"}) %>
+<button class="btn btn-sm btn-success" role="submit">Submit</button>
+<% } %>
+
+
 <div class="py-4 mb-2">
-    <h5 class="d-inline-block">Comments</h5>
+    <%# duplicated in partial %>
+    <h5 id="comment-list-head" class="d-inline-block"><%= len(comments) %> <%= maybePluralize("Comment", len(comments)) %></h5>
 </div>
 
 <ul id="comment-list" class="list-unstyled">
@@ -13,8 +20,3 @@
     </li>
     <% } %>
 </ul>
-
-<%= remoteFormFor(comment, {action: postCommentsPath({post_id: comment.PostID}), method: "POST"}) { %>
-<%= f.TextAreaTag("Body", {rows: 4, label: "New comment"}) %>
-<button class="btn btn-sm btn-success" role="submit">Submit</button>
-<% } %>
