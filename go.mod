@@ -9,6 +9,9 @@ require (
 	github.com/dustin/go-humanize v1.0.0
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/gobuffalo/buffalo v0.16.14
+	github.com/gobuffalo/buffalo-auth v1.3.1 // indirect
+	github.com/gobuffalo/buffalo-goth v1.3.0 // indirect
+	github.com/gobuffalo/buffalo-heroku v1.0.9 // indirect
 	github.com/gobuffalo/buffalo-pop/v2 v2.2.0
 	github.com/gobuffalo/envy v1.9.0
 	github.com/gobuffalo/fizz v1.11.0 // indirect

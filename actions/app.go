@@ -44,6 +44,7 @@ func App() *buffalo.App {
 			Env:         ENV,
 			SessionName: "_rally_session",
 			Logger:      logger.New(logger.DebugLevel),
+			Host:        getEnv("APP_HOST", ""),
 		})
 
 		// Automatically redirect to SSL

@@ -90,6 +90,9 @@ Good luck!
     - [ ] Configurable schedule and num of votes
     - [ ] New users have votes
 - [ ] Deploy
+    - [ ] Create heroku app
+    - [ ] Set up env variables
+    - [ ] OAuth callback
 - [ ] Multiple boards
     - [ ] Board resource
     - [ ] User can create a new board
@@ -104,6 +107,10 @@ Good luck!
        - [ ] Vote limit can be turned off
 - [ ] Tenancy
 - [ ] Admin can delete/edit any posts
+
+## Deployment
+
+OAuth callback: https://console.developers.google.com/apis/credentials?pli=1
 
 ## Template
 
