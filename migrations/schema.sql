@@ -51,6 +51,21 @@ CREATE TABLE public.attachments (
 ALTER TABLE public.attachments OWNER TO postgres;
 
 --
+-- Name: boards; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.boards (
+    id uuid NOT NULL,
+    name character varying(255) NOT NULL,
+    description text,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE public.boards OWNER TO postgres;
+
+--
 -- Name: comments; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -163,6 +178,14 @@ ALTER TABLE ONLY public.votes ALTER COLUMN id SET DEFAULT nextval('public.votes_
 
 ALTER TABLE ONLY public.attachments
     ADD CONSTRAINT attachments_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: boards boards_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.boards
+    ADD CONSTRAINT boards_pkey PRIMARY KEY (id);
 
 
 --

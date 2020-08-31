@@ -87,8 +87,8 @@ Good luck!
     - [X] OAuth callback
     - [X] Attachments in PG
 - [ ] Multiple boards
-    - [ ] Board resource
-    - [ ] User can create a new board
+    - [X] Board resource
+    - [X] User can create a new board
     - [ ] Posts are associated with a board
     - [ ] Board owner can delete the board (= creator)
     - [ ] Owners can add other owners
@@ -98,7 +98,7 @@ Good luck!
     - [ ] When creating board, you specify voting policy
        - [ ] Vote refill schedule + num votes
        - [ ] Vote limit can be turned off
-    - [ ] Posting rights can be limited
+    - [ ] Posting rights can be limited to owners
 - [ ] Moderation
 - [ ] Scheduled job to reset available votes
     - [ ] PoC job

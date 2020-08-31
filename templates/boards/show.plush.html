@@ -1,0 +1,38 @@
+<div class="py-4 mb-2">
+  <h3 class="d-inline-block">Board Details</h3>
+
+  <div class="float-right">
+    <%= linkTo(boardsPath(), {class: "btn btn-info"}) { %>
+      Back to all Boards
+    <% } %>
+    <%= linkTo(editBoardPath({ board_id: board.ID }), {class: "btn btn-warning", body: "Edit"}) %>
+    <%= linkTo(boardPath({ board_id: board.ID }), {class: "btn btn-danger", "data-method": "DELETE", "data-confirm": "Are you sure?", body: "Destroy"}) %>
+  </div>
+</div>
+
+
+
+<ul class="list-group mb-2 ">
+
+
+  <li class="list-group-item pb-1">
+    <label class="small d-block">ID</label>
+    <p class="d-inline-block"><%= board.ID %></p>
+  </li>
+
+
+
+  <li class="list-group-item pb-1">
+    <label class="small d-block">Name</label>
+    <p class="d-inline-block"><%= board.Name %></p>
+  </li>
+
+
+
+  <li class="list-group-item pb-1">
+    <label class="small d-block">Description</label>
+    <p class="d-inline-block"><%= board.Description %></p>
+  </li>
+
+
+</ul>

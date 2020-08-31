@@ -110,6 +110,7 @@ func App() *buffalo.App {
 			users.Middleware.Remove(Authorize)
 		}
 
+		app.Resource("/boards", BoardsResource{})
 		app.ServeFiles("/", assetsBox) // serve files from the public directory
 	}
 
