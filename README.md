@@ -81,11 +81,11 @@ Good luck!
     - [X] Anonymous
     - [X] Spinner when loading
 - [X] Styling
-- [ ] Deploy
+- [X] Deploy
     - [X] Create heroku app
     - [X] Set up env variables
     - [X] OAuth callback
-    - [ ] Attachments in PG
+    - [X] Attachments in PG
 - [ ] Multiple boards
     - [ ] Board resource
     - [ ] User can create a new board
@@ -99,6 +99,7 @@ Good luck!
        - [ ] Vote refill schedule + num votes
        - [ ] Vote limit can be turned off
     - [ ] Posting rights can be limited
+- [ ] Moderation
 - [ ] Scheduled job to reset available votes
     - [ ] PoC job
     - [ ] Configurable schedule and num of votes
