@@ -9,14 +9,10 @@ require (
 	github.com/dustin/go-humanize v1.0.0
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/gobuffalo/buffalo v0.16.14
-	github.com/gobuffalo/buffalo-auth v1.3.1 // indirect
-	github.com/gobuffalo/buffalo-goth v1.3.0 // indirect
-	github.com/gobuffalo/buffalo-heroku v1.0.9 // indirect
 	github.com/gobuffalo/buffalo-pop/v2 v2.2.0
 	github.com/gobuffalo/envy v1.9.0
 	github.com/gobuffalo/fizz v1.11.0 // indirect
 	github.com/gobuffalo/flect v0.2.1
-	github.com/gobuffalo/helpers v0.6.1
 	github.com/gobuffalo/httptest v1.5.0
 	github.com/gobuffalo/logger v1.0.3
 	github.com/gobuffalo/mw-csrf v1.0.0
@@ -25,7 +21,6 @@ require (
 	github.com/gobuffalo/mw-paramlogger v1.0.0
 	github.com/gobuffalo/nulls v0.4.0
 	github.com/gobuffalo/packr/v2 v2.8.0
-	github.com/gobuffalo/plush v3.8.3+incompatible
 	github.com/gobuffalo/plush/v4 v4.0.0
 	github.com/gobuffalo/pop/v5 v5.2.4
 	github.com/gobuffalo/suite/v3 v3.0.0

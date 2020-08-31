@@ -90,9 +90,10 @@ Good luck!
     - [ ] Configurable schedule and num of votes
     - [ ] New users have votes
 - [ ] Deploy
-    - [ ] Create heroku app
-    - [ ] Set up env variables
-    - [ ] OAuth callback
+    - [X] Create heroku app
+    - [X] Set up env variables
+    - [X] OAuth callback
+    - [ ] Attachments
 - [ ] Multiple boards
     - [ ] Board resource
     - [ ] User can create a new board

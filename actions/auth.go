@@ -3,8 +3,10 @@ package actions
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 
 	"rally/models"
@@ -20,6 +22,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+var newUserVotes int
+
 func init() {
 	gothic.Store = App().SessionStore
 
@@ -29,6 +33,12 @@ func init() {
 		google.SetHostedDomain(googleHostedDomain)
 	}
 	goth.UseProviders(google)
+
+	var err error
+	newUserVotes, err = strconv.Atoi(getEnv("VOTE_BUDGET", "10"))
+	if err != nil {
+		log.Fatalf("Malformed VOTE_BUDGET: %v", err)
+	}
 }
 
 func AuthCallback(c buffalo.Context) error {
@@ -44,6 +54,7 @@ func AuthCallback(c buffalo.Context) error {
 		if errors.Cause(err) == sql.ErrNoRows {
 			user.Email = profile.Email
 			user.GoogleUserID = nulls.NewString(profile.UserID) // TODO: Extend to other providers.
+			user.Votes = newUserVotes
 			verrs, err := tx.ValidateAndCreate(&user)
 			if err != nil {
 				return err
