@@ -81,19 +81,11 @@ Good luck!
     - [X] Anonymous
     - [X] Spinner when loading
 - [X] Styling
-- [ ] BUG: Navbar collapsing but no hamburger menu
-- [ ] Better urls
-    - [ ] Board slugs
-    - [ ] Post slugs
-- [ ] Scheduled job to reset available votes
-    - [ ] PoC job
-    - [ ] Configurable schedule and num of votes
-    - [ ] New users have votes
 - [ ] Deploy
     - [X] Create heroku app
     - [X] Set up env variables
     - [X] OAuth callback
-    - [ ] Attachments
+    - [ ] Attachments in PG
 - [ ] Multiple boards
     - [ ] Board resource
     - [ ] User can create a new board
@@ -106,8 +98,18 @@ Good luck!
     - [ ] When creating board, you specify voting policy
        - [ ] Vote refill schedule + num votes
        - [ ] Vote limit can be turned off
+    - [ ] Posting rights can be limited
+- [ ] Scheduled job to reset available votes
+    - [ ] PoC job
+    - [ ] Configurable schedule and num of votes
+    - [X] New users have votes
+- [ ] Projects/tracking progress
 - [ ] Tenancy
 - [ ] Admin can delete/edit any posts
+- [ ] BUG: Navbar collapsing but no hamburger menu
+- [ ] Better urls
+    - [ ] Board slugs
+    - [ ] Post slugs
 
 ## Deployment
 
