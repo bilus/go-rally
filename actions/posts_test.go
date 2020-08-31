@@ -63,9 +63,6 @@ func (as *ActionSuite) Test_PostsResource_List() {
 }
 
 func (as *ActionSuite) Test_PostsResource_ListOwnDrafts() {
-	originalCount, err := as.DB.Count("posts")
-	as.NoError(err)
-
 	u := as.authenticate()
 	as.createPosts(3, u, false)          // Published - hidden
 	drafts := as.createPosts(1, u, true) // Drafts - visible.
