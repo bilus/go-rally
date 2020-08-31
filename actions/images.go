@@ -44,17 +44,18 @@ func ImagesCreate(c buffalo.Context) error {
 		PostID:   postId,
 		Filename: f.FileHeader.Filename,
 	}
+
+	err = image.Save(f)
+	if err != nil {
+		return c.Render(500, r.JSON(&UploadError{err.Error()}))
+	}
+
 	verrs, err := tx.ValidateAndCreate(image)
 	if err != nil {
 		return c.Render(500, r.JSON(&UploadError{err.Error()}))
 	}
 	if verrs.HasAny() {
 		return c.Render(500, r.JSON(&UploadError{verrs.String()}))
-	}
-
-	err = image.Save(f)
-	if err != nil {
-		return c.Render(500, r.JSON(&UploadError{err.Error()}))
 	}
 
 	success := &UploadSuccess{

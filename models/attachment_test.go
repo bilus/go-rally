@@ -9,7 +9,6 @@ import (
 
 func (ms *ModelSuite) Test_Attachment_Open() {
 	expected := "Hello, world"
-	attachmentsDir = ms.tempDir
 	a := Attachment{ID: uuid.Must(uuid.NewV4())}
 	err := a.Save(strings.NewReader(expected))
 	ms.NoError(err)

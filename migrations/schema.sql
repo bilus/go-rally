@@ -43,7 +43,8 @@ CREATE TABLE public.attachments (
     post_id uuid NOT NULL,
     filename character varying(255) NOT NULL,
     created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
+    updated_at timestamp with time zone NOT NULL,
+    contents bytea
 );
 
 
