@@ -2,7 +2,7 @@
 <div class="py-4 mb-2">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/"><i class="fa fa-home"></i></a></li>
+            <li class="breadcrumb-item"><a href="/"><i class="icon-home"></i></a></li>
             <li class="breadcrumb-item active" aria-current="page">
                 <%= linkTo(postsPath({drafts: true}), {body: "My drafts"}) %>
             </li>
@@ -16,7 +16,7 @@
         Edit
         <div class="float-right">
                 <%= linkTo(postPath({ post_id: post.ID }), {class: "btn btn-danger btn-sm", "data-method": "DELETE", "data-confirm": "Are you sure?"}) { %>
-                <i class="fa fa-trash-alt"></i>
+                <i class="icon-trash-o"></i>
                 <% } %>
         </div>
     </h3>
@@ -25,7 +25,7 @@
 <div class="py-4 mb-2">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/"><i class="fa fa-home"></i></a></li>
+            <li class="breadcrumb-item"><a href="/"><i class="icon-home"></i></a></li>
             <li class="breadcrumb-item active" aria-current="page">
                 <%= linkTo(postsPath(), {body: "Pains & WTFs"}) %>
             </li>
@@ -39,7 +39,7 @@
         Edit
         <div class="float-right">
                 <%= linkTo(postPath({ post_id: post.ID }), {class: "btn btn-danger btn-sm", "data-method": "DELETE", "data-confirm": "Are you sure?"}) { %>
-                <i class="fa fa-trash-alt"></i>
+                <i class="icon-trash-o"></i>
                 <% } %>
         </div>
     </h3>

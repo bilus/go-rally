@@ -1,13 +1,13 @@
 <tr class="post-row raised" data-post-id="<%= post.ID %>">
     <td class="align-middle text-center font-weight-bold votes">
         <%= remoteLinkTo(postVotesPath({ post_id: post.ID}), { "data-method": "POST" }) { %>
-        <i class="fa fa-caret-up"></i>
+        <i class="icon-caret-up"></i>
         <% } %>
         <h5 class="num-votes">
             <%= post.Votes %>
         </h5>
         <%= remoteLinkTo(postVotesPath({ post_id: post.ID}), { "data-method": "DELETE" }) { %>
-        <i class="fa fa-caret-down"></i>
+        <i class="icon-caret-down"></i>
         <% } %>
     </td>
     <td class="title align-middle clickable" data-href='<%= postPath({post_id: post.ID}) %>'>

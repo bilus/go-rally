@@ -115,7 +115,23 @@ OAuth callback: https://console.developers.google.com/apis/credentials?pli=1
 
 ## Template
 
-1. https://demos.creative-tim.com/material-kit/docs/2.1/getting-started/introduction.html?_ga=2.91541151.440348291.1598815666-986970519.1598815666
+1. https://demos.creative-tim.com/material-kit/docs/2.1/getting-started/introduction.html?_ga=2.91541151.440348291.1598815666-986970519.159881566
+6
+
+## Font Awesome icons
+
+A list of icons we use:
+
+- `fa-caret-down`
+- `fa-caret-up`
+- `fa-google`
+- `fa-home`
+- `fa-lightbulb`
+- `fa-plus`
+- `fa-question-circle`
+- `fa-trash-alt`
+
+To minimize the size of the CSS, we build a custom one using https://icomoon.io/app/. If you want to add another icon, rebuild the `font-awesome.css` (see [The Easy Way](https://blog.webjeda.com/optimize-fontawesome/)).
 
 ## Design ideas
 
