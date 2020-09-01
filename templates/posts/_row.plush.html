@@ -1,24 +1,10 @@
-<tr class='post-row raised  <%= if (post.Draft) { return "post-draft table-warning" } %>' data-post-id="<%= post.ID %>">
-    <td class="align-middle text-center font-weight-bold votes">
-        <%= remoteLinkTo(postVotesPath({ post_id: post.ID}), { "data-method": "POST" }) { %>
-        <i class="icon-caret-up"></i>
-        <% } %>
-        <h5 class="num-votes">
-            <%= post.Votes %>
-        </h5>
-        <%= remoteLinkTo(postVotesPath({ post_id: post.ID}), { "data-method": "DELETE" }) { %>
-        <i class="icon-caret-down"></i>
-        <% } %>
-    </td>
-    <td class='title align-middle clickable' data-href='<%= postPath({post_id: post.ID}) %>'>
-        <h4>
+<tr class="post-row clickable" data-post-id="<%= post.ID %>" data-href='<%= postPath({ post_id: post.ID }) %>'>
+    <td class="title align-middle">
+        <h5>
             <%= linkTo(postPath({ post_id: post.ID }), {class: ""}) { %>
             <%= safeTitle(post.Title) %>
             <% } %>
-        </h4>
-    </td>
-    <td class="align-middle font-weight-light text-nowrap text-truncate">
-        <img class="mr-3" src='<%= postAvatarURL(post, "small") %>' alt="<%= postAuthor(post) %>" data-toggle="tooltip" title="<%= postAuthor(post) %>">
+        </h5>
     </td>
     <td class="align-middle time-ago text-nowrap text-truncate">
         <%= timeAgo(post.CreatedAt) %>

@@ -81,11 +81,7 @@ func (v PostsResource) List(c buffalo.Context) error {
 
 		c.Set("posts", posts)
 		c.Set("drafts", drafts)
-		if drafts {
-			return c.Render(http.StatusOK, r.HTML("/posts/drafts.plush.html"))
-		} else {
-			return c.Render(http.StatusOK, r.HTML("/posts/index.plush.html"))
-		}
+		return c.Render(http.StatusOK, r.HTML("posts/index.plush.html"))
 	}).Wants("json", func(c buffalo.Context) error {
 		return c.Render(200, r.JSON(posts))
 	}).Wants("xml", func(c buffalo.Context) error {

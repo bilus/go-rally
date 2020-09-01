@@ -52,9 +52,6 @@
                         <span class="navbar-text">
                             <img src='<%= userAvatarURL("tiny") %>' alt='<%= current_user.Email %>' data-toggle="tooltip" title='<%= current_user.Email %>'></img>
                         </span>
-                        <li class="nav-item">
-                            <%= linkTo(postsPath({drafts: true}), {body: "My drafts", class: "nav-link"}) %>
-                        </li>
 
                         <li class="nav-item">
                             <%= linkTo(authPath(), {data-method: "DELETE", class: "nav-link"}){ %>Sign out<% } %>

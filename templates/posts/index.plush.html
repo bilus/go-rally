@@ -1,52 +1,23 @@
-<div class="container py-4 mb-2">
-    <div class="row">
-        <div class="col">
-
-            <%= if (drafts) { %>
-            <h3 class="d-inline-block">Drafts</h3>
-            <% } else { %>
-            <h3 class="d-inline-block">Pains &amp; WTFs</h3>
-            <% } %>
-        </div>
-        <div class="col text-right">
-            <%= remoteLinkTo(postsPath(), {class: "btn btn-primary", data-method: "POST"}) { %>
-            <i class="icon-plus"></i>
-            <% } %>
-        </div>
-    </div>
+<div class="py-4 mb-2">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/"><i class="icon-home"></i></a></li>
+            <li class="breadcrumb-item active" aria-current="page">Posts</li>
+        </ol>
+    </nav>
+    <h3 class="d-inline-block w-100">
+        Posts
+    </h3>
 </div>
 
-<div class="container">
-    <div class="row post-list-nav">
-        <div class="col">
-            <ul class="nav nav-pills nav-pills-warning">
-                <li class="nav-item">
-                    <%= linkTo(postsPath({order: "top"}), {body: "Top", class: "nav-link " + orderClass("top") }) %>
-                </li>
+<table class="table table-hover table-small table-noborders">
+    <tbody>
+        <%= for (post) in posts { %>
+        <%= partial("posts/row.html") %>
+        <% } %>
+    </tbody>
+</table>
 
-                <li class="nav-item">
-                    <%= linkTo(postsPath({order: "newest"}), {body: "Newest", class: "nav-link " + orderClass("newest")}) %>
-                </li>
-
-            </ul>
-        </div>
-        <h6 class="col text-right text-secondary user-votes">
-            <%= partial("user_votes.html") %>
-        </h6>
-    </div>
-
-    <div class="row">
-        <table class="table table-hover table-small table-noborders mt-3">
-            <tbody>
-                <%= for (post) in posts { %>
-                <tr class="spacer"></tr>
-                <%= partial("posts/row.html", { "post": post }) %>
-                <% } %>
-            </tbody>
-        </table>
-
-        <div class="text-center">
-            <%= paginator(pagination) %>
-        </div>
-    </div>
+<div class="text-center">
+    <%= paginator(pagination) %>
 </div>

@@ -103,6 +103,7 @@ Good luck!
     - [ ] Style everything
     - [ ] Test everything
     - [ ] Can take votes back for X minutes
+- [ ] Upvote post on its page
 - [ ] Board management
     - [ ] Board owner can delete the board (= creator)
     - [ ] Owners can add other owners
