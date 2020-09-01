@@ -24,11 +24,11 @@
                     <div class="col">
                         <ul class="nav nav-pills nav-pills-warning">
                             <li class="nav-item">
-                                <%= linkTo(boardPostsPath({ board_id: board.ID, order: "top" }), { body: "Top", class: "nav-link " + orderClass("top") }) %>
+                                <%= linkTo(boardPath({ board_id: board.ID, order: "top" }), { body: "Top", class: "nav-link " + orderClass("top") }) %>
                             </li>
 
                             <li class="nav-item">
-                                <%= linkTo(boardPostsPath({ board_id: board.ID, order: "newest" }), { body: "Newest", class: "nav-link " + orderClass("newest") }) %>
+                                <%= linkTo(boardPath({ board_id: board.ID, order: "newest" }), { body: "Newest", class: "nav-link " + orderClass("newest") }) %>
                             </li>
 
                         </ul>
