@@ -90,16 +90,19 @@ Good luck!
     - [X] Board resource
     - [X] User can create a new board
     - [X] Posts are associated with a board
-    - [ ] Refactor
-      - [ ] Board#index - show posts
-      - [ ] Posts#index - just for drafts (and management later)
-    - [ ] Switching between boards
+    - [X] Switching between boards
+    - [ ] Remove drafts
+    - [ ] Remove unnecessary routes, handlers
+      Leave listing posts for administrative purposes but remove route for now.
     - [ ] Remember last dashboard
     - [ ] Vote budget is per-board, not global
     - [ ] When creating board, you specify voting policy
        - [ ] Vote refill schedule + num votes
        - [ ] Vote limit can be turned off
     - [ ] Home dashboard
+    - [ ] Style everything
+    - [ ] Test everything
+    - [ ] Can take votes back for X minutes
 - [ ] Board management
     - [ ] Board owner can delete the board (= creator)
     - [ ] Owners can add other owners

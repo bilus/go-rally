@@ -31,7 +31,19 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav mr-auto mr-2 mt-lg-0">
                         <li class="nav-item">
-                            <%= linkTo(postsPath(), {body: "Pains & WTFs", class: "nav-link"}) %>
+                            <%= if (board && boards) { %>
+                            <div class="dropdown">
+                            <a class="btn btn-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <%= board.Name %>
+                            </a>
+
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                <%= for (board) in boards { %>
+                                <%= linkTo(boardPath({ board_id: board.ID }), { body: board.Name, class: "dropdown-item" }) %>
+                                <% } %>
+                            </div>
+                            </div>
+                            <% } %>
                         </li>
                     </ul>
 

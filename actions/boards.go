@@ -108,12 +108,20 @@ func (v BoardsResource) Show(c buffalo.Context) error {
 		return err
 	}
 
+	boards := &models.Boards{}
+
+	// Retrieve all Boards from the DB
+	if err := tx.All(boards); err != nil {
+		return err
+	}
+
 	return responder.Wants("html", func(c buffalo.Context) error {
 		c.Set("board", board)
 		c.Set("pagination", q.Paginator)
 
 		c.Set("posts", posts)
 		c.Set("sidebar", board.Description.String != "")
+		c.Set("boards", boards)
 
 		return c.Render(http.StatusOK, r.HTML("/boards/show.plush.html"))
 	}).Wants("json", func(c buffalo.Context) error {
