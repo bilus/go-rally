@@ -24,6 +24,8 @@ type Post struct {
 
 	Draft     bool `json:"draft" db:"draft"`
 	Anonymous bool `json:"anonymous" db:"anonymous"` // TODO: When set, Author should not be marshalled to JSON.
+
+	BoardID uuid.UUID `json:"-" db:"board_id"`
 }
 
 // String is not required by pop and may be deleted

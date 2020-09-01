@@ -86,18 +86,22 @@ Good luck!
     - [X] Set up env variables
     - [X] OAuth callback
     - [X] Attachments in PG
-- [ ] Multiple boards
+- [ ] Boards
     - [X] Board resource
     - [X] User can create a new board
-    - [ ] Posts are associated with a board
-    - [ ] Board owner can delete the board (= creator)
-    - [ ] Owners can add other owners
-    - [ ] Board list
-    - [ ] Changing board title
+    - [X] Posts are associated with a board
+    - [ ] Switching between boards
+    - [ ] Remember last dashboard
     - [ ] Vote budget is per-board, not global
     - [ ] When creating board, you specify voting policy
        - [ ] Vote refill schedule + num votes
        - [ ] Vote limit can be turned off
+    - [ ] Home dashboard
+- [ ] Board management
+    - [ ] Board owner can delete the board (= creator)
+    - [ ] Owners can add other owners
+    - [ ] Board list
+    - [ ] Changing board title
     - [ ] Posting rights can be limited to owners
 - [ ] Moderation
 - [ ] Scheduled job to reset available votes
@@ -105,6 +109,12 @@ Good luck!
     - [ ] Configurable schedule and num of votes
     - [X] New users have votes
 - [ ] Projects/tracking progress
+    - [ ] User defined pipelines?
+      Board A -> Board B -> Board C
+      Pipeline view
+- [ ] Reactions
+      See a list of who reacted, slack-like
+      Users can define conventions e.g. "I want to help"
 - [ ] Tenancy
 - [ ] Admin can delete/edit any posts
 - [ ] BUG: Navbar collapsing but no hamburger menu

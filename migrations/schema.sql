@@ -95,7 +95,8 @@ CREATE TABLE public.posts (
     updated_at timestamp with time zone NOT NULL,
     author_id uuid NOT NULL,
     draft boolean DEFAULT false NOT NULL,
-    anonymous boolean DEFAULT false NOT NULL
+    anonymous boolean DEFAULT false NOT NULL,
+    board_id uuid DEFAULT 'fc52e850-1024-448f-bd7f-140ea5cbdf8e'::uuid NOT NULL
 );
 
 
@@ -249,6 +250,14 @@ ALTER TABLE ONLY public.comments
 
 ALTER TABLE ONLY public.comments
     ADD CONSTRAINT comments_post_id_fkey FOREIGN KEY (post_id) REFERENCES public.posts(id) ON DELETE CASCADE;
+
+
+--
+-- Name: posts posts_boards_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.posts
+    ADD CONSTRAINT posts_boards_id_fk FOREIGN KEY (board_id) REFERENCES public.boards(id) ON DELETE CASCADE;
 
 
 --

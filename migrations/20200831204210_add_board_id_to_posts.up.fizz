@@ -1,0 +1,2 @@
+add_column("posts", "board_id", "uuid", {default: "fc52e850-1024-448f-bd7f-140ea5cbdf8e"})
+add_foreign_key("posts", "board_id", {"boards": ["id"]}, {on_delete: "cascade"})
