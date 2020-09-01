@@ -39,7 +39,7 @@ func (v CommentsResource) List(c buffalo.Context) error {
 
 	postID, err := uuid.FromString(c.Param("post_id"))
 	if err != nil {
-		return nil
+		return c.Error(http.StatusNotFound, err)
 	}
 	q := tx.PaginateFromParams(c.Params())
 
@@ -124,7 +124,7 @@ func (v CommentsResource) Create(c buffalo.Context) error {
 	comment.Author = *currentUser
 	postID, err := uuid.FromString(c.Param("post_id"))
 	if err != nil {
-		return err
+		return c.Error(http.StatusNotFound, err)
 	}
 
 	comment.PostID = postID
