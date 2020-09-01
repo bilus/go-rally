@@ -1,8 +1,20 @@
 <div class="py-4 mb-2">
-  <h3 class="d-inline-block">Edit Board</h3>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/boards"><i class="icon-home"></i></a></li>
+            <li class="breadcrumb-item active" aria-current="page">
+                <%= linkTo(boardPath( { board_id: board.ID }), { body: board.Name }) %>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Settings</li>
+        </ol>
+    </nav>
+</div>
+
+<div class="py-4 mb-2">
+  <h3 class="d-inline-block">Board Settings</h3>
 </div>
 
 <%= formFor(board, {action: boardPath({ board_id: board.ID }), method: "PUT"}) { %>
   <%= partial("boards/form.html") %>
-  <%= linkTo(boardPath({ board_id: board.ID }), {class: "btn btn-warning", "data-confirm": "Are you sure?", body: "Cancel"}) %>
+  <%= linkTo(boardPath({ board_id: board.ID }), {class: "btn btn-secondary", body: "Cancel"}) %>
 <% } %>
