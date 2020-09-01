@@ -91,10 +91,10 @@ Good luck!
     - [X] User can create a new board
     - [X] Posts are associated with a board
     - [X] Switching between boards
-    - [ ] Remove drafts
-    - [ ] Remove unnecessary routes, handlers
+    - [X] Remove drafts
+    - [X] Remove unnecessary routes, handlers
       Leave listing posts for administrative purposes but remove route for now.
-    - [ ] Remember last dashboard
+    - [X] Remember last dashboard
     - [ ] Vote budget is per-board, not global
     - [ ] When creating board, you specify voting policy
        - [ ] Vote refill schedule + num votes
