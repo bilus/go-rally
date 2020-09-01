@@ -71,7 +71,7 @@ func App() *buffalo.App {
 		app.Use(Authorize)
 
 		postsResource := PostsResource{}
-		app.GET("/", postsResource.List)
+		app.GET("/", BoardsResource{}.List)
 
 		app.POST("/posts", postsResource.Create)
 		app.GET("/posts/{post_id}/edit", postsResource.Edit)
@@ -123,10 +123,6 @@ func getEnv(name, def string) string {
 		return v
 	}
 	return def
-}
-
-func isSignupEnabled() bool {
-	return getEnv("ENABLE_SIGNUPS", "true") == "true"
 }
 
 // translations will load locale files, set up the translator `actions.T`,
