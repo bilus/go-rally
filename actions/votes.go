@@ -27,7 +27,7 @@ func VotesCreate(c buffalo.Context) error {
 
 	postId, err := uuid.FromString(c.Param("post_id"))
 	if err != nil {
-		return err
+		return c.Error(http.StatusNotFound, err)
 	}
 
 	n, err := tx.RawQuery("UPDATE users SET votes = votes - 1 WHERE votes > 0 AND id = ?", u.ID).ExecWithCount()
@@ -81,7 +81,7 @@ func VotesDestroy(c buffalo.Context) error {
 
 	postId, err := uuid.FromString(c.Param("post_id"))
 	if err != nil {
-		return err
+		return c.Error(http.StatusNotFound, err)
 	}
 
 	var vote models.Vote

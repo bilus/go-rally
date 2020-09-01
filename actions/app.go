@@ -73,13 +73,13 @@ func App() *buffalo.App {
 		postsResource := PostsResource{}
 		app.GET("/", BoardsResource{}.List)
 
-		app.POST("/posts", postsResource.Create)
 		app.GET("/posts/{post_id}/edit", postsResource.Edit)
 		app.GET("/posts/{post_id}", postsResource.Show)
 		app.PUT("/posts/{post_id}", postsResource.Update)
 		app.DELETE("/posts/{post_id}", postsResource.Destroy)
 
-		app.Resource("/posts", PostsResource{})
+		app.Resource("/posts", PostsResource{}) // TODO: Cleanup.
+
 		app.POST("/posts/{post_id}/votes", VotesCreate)
 		app.DELETE("/posts/{post_id}/votes", VotesDestroy)
 		app.POST("/posts/{post_id}/images", ImagesCreate)
@@ -111,6 +111,7 @@ func App() *buffalo.App {
 		}
 
 		app.GET("/boards/{board_id}/posts", postsResource.List)
+		app.POST("/boards/{board_id}/posts", postsResource.Create)
 
 		app.Resource("/boards", BoardsResource{})
 		app.ServeFiles("/", assetsBox) // serve files from the public directory

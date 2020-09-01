@@ -7,7 +7,7 @@
                         <h3 class="d-inline-block"><%= board.Name %></h3>
                     </div>
                     <div class="col text-right">
-                        <%= remoteLinkTo(postsPath(), {class: "btn btn-primary", data-method: "POST"}) { %>
+                        <%= remoteLinkTo(boardPostsPath({ board_id: board.ID }), {class: "btn btn-primary", data-method: "POST"}) { %>
                         <i class="icon-plus"></i>
                         <% } %>
 
