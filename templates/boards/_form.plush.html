@@ -1,3 +1,8 @@
 <%= f.InputTag("Name") %>
 <%= f.TextAreaTag("Description", {rows: 10}) %>
+<script>
+ var easyMDE = new EasyMDE({forceSync: true, promptURLs: true,
+                            uploadImage: false,
+                            imageCSRFToken: "<%= authenticity_token %>"});
+</script>
 <button class="btn btn-success" role="submit">Save</button>

@@ -52,6 +52,12 @@ func (v PostsResource) List(c buffalo.Context) error {
 		q = q.Where("NOT draft")
 	}
 
+	// Can nest under /boards/:board_id
+	boardId := c.Param("board_id")
+	if boardId != "" {
+		q = q.Where("board_id = ?", boardId)
+	}
+
 	order := c.Param("order")
 	if order == "" {
 		order = "top"

@@ -1,38 +1,63 @@
-<div class="py-4 mb-2">
-  <h3 class="d-inline-block">Board Details</h3>
+<div class="container">
+    <div class="row">
+        <div class='<%= if (sidebar) { return "col-10" } else { return "col-12" } %>'>
+            <div class="container py-4 mb-2">
+                <div class="row">
+                    <div class="col">
+                        <h3 class="d-inline-block"><%= board.Name %></h3>
+                    </div>
+                    <div class="col text-right">
+                        <%= remoteLinkTo(postsPath(), {class: "btn btn-primary", data-method: "POST"}) { %>
+                        <i class="icon-plus"></i>
+                        <% } %>
 
-  <div class="float-right">
-    <%= linkTo(boardsPath(), {class: "btn btn-info"}) { %>
-      Back to all Boards
-    <% } %>
-    <%= linkTo(editBoardPath({ board_id: board.ID }), {class: "btn btn-warning", body: "Edit"}) %>
-    <%= linkTo(boardPath({ board_id: board.ID }), {class: "btn btn-danger", "data-method": "DELETE", "data-confirm": "Are you sure?", body: "Destroy"}) %>
-  </div>
+                        <%= linkTo(editBoardPath({ board_id: board.ID }), {class: "btn btn-warning", body: "Edit"}) %>
+                        <%= linkTo(boardPath({ board_id: board.ID }), {class: "btn btn-danger", "data-method": "DELETE", "data-confirm": "Are you sure?"}) { %>
+                        <i class="icon-trash-o"></i>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="row post-list-nav">
+                    <div class="col">
+                        <ul class="nav nav-pills nav-pills-warning">
+                            <li class="nav-item">
+                                <%= linkTo(postsPath({order: "top"}), {body: "Top", class: "nav-link " + orderClass("top") }) %>
+                            </li>
+
+                            <li class="nav-item">
+                                <%= linkTo(postsPath({order: "newest"}), {body: "Newest", class: "nav-link " + orderClass("newest")}) %>
+                            </li>
+
+                        </ul>
+                    </div>
+                    <h6 class="col text-right text-secondary user-votes">
+                        <%= partial("user_votes.html") %>
+                    </h6>
+                </div>
+
+                <div class="row">
+                    <table class="table table-hover table-small table-noborders mt-3">
+                        <tbody>
+                            <%= for (post) in posts { %>
+                            <tr class="spacer"></tr>
+                            <%= partial("boards/post.html", { "post": post }) %>
+                            <% } %>
+                        </tbody>
+                    </table>
+
+                    <div class="text-center">
+                        <%= paginator(pagination) %>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <%= if (sidebar) { %>
+        <div class="col-2">
+            <p class="d-inline-block"><%= markdown(board.Description.String) %></p>
+        </div>
+        <% } %>
+    </div>
 </div>
-
-
-
-<ul class="list-group mb-2 ">
-
-
-  <li class="list-group-item pb-1">
-    <label class="small d-block">ID</label>
-    <p class="d-inline-block"><%= board.ID %></p>
-  </li>
-
-
-
-  <li class="list-group-item pb-1">
-    <label class="small d-block">Name</label>
-    <p class="d-inline-block"><%= board.Name %></p>
-  </li>
-
-
-
-  <li class="list-group-item pb-1">
-    <label class="small d-block">Description</label>
-    <p class="d-inline-block"><%= board.Description %></p>
-  </li>
-
-
-</ul>

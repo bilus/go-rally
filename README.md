@@ -90,6 +90,9 @@ Good luck!
     - [X] Board resource
     - [X] User can create a new board
     - [X] Posts are associated with a board
+    - [ ] Refactor
+      - [ ] Board#index - show posts
+      - [ ] Posts#index - just for drafts (and management later)
     - [ ] Switching between boards
     - [ ] Remember last dashboard
     - [ ] Vote budget is per-board, not global

@@ -10,10 +10,13 @@
         <i class="icon-caret-down"></i>
         <% } %>
     </td>
-    <td class='title align-middle clickable' data-href='<%= postPath({post_id: post.ID}) %>'>
+    <td class="title align-middle clickable" data-href='<%= postPath({post_id: post.ID}) %>'>
         <h4>
             <%= linkTo(postPath({ post_id: post.ID }), {class: ""}) { %>
             <%= safeTitle(post.Title) %>
+            <% } %>
+            <%= if (post.Draft) { %>
+            <span class="badge badge-dark">Draft</span>
             <% } %>
         </h4>
     </td>
