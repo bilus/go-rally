@@ -173,7 +173,7 @@ func (v PostsResource) Edit(c buffalo.Context) error {
 	// Allocate an empty Post
 	post := &models.Post{}
 
-	if err := tx.Find(post, c.Param("post_id")); err != nil {
+	if err := tx.Eager().Find(post, c.Param("post_id")); err != nil {
 		return c.Error(http.StatusNotFound, err)
 	}
 
