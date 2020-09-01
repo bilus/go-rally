@@ -99,13 +99,16 @@ Good luck!
     - [ ] When creating board, you specify voting policy
        - [ ] Vote refill schedule + num votes
        - [ ] Vote limit can be turned off
-    - [ ] Home dashboard
+    - [ ] Disable board deletion
     - [ ] Style everything
     - [ ] Test everything
+- [ ] App version
+- [ ] Voting improvements
+    - [ ] Upvote post on its page
     - [ ] Can take votes back for X minutes
-- [ ] Upvote post on its page
 - [ ] Board management
-    - [ ] Board owner can delete the board (= creator)
+    - [ ] Board owner can edit/delete the board (= creator)
+    - [ ] Board records are only marked as deleted
     - [ ] Owners can add other owners
     - [ ] Board list
     - [ ] Changing board title
