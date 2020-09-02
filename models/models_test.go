@@ -17,20 +17,20 @@ type ModelSuite struct {
 	tempDir string
 }
 
-func (as *ModelSuite) SetupTest() {
-	as.Model.SetupTest()
+func (ms *ModelSuite) SetupTest() {
+	ms.Model.SetupTest()
 
-	as.LoadFixture("default")
+	ms.LoadFixture("default")
 
-	err := as.DB.All(&as.users)
-	as.NoError(err)
+	err := ms.DB.All(&ms.users)
+	ms.NoError(err)
 
-	as.tempDir, err = ioutil.TempDir("", "rally")
-	as.NoError(err)
+	ms.tempDir, err = ioutil.TempDir("", "rally")
+	ms.NoError(err)
 }
 
-func (as *ModelSuite) TearDownTest() {
-	os.RemoveAll(as.tempDir)
+func (ms *ModelSuite) TearDownTest() {
+	os.RemoveAll(ms.tempDir)
 }
 
 func Test_ModelSuite(t *testing.T) {
@@ -39,8 +39,8 @@ func Test_ModelSuite(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	as := &ModelSuite{
+	ms := &ModelSuite{
 		Model: model,
 	}
-	suite.Run(t, as)
+	suite.Run(t, ms)
 }

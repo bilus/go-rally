@@ -5,54 +5,57 @@ import (
 	"rally/models"
 )
 
-func (as *ActionSuite) Test_Votes_Create() {
-	u := as.authenticate()
-	p := as.createPost(u, false)
+func (t *ActionSuite) Test_Votes_Create() {
+	u := t.Authenticated(t.MustCreateUser())
+	b := t.MustCreateBoard()
+	p := t.MustCreatePost(t.ValidPost(b, u))
 
-	res := as.JavaScript(fmt.Sprintf("/posts/%v/votes", p.ID)).Post(nil)
-	as.Equal(200, res.Code)
+	res := t.JavaScript(fmt.Sprintf("/posts/%v/votes", p.ID)).Post(nil)
+	t.Equal(200, res.Code)
 
 	var p1 models.Post
-	err := as.DB.Find(&p1, p.ID)
-	as.NoError(err)
-	as.Equal(p.Votes+1, p1.Votes)
+	err := t.DB.Find(&p1, p.ID)
+	t.NoError(err)
+	t.Equal(p.Votes+1, p1.Votes)
 
 	u1 := models.User{}
-	err = as.DB.Find(&u1, u.ID)
-	as.NoError(err)
-	as.Equal(u.Votes-1, u1.Votes)
+	err = t.DB.Find(&u1, u.ID)
+	t.NoError(err)
+	t.Equal(u.Votes-1, u1.Votes)
 }
 
-func (as *ActionSuite) Test_Votes_Destroy() {
-	u := as.authenticate()
-	p := as.createPost(u, false)
+func (t *ActionSuite) Test_Votes_Destroy() {
+	u := t.Authenticated(t.MustCreateUser())
+	b := t.MustCreateBoard()
+	p := t.MustCreatePost(t.ValidPost(b, u))
 
-	res := as.JavaScript(fmt.Sprintf("/posts/%v/votes", p.ID)).Post(nil)
-	as.Equal(200, res.Code)
+	res := t.JavaScript(fmt.Sprintf("/posts/%v/votes", p.ID)).Post(nil)
+	t.Equal(200, res.Code)
 
-	res = as.JavaScript(fmt.Sprintf("/posts/%v/votes", p.ID)).Delete()
-	as.Equal(200, res.Code)
+	res = t.JavaScript(fmt.Sprintf("/posts/%v/votes", p.ID)).Delete()
+	t.Equal(200, res.Code)
 
 	var p1 models.Post
-	err := as.DB.Find(&p1, p.ID)
-	as.NoError(err)
-	as.Equal(p.Votes, p1.Votes)
+	err := t.DB.Find(&p1, p.ID)
+	t.NoError(err)
+	t.Equal(p.Votes, p1.Votes)
 
 	u1 := models.User{}
-	err = as.DB.Find(&u1, u.ID)
-	as.NoError(err)
-	as.Equal(u.Votes, u1.Votes)
+	err = t.DB.Find(&u1, u.ID)
+	t.NoError(err)
+	t.Equal(u.Votes, u1.Votes)
 }
 
-func (as *ActionSuite) Test_Votes_Destroy_OnlyUpvoted() {
-	u := as.authenticate()
-	p := as.createPost(u, false)
+func (t *ActionSuite) Test_Votes_Destroy_OnlyUpvoted() {
+	u := t.Authenticated(t.MustCreateUser())
+	b := t.MustCreateBoard()
+	p := t.MustCreatePost(t.ValidPost(b, u))
 
-	res := as.JavaScript(fmt.Sprintf("/posts/%v/votes", p.ID)).Delete()
-	as.Equal(422, res.Code)
+	res := t.JavaScript(fmt.Sprintf("/posts/%v/votes", p.ID)).Delete()
+	t.Equal(422, res.Code)
 
 	var p1 models.Post
-	err := as.DB.Find(&p1, p.ID)
-	as.NoError(err)
-	as.Equal(p.Votes, p1.Votes)
+	err := t.DB.Find(&p1, p.ID)
+	t.NoError(err)
+	t.Equal(p.Votes, p1.Votes)
 }

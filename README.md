@@ -122,6 +122,7 @@ Good luck!
     - [ ] User defined pipelines?
       Board A -> Board B -> Board C
       Pipeline view
+- [ ] Private boards
 - [ ] Reactions
       See a list of who reacted, slack-like
       Users can define conventions e.g. "I want to help"

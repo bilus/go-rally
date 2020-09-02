@@ -1,6 +1,8 @@
 package actions
 
 import (
+	"fmt"
+	"rally/fixtures"
 	"rally/models"
 	"testing"
 
@@ -12,55 +14,56 @@ import (
 
 type ActionSuite struct {
 	*suite.Action
-
-	users []*models.User
+	fixtures.Factory
 }
 
-func (as *ActionSuite) SetupTest() {
-	as.Action.SetupTest()
+func (t *ActionSuite) SetupTest() {
+	fmt.Println("SetupTest")
+	t.Action.SetupTest()
 
-	as.LoadFixture("default")
-
-	err := as.DB.All(&as.users)
-	as.NoError(err)
+	t.Factory = fixtures.NewFactory(t.DB)
 }
 
-func (as ActionSuite) JavaScript(u string, args ...interface{}) *httptest.Request {
-	r := httptest.New(as.App).HTML(u, args...)
+func (t ActionSuite) JavaScript(u string, args ...interface{}) *httptest.Request {
+	r := httptest.New(t.App).HTML(u, args...)
 	r.Headers["Accept"] = "text/javascript"
 	return r
 }
 
-func (as ActionSuite) DOM(res *httptest.Response) *goquery.Document {
+func (t ActionSuite) DOM(res *httptest.Response) *goquery.Document {
 	doc, err := goquery.NewDocumentFromReader(res.Body)
-	as.NoError(err)
+	t.NoError(err)
 	return doc
 }
 
 type Opts map[string]interface{}
 
-func (as ActionSuite) Path(name string, opts Opts) string {
-	buildPath, ok := as.App.RouteHelpers()[name]
-	as.True(ok)
+func (t ActionSuite) Path(name string, opts Opts) string {
+	buildPath, ok := t.App.RouteHelpers()[name]
+	t.True(ok)
 	path, err := buildPath(opts)
-	as.NoError(err)
+	t.NoError(err)
 	return string(path)
 }
 
-func (as ActionSuite) PostPath(p *models.Post) string {
-	return as.Path("postPath", Opts{"post_id": p.ID})
+func (t ActionSuite) PostPath(p *models.Post) string {
+	return t.Path("postPath", Opts{"post_id": p.ID})
 }
 
-func (as ActionSuite) PostsPath(opts Opts) string {
-	return as.Path("postsPath", opts)
+func (t ActionSuite) PostsPath(opts Opts) string {
+	return t.Path("postsPath", opts)
 }
 
-func (as ActionSuite) NewPostsPath() string {
-	return as.Path("newPostsPath", nil)
+func (t ActionSuite) EditPostPath(p *models.Post) string {
+	return t.Path("editPostPath", Opts{"post_id": p.ID})
 }
 
-func (as ActionSuite) EditPostPath(p *models.Post) string {
-	return as.Path("editPostPath", Opts{"post_id": p.ID})
+func (t ActionSuite) BoardPostsPath(b *models.Board) string {
+	return t.Path("boardPostsPath", Opts{"board_id": b.ID})
+}
+
+func (t ActionSuite) BoardPath(b *models.Board) string {
+	return t.Path("boardPath", Opts{"board_id": b.ID})
 }
 
 func Test_ActionSuite(t *testing.T) {

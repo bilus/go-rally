@@ -21,10 +21,20 @@ name = "default"
       updated_at = "<%= now() %>"
 
   [[scenario.table]]
-    name = "posts"
+    name = "boards"
 
     [[scenario.table.row]]
       id = "b0000000-0000-0000-0000-000000000000"
+      name = "Some board"
+      created_at = "<%= now() %>"
+      updated_at = "<%= now() %>"
+
+  [[scenario.table]]
+    name = "posts"
+
+    [[scenario.table.row]]
+      id = "f0000000-0000-0000-0000-000000000000"
+      board_id = "b0000000-0000-0000-0000-000000000000"
       title = "Lorem ipsum"
       body = "Lorem ipsum sic"
       author_id = "a0000000-0000-0000-0000-000000000000"
