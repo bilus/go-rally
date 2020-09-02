@@ -1,57 +1,42 @@
-package models
+package models_test
 
-// NOTE: At least one user must exist.
-func (ms *ModelSuite) validPost() *Post {
-	var u User
-	ms.NoError(ms.DB.First(&u))
-	return &Post{
-		Title:    "Lorem",
-		Body:     "Ipsum.",
-		AuthorID: u.ID,
-		Author:   u,
-	}
+func (t *ModelSuite) Test_Post_Create() {
+	p := t.ValidPost(t.MustCreateBoard(), t.MustCreateUser())
+
+	verrs, err := t.DB.ValidateAndCreate(p)
+	t.NoError(err)
+	t.False(verrs.HasAny())
+
+	count, err := t.DB.Count("posts")
+	t.NoError(err)
+	t.Equal(1, count)
 }
 
-func (ms *ModelSuite) Test_Post_Create() {
-	originalCount, err := ms.DB.Count("posts")
-	ms.NoError(err)
-
-	p := ms.validPost()
-
-	verrs, err := ms.DB.ValidateAndCreate(p)
-	ms.NoError(err)
-	ms.False(verrs.HasAny())
-
-	count, err := ms.DB.Count("posts")
-	ms.NoError(err)
-	ms.Equal(originalCount+1, count)
-}
-
-func (ms *ModelSuite) Test_Post_RequiresTitle() {
-	p := ms.validPost()
+func (t *ModelSuite) Test_Post_RequiresTitle() {
+	p := t.ValidPost(t.MustCreateBoard(), t.MustCreateUser())
 	p.Title = ""
 
-	verrs, err := ms.DB.ValidateAndCreate(p)
-	ms.NoError(err)
-	ms.True(verrs.HasAny())
+	verrs, err := t.DB.ValidateAndCreate(p)
+	t.NoError(err)
+	t.True(verrs.HasAny())
 }
 
-func (ms *ModelSuite) Test_Post_RequiresBody() {
-	p := ms.validPost()
+func (t *ModelSuite) Test_Post_RequiresBody() {
+	p := t.ValidPost(t.MustCreateBoard(), t.MustCreateUser())
 	p.Body = ""
 
-	verrs, err := ms.DB.ValidateAndCreate(p)
-	ms.NoError(err)
-	ms.True(verrs.HasAny())
+	verrs, err := t.DB.ValidateAndCreate(p)
+	t.NoError(err)
+	t.True(verrs.HasAny())
 }
 
-func (ms *ModelSuite) Test_Post_DraftRequiresNoTitleNorBody() {
-	p := ms.validPost()
+func (t *ModelSuite) Test_Post_DraftRequiresNoTitleNorBody() {
+	p := t.ValidPost(t.MustCreateBoard(), t.MustCreateUser())
 	p.Draft = true
 	p.Title = ""
 	p.Body = ""
 
-	verrs, err := ms.DB.ValidateAndCreate(p)
-	ms.NoError(err)
-	ms.False(verrs.HasAny())
+	verrs, err := t.DB.ValidateAndCreate(p)
+	t.NoError(err)
+	t.False(verrs.HasAny())
 }

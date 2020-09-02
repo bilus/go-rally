@@ -1,5 +1,5 @@
-package models
+package models_test
 
-// func (ms *ModelSuite) Test_Board() {
+// func (t *ModelSuite) Test_Board() {
 // 	ms.Fail("This test needs to be implemented!")
 // }

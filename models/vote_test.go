@@ -1,29 +1,31 @@
-package models
+package models_test
 
-func (ms *ModelSuite) Test_Vote() {
-	initialCount, err := ms.DB.Count("votes")
-	ms.NoError(err)
+import "rally/models"
 
-	p := ms.validPost()
-	verrs, err := ms.DB.ValidateAndCreate(p)
-	ms.False(verrs.HasAny())
-	ms.NoError(err)
+func (t *ModelSuite) Test_Vote() {
+	initialCount, err := t.DB.Count("votes")
+	t.NoError(err)
 
-	v := Vote{
+	p := t.ValidPost(t.MustCreateBoard(), t.MustCreateUser())
+	verrs, err := t.DB.ValidateAndCreate(p)
+	t.False(verrs.HasAny())
+	t.NoError(err)
+
+	v := models.Vote{
 		PostID: p.ID,
 		UserID: p.AuthorID,
 	}
-	verrs, err = ms.DB.ValidateAndCreate(&v)
-	ms.False(verrs.HasAny())
-	ms.NoError(err)
+	verrs, err = t.DB.ValidateAndCreate(&v)
+	t.False(verrs.HasAny())
+	t.NoError(err)
 
-	count, err := ms.DB.Count("votes")
-	ms.NoError(err)
-	ms.Equal(initialCount+1, count)
+	count, err := t.DB.Count("votes")
+	t.NoError(err)
+	t.Equal(initialCount+1, count)
 
-	ms.DB.Destroy(p)
+	t.DB.Destroy(p)
 
-	count, err = ms.DB.Count("votes")
-	ms.NoError(err)
-	ms.Equal(initialCount, count)
+	count, err = t.DB.Count("votes")
+	t.NoError(err)
+	t.Equal(initialCount, count)
 }

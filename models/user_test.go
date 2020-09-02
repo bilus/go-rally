@@ -1,78 +1,71 @@
-package models
+package models_test
 
-func (ms *ModelSuite) Test_User_Create() {
-	initialCount, err := ms.DB.Count("users")
-	ms.NoError(err)
+import "rally/models"
 
-	u := &User{
+func (t *ModelSuite) Test_User_Create() {
+	u := &models.User{
 		Email:                "mark@example.com",
 		Password:             "password",
 		PasswordConfirmation: "password",
 	}
 
-	ms.False(u.PasswordHash.Valid)
+	t.False(u.PasswordHash.Valid)
 
-	verrs, err := u.Create(ms.DB)
-	ms.NoError(err)
-	ms.False(verrs.HasAny())
-	ms.True(u.PasswordHash.Valid)
-	ms.NotZero(u.PasswordHash.String)
+	verrs, err := u.Create(t.DB)
+	t.NoError(err)
+	t.False(verrs.HasAny())
+	t.True(u.PasswordHash.Valid)
+	t.NotZero(u.PasswordHash.String)
 
-	count, err := ms.DB.Count("users")
-	ms.NoError(err)
-	ms.Equal(initialCount+1, count)
+	count, err := t.DB.Count("users")
+	t.NoError(err)
+	t.Equal(1, count)
 }
 
-func (ms *ModelSuite) Test_User_Create_ValidationErrors() {
-	initialCount, err := ms.DB.Count("users")
-	ms.NoError(err)
-
-	u := &User{
+func (t *ModelSuite) Test_User_Create_ValidationErrors() {
+	u := &models.User{
 		Password: "password",
 	}
 
-	ms.False(u.PasswordHash.Valid)
+	t.False(u.PasswordHash.Valid)
 
-	verrs, err := u.Create(ms.DB)
-	ms.NoError(err)
-	ms.True(verrs.HasAny())
+	verrs, err := u.Create(t.DB)
+	t.NoError(err)
+	t.True(verrs.HasAny())
 
-	count, err := ms.DB.Count("users")
-	ms.NoError(err)
-	ms.Equal(initialCount, count)
+	count, err := t.DB.Count("users")
+	t.NoError(err)
+	t.Equal(0, count)
 }
 
-func (ms *ModelSuite) Test_User_Create_UserExists() {
-	initialCount, err := ms.DB.Count("users")
-	ms.NoError(err)
-
-	u := &User{
+func (t *ModelSuite) Test_User_Create_UserExists() {
+	u := &models.User{
 		Email:                "mark@example.com",
 		Password:             "password",
 		PasswordConfirmation: "password",
 	}
 
-	ms.False(u.PasswordHash.Valid)
+	t.False(u.PasswordHash.Valid)
 
-	verrs, err := u.Create(ms.DB)
-	ms.NoError(err)
-	ms.False(verrs.HasAny())
-	ms.True(u.PasswordHash.Valid)
+	verrs, err := u.Create(t.DB)
+	t.NoError(err)
+	t.False(verrs.HasAny())
+	t.True(u.PasswordHash.Valid)
 
-	count, err := ms.DB.Count("users")
-	ms.NoError(err)
-	ms.Equal(initialCount+1, count)
+	count, err := t.DB.Count("users")
+	t.NoError(err)
+	t.Equal(1, count)
 
-	u = &User{
+	u = &models.User{
 		Email:    "mark@example.com",
 		Password: "password",
 	}
 
-	verrs, err = u.Create(ms.DB)
-	ms.NoError(err)
-	ms.True(verrs.HasAny())
+	verrs, err = u.Create(t.DB)
+	t.NoError(err)
+	t.True(verrs.HasAny())
 
-	count, err = ms.DB.Count("users")
-	ms.NoError(err)
-	ms.Equal(initialCount+1, count)
+	count, err = t.DB.Count("users")
+	t.NoError(err)
+	t.Equal(1, count)
 }

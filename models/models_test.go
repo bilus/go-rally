@@ -1,8 +1,9 @@
-package models
+package models_test
 
 import (
 	"io/ioutil"
 	"os"
+	"rally/fixtures"
 	"testing"
 
 	"github.com/gobuffalo/packr/v2"
@@ -12,25 +13,22 @@ import (
 type ModelSuite struct {
 	*suite.Model
 
-	users []*User
+	fixtures.Factory
 
 	tempDir string
 }
 
-func (ms *ModelSuite) SetupTest() {
-	ms.Model.SetupTest()
+func (t *ModelSuite) SetupTest() {
+	t.Model.SetupTest()
+	t.Factory = fixtures.NewFactory(t.DB)
 
-	ms.LoadFixture("default")
-
-	err := ms.DB.All(&ms.users)
-	ms.NoError(err)
-
-	ms.tempDir, err = ioutil.TempDir("", "rally")
-	ms.NoError(err)
+	var err error
+	t.tempDir, err = ioutil.TempDir("", "rally")
+	t.NoError(err)
 }
 
-func (ms *ModelSuite) TearDownTest() {
-	os.RemoveAll(ms.tempDir)
+func (t *ModelSuite) TearDownTest() {
+	os.RemoveAll(t.tempDir)
 }
 
 func Test_ModelSuite(t *testing.T) {
