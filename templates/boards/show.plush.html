@@ -3,18 +3,21 @@
         <div class='<%= if (sidebar) { return "col-10" } else { return "col-12" } %>'>
             <div class="container py-4 mb-2">
                 <div class="row">
-                    <div class="col">
-                        <h3 class="d-inline-block"><%= board.Name %></h3>
-                    </div>
-                    <div class="col text-right">
-                        <%= remoteLinkTo(boardPostsPath({ board_id: board.ID }), {class: "btn btn-primary", data-method: "POST"}) { %>
-                        <i class="icon-plus"></i>
-                        <% } %>
+                    <div class="col align-middle">
+                        <h2 class="d-inline-block w-100">
+                            <%= board.Name %>
 
-                        <%= linkTo(editBoardPath({ board_id: board.ID }), {class: "btn btn-warning", body: "Edit"}) %>
-                        <%= linkTo(boardPath({ board_id: board.ID }), {class: "btn btn-danger", "data-method": "DELETE", "data-confirm": "Are you sure?"}) { %>
-                        <i class="icon-trash-o"></i>
-                        <% } %>
+                            <div class="float-right">
+                                <%= remoteLinkTo(boardPostsPath({ board_id: board.ID }), {class: "btn btn-primary", data-method: "POST"}) { %>
+                                <i class="icon-plus"></i>
+                                <% } %>
+
+                                <%= linkTo(editBoardPath({ board_id: board.ID }), {class: "btn btn-warning", body: "Edit"}) %>
+                                <%= linkTo(boardPath({ board_id: board.ID }), {class: "btn btn-danger", "data-method": "DELETE", "data-confirm": "Are you sure?"}) { %>
+                                <i class="icon-trash-o"></i>
+                                <% } %>
+                            </div>
+                        </h2>
                     </div>
                 </div>
             </div>
