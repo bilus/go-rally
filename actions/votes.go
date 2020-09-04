@@ -116,3 +116,44 @@ func VotesDestroy(c buffalo.Context) error {
 	c.Set("post", post)
 	return c.Render(http.StatusOK, r.JavaScript("votes/create.js"))
 }
+
+// VotesCreate upvotes a post
+// func VotesCreate2(c buffalo.Context) error {
+// 	// Get the DB connection from the context
+// 	tx, ok := c.Value("tx").(*pop.Connection)
+// 	if !ok {
+// 		return fmt.Errorf("no transaction found")
+// 	}
+
+// 	u, err := CurrentUser(c)
+// 	if err != nil {
+// 		return err
+// 	}
+
+// 	postId, err := uuid.FromString(c.Param("post_id"))
+// 	if err != nil {
+// 		return c.Error(http.StatusNotFound, err)
+// 	}
+
+// 	// To find the Post the parameter post_id is used.
+// 	post := &models.Post{}
+// 	if err := tx.Eager().Find(post, postId); err != nil {
+// 		return c.Error(http.StatusNotFound, err)
+// 	}
+
+// 	upvoted, err := post.Board.VotingStrategy.Upvote(tx, u, p)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	if !upvoted {
+// 		return c.Render(http.StatusUnprocessableEntity, r.JavaScript("votes/error.js"))
+// 	}
+
+// 	// To find the Post the parameter post_id is used.
+// 	if err := tx.Find(post, postId); err != nil {
+// 		return c.Error(http.StatusNotFound, err)
+// 	}
+
+// 	c.Set("post", post)
+// 	return c.Render(http.StatusOK, r.JavaScript("votes/create.js"))
+// }

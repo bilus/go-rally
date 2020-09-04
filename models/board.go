@@ -13,11 +13,13 @@ import (
 
 // Board is used by pop to map your boards database table to your go code.
 type Board struct {
-	ID          uuid.UUID    `json:"id" db:"id"`
-	Name        string       `json:"name" db:"name"`
-	Description nulls.String `json:"description" db:"description"`
-	CreatedAt   time.Time    `json:"created_at" db:"created_at"`
-	UpdatedAt   time.Time    `json:"updated_at" db:"updated_at"`
+	ID                uuid.UUID    `json:"id" db:"id"`
+	Name              string       `json:"name" db:"name"`
+	Description       nulls.String `json:"description" db:"description"`
+	VotingStrategy    `json:"-" db:"-"`
+	VotingStrategyRaw json.RawMessage `json:"-" db:"voting_strategy"`
+	CreatedAt         time.Time       `json:"created_at" db:"created_at"`
+	UpdatedAt         time.Time       `json:"updated_at" db:"updated_at"`
 }
 
 // String is not required by pop and may be deleted
@@ -35,8 +37,9 @@ func (b Boards) String() string {
 	return string(jb)
 }
 
-// Validate gets run every time you call a "pop.Validate*" (pop.ValidateAndSave, pop.ValidateAndCreate, pop.ValidateAndUpdate) method.
-// This method is not required and may be deleted.
+// Validate gets run every time you call a "pop.Validate*" (pop.ValidateAndSave,
+// pop.ValidateAndCreate, pop.ValidateAndUpdate) method. This method is not
+// required and may be deleted.
 func (b *Board) Validate(tx *pop.Connection) (*validate.Errors, error) {
 	return validate.Validate(
 		&validators.StringIsPresent{Field: b.Name, Name: "Name"},
@@ -53,4 +56,21 @@ func (b *Board) ValidateCreate(tx *pop.Connection) (*validate.Errors, error) {
 // This method is not required and may be deleted.
 func (b *Board) ValidateUpdate(tx *pop.Connection) (*validate.Errors, error) {
 	return validate.NewErrors(), nil
+}
+
+// BeforeSave callback will be called before a record is either created or
+// updated in the database.
+func (b *Board) BeforeSave(*pop.Connection) error {
+	data, err := json.Marshal(b.VotingStrategy)
+	if err != nil {
+		return err
+	}
+	b.VotingStrategyRaw = data
+	return nil
+}
+
+// AfterFind callback will be called after a record, or records, has been
+// retrieved from the database.
+func (b *Board) AfterFind(*pop.Connection) error {
+	return json.Unmarshal(b.VotingStrategyRaw, &b.VotingStrategy)
 }

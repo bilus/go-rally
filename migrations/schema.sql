@@ -59,7 +59,8 @@ CREATE TABLE public.boards (
     name character varying(255) NOT NULL,
     description text,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    voting_strategy jsonb DEFAULT '{"type": "simple", "config": {"board_max": 5}}'::jsonb NOT NULL
 );
 
 
@@ -74,8 +75,8 @@ CREATE TABLE public.comments (
     post_id uuid NOT NULL,
     author_id uuid NOT NULL,
     body text NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
     anonymous boolean DEFAULT false NOT NULL
 );
 
@@ -265,7 +266,7 @@ ALTER TABLE ONLY public.posts
 --
 
 ALTER TABLE ONLY public.posts
-    ADD CONSTRAINT posts_users_id_fk FOREIGN KEY (author_id) REFERENCES public.users(id) ON UPDATE CASCADE;
+    ADD CONSTRAINT posts_users_id_fk FOREIGN KEY (author_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
 --

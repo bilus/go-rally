@@ -3,9 +3,6 @@ package models_test
 import "rally/models"
 
 func (t *ModelSuite) Test_Vote() {
-	initialCount, err := t.DB.Count("votes")
-	t.NoError(err)
-
 	p := t.ValidPost(t.MustCreateBoard(), t.MustCreateUser())
 	verrs, err := t.DB.ValidateAndCreate(p)
 	t.False(verrs.HasAny())
@@ -21,11 +18,11 @@ func (t *ModelSuite) Test_Vote() {
 
 	count, err := t.DB.Count("votes")
 	t.NoError(err)
-	t.Equal(initialCount+1, count)
+	t.Equal(1, count)
 
 	t.DB.Destroy(p)
 
 	count, err = t.DB.Count("votes")
 	t.NoError(err)
-	t.Equal(initialCount, count)
+	t.Equal(0, count)
 }

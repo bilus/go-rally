@@ -85,10 +85,7 @@ func (f Factory) MustCreateUser() *models.User {
 	return u
 }
 
-func (f Factory) MustCreateBoard() *models.Board {
-	b := &models.Board{
-		Name: randomdata.SillyName(),
-	}
+func (f Factory) mustCreateBoard(b *models.Board) *models.Board {
 	verrs, err := f.db.ValidateAndCreate(b)
 	if verrs.HasAny() {
 		log.Fatalf("board validation errors: %v", verrs.String())
@@ -97,4 +94,20 @@ func (f Factory) MustCreateBoard() *models.Board {
 		log.Fatalf("error creating board: %v", err)
 	}
 	return b
+}
+
+func (f Factory) MustCreateBoard() *models.Board {
+	b := &models.Board{
+		Name: randomdata.SillyName(),
+	}
+	return f.mustCreateBoard(b)
+}
+
+func (f Factory) MustCreateBoardWithVotingStrategy(s models.VotingStrategy) *models.Board {
+	b := &models.Board{
+		Name: randomdata.SillyName(),
+		// VotingStrategyRaw: slices.NewMap(),
+		VotingStrategy: s,
+	}
+	return f.mustCreateBoard(b)
 }

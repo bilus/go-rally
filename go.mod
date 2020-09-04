@@ -8,6 +8,8 @@ require (
 	github.com/PuerkitoBio/goquery v1.5.1
 	github.com/dustin/go-humanize v1.0.0
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
+	github.com/go-redis/redis v6.15.9+incompatible
+	github.com/go-redis/redis/v8 v8.0.0-beta.9 // indirect
 	github.com/gobuffalo/buffalo v0.16.14
 	github.com/gobuffalo/buffalo-pop/v2 v2.2.0
 	github.com/gobuffalo/envy v1.9.0
@@ -28,7 +30,6 @@ require (
 	github.com/gobuffalo/validate/v3 v3.3.0
 	github.com/gobuffalo/x v0.0.0-20190224155809-6bb134105960
 	github.com/gofrs/uuid v3.3.0+incompatible
-	github.com/golang/protobuf v1.3.3 // indirect
 	github.com/gorilla/handlers v1.5.0 // indirect
 	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/gorilla/sessions v1.2.1 // indirect

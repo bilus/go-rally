@@ -1,5 +1,12 @@
 package models_test
 
-// func (t *ModelSuite) Test_Board() {
-// 	ms.Fail("This test needs to be implemented!")
-// }
+import "rally/models"
+
+func (t *ModelSuite) Test_Board_VotingStrategySerialization() {
+	t.MustCreateBoardWithVotingStrategy(models.VotingStrategy{BoardMax: 1})
+
+	b := &models.Board{}
+	t.NoError(t.DB.First(b))
+
+	t.Equal(1, b.VotingStrategy.BoardMax)
+}

@@ -1,7 +1,6 @@
 package actions
 
 import (
-	"fmt"
 	"rally/fixtures"
 	"rally/models"
 	"testing"
@@ -18,7 +17,6 @@ type ActionSuite struct {
 }
 
 func (t *ActionSuite) SetupTest() {
-	fmt.Println("SetupTest")
 	t.Action.SetupTest()
 
 	t.Factory = fixtures.NewFactory(t.DB)
