@@ -3,6 +3,7 @@ package actions
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/url"
 	"rally/models"
 	"time"
@@ -98,6 +99,13 @@ func init() {
 			},
 			"canManagePost": func(post interface{}, help plush.HelperContext) bool {
 				return canManagePost(post, help.Context) // Crashes otherwise.
+			},
+			"votesRemaining": func(u *models.User, b *models.Board) int {
+				votes, err := b.VotesRemaining(models.Redis, u, b)
+				if err != nil {
+					log.Printf("Error checking user's remaining votes: %v (user: %v, board: %v)", err, u.ID, b.ID)
+				}
+				return votes
 			},
 		},
 	})

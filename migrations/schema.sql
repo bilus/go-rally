@@ -60,7 +60,7 @@ CREATE TABLE public.boards (
     description text,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    voting_strategy jsonb DEFAULT '{"type": "simple", "config": {"board_max": 5}}'::jsonb NOT NULL
+    voting_strategy jsonb DEFAULT '{"board_max": 5}'::jsonb NOT NULL
 );
 
 

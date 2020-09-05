@@ -13,6 +13,13 @@ type Store struct {
 
 const defaultMaxConflictRetries = 1000
 
+func NewStore(r *redis.Client) Store {
+	return Store{
+		r:                  r,
+		MaxConflictRetries: defaultMaxConflictRetries,
+	}
+}
+
 func (s Store) GetInt(key string, default_ *int) (int, error) {
 	i, err := s.r.Get(key).Int()
 	if err == redis.Nil && default_ != nil {
@@ -81,11 +88,7 @@ func (s Store) UpdateInts(f func(vals []int) error, keys ...string) error {
 		return err
 	}
 
-	maxRetries := s.MaxConflictRetries
-	if maxRetries == 0 {
-		maxRetries = defaultMaxConflictRetries
-	}
-	for i := 0; i < maxRetries; i++ {
+	for i := 0; i < s.MaxConflictRetries; i++ {
 		err := s.r.Watch(txf, keys...)
 		if err == nil {
 			// Success.

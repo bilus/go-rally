@@ -3,7 +3,10 @@ package models
 import (
 	"log"
 
-	"github.com/go-redis/redis"
+	"rally/redis"
+
+	r "github.com/go-redis/redis"
+
 	"github.com/gobuffalo/envy"
 	"github.com/gobuffalo/pop/v5"
 )
@@ -12,7 +15,7 @@ import (
 // throughout your application.
 var DB *pop.Connection
 
-var Redis *redis.Client
+var Redis redis.Store
 
 func init() {
 	var err error
@@ -24,9 +27,10 @@ func init() {
 	pop.Debug = env == "development"
 
 	// TODO
-	Redis = redis.NewClient(&redis.Options{
+	rds := r.NewClient(&r.Options{
 		Addr:     "localhost:6379",
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})
+	Redis = redis.NewStore(rds)
 }

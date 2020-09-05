@@ -1,1 +1,1 @@
-add_column("boards", "voting_strategy", "jsonb", {default: "{\"type\": \"simple\", \"config\": { \"board_max\": 5 }}"})
+add_column("boards", "voting_strategy", "jsonb", {default: "{ \"board_max\": 5 }"})

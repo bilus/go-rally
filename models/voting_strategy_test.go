@@ -52,7 +52,7 @@ func (t *ModelSuite) Test_VotingStrategy_UpvotingUpperLimit() {
 	p := t.MustCreatePost(t.ValidPost(b, u))
 
 	s := b.VotingStrategy
-	count, err := s.VotesRemaining(store, u, p)
+	count, err := s.VotesRemaining(store, u, b)
 	t.NoError(err)
 	t.Equal(1, count)
 
@@ -60,7 +60,7 @@ func (t *ModelSuite) Test_VotingStrategy_UpvotingUpperLimit() {
 	t.NoError(err)
 	t.True(upvoted)
 
-	count, err = s.VotesRemaining(store, u, p)
+	count, err = s.VotesRemaining(store, u, b)
 	t.NoError(err)
 	t.Equal(0, count)
 
@@ -84,11 +84,11 @@ func (t *ModelSuite) Test_VotingStrategy_BoardIsolation() {
 	_, err := b1.Upvote(store, u, p1)
 	t.NoError(err)
 
-	count, err := b1.VotesRemaining(store, u, p1)
+	count, err := b1.VotesRemaining(store, u, b1)
 	t.NoError(err)
 	t.Equal(0, count)
 
-	count, err = b2.VotesRemaining(store, u, p2)
+	count, err = b2.VotesRemaining(store, u, b2)
 	t.NoError(err)
 	t.Equal(1, count)
 }
@@ -108,7 +108,7 @@ func (t *ModelSuite) Test_VotingStrategy_Backsies() {
 	t.NoError(err)
 	t.True(upvoted)
 
-	count, err := s.VotesRemaining(store, u, p)
+	count, err := s.VotesRemaining(store, u, b)
 	t.NoError(err)
 	t.Equal(0, count)
 
@@ -116,7 +116,7 @@ func (t *ModelSuite) Test_VotingStrategy_Backsies() {
 	t.NoError(err)
 	t.True(downvoted)
 
-	count, err = s.VotesRemaining(store, u, p)
+	count, err = s.VotesRemaining(store, u, b)
 	t.NoError(err)
 	t.Equal(1, count)
 
@@ -124,7 +124,7 @@ func (t *ModelSuite) Test_VotingStrategy_Backsies() {
 	t.NoError(err)
 	t.False(downvoted)
 
-	count, err = s.VotesRemaining(store, u, p)
+	count, err = s.VotesRemaining(store, u, b)
 	t.NoError(err)
 	t.Equal(1, count)
 
@@ -132,7 +132,7 @@ func (t *ModelSuite) Test_VotingStrategy_Backsies() {
 	t.NoError(err)
 	t.True(upvoted)
 
-	count, err = s.VotesRemaining(store, u, p)
+	count, err = s.VotesRemaining(store, u, b)
 	t.NoError(err)
 	t.Equal(0, count)
 
@@ -152,11 +152,11 @@ func (t *ModelSuite) Test_VotingStrategy_BacksiesForUpvotedPosts() {
 	_, err := b.Upvote(store, u, p1)
 	t.NoError(err)
 
-	count, err := b.VotesRemaining(store, u, p1)
+	count, err := b.VotesRemaining(store, u, b1)
 	t.NoError(err)
 	t.Equal(0, count)
 
-	count, err = b.VotesRemaining(store, u, p2)
+	count, err = b.VotesRemaining(store, u, b2)
 	t.NoError(err)
 	t.Equal(0, count)
 
@@ -164,11 +164,11 @@ func (t *ModelSuite) Test_VotingStrategy_BacksiesForUpvotedPosts() {
 	t.NoError(err)
 	t.False(downvoted)
 
-	count, err = b.VotesRemaining(store, u, p1)
+	count, err = b.VotesRemaining(store, u, b1)
 	t.NoError(err)
 	t.Equal(0, count)
 
-	count, err = b.VotesRemaining(store, u, p2)
+	count, err = b.VotesRemaining(store, u, b2)
 	t.NoError(err)
 	t.Equal(0, count)
 
@@ -176,11 +176,11 @@ func (t *ModelSuite) Test_VotingStrategy_BacksiesForUpvotedPosts() {
 	t.NoError(err)
 	t.True(downvoted)
 
-	count, err = b.VotesRemaining(store, u, p1)
+	count, err = b.VotesRemaining(store, u, b1)
 	t.NoError(err)
 	t.Equal(1, count)
 
-	count, err = b.VotesRemaining(store, u, p2)
+	count, err = b.VotesRemaining(store, u, b2)
 	t.NoError(err)
 	t.Equal(1, count)
 }

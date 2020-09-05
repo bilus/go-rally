@@ -30,39 +30,43 @@ func VotesCreate(c buffalo.Context) error {
 		return c.Error(http.StatusNotFound, err)
 	}
 
-	n, err := tx.RawQuery("UPDATE users SET votes = votes - 1 WHERE votes > 0 AND id = ?", u.ID).ExecWithCount()
-	if err != nil {
-		return err
-	}
-	RefreshCurrentUser(c) // Number of votes changed.
-	if n == 0 {
-		return c.Render(http.StatusUnprocessableEntity, r.JavaScript("votes/fail.js"))
-	}
-
-	err = tx.RawQuery("UPDATE posts SET votes = votes + 1, updated_at = CURRENT_TIMESTAMP WHERE id = ?", postId).Exec()
-	if err != nil {
-		return fmt.Errorf("upvoting failed: %v", err)
-	}
-
-	vote := &models.Vote{PostID: postId, UserID: u.ID}
-	verrs, err := tx.ValidateAndCreate(vote)
-	if err != nil {
-		return fmt.Errorf("upvoting failed: %v", err)
-	}
-	if verrs.HasAny() {
-		c.Set("errors", verrs)
-		return c.Render(http.StatusUnprocessableEntity, r.JavaScript("error.js"))
-	}
-
 	// Allocate an empty Post
 	post := &models.Post{}
 
 	// To find the Post the parameter post_id is used.
-	if err := tx.Find(post, postId); err != nil {
+	if err := tx.Eager().Find(post, postId); err != nil {
 		return c.Error(http.StatusNotFound, err)
 	}
 
+	upvoted, err := post.Board.Upvote(models.Redis, u, post)
+	if err != nil {
+		return err
+	}
+	if upvoted {
+		// TODO: Race condition, Upvote should return num post votes.
+		err = tx.RawQuery("UPDATE posts SET votes = votes + 1, updated_at = CURRENT_TIMESTAMP WHERE id = ?", postId).Exec()
+		if err != nil {
+			return fmt.Errorf("upvoting failed: %v", err)
+		}
+		// TODO: What we need is an audit log.
+		vote := &models.Vote{PostID: postId, UserID: u.ID}
+		verrs, err := tx.ValidateAndCreate(vote)
+		if err != nil {
+			return fmt.Errorf("upvoting failed: %v", err)
+		}
+		if verrs.HasAny() {
+			// TODO: This is an internal error.
+			c.Set("errors", verrs)
+			return c.Render(http.StatusUnprocessableEntity, r.JavaScript("error.js"))
+		}
+	} else {
+		return c.Render(http.StatusUnprocessableEntity, r.JavaScript("error.js"))
+	}
+
+	post.Votes = post.Votes + 1
+
 	c.Set("post", post)
+	c.Set("board", &post.Board)
 	return c.Render(http.StatusOK, r.JavaScript("votes/create.js"))
 }
 
@@ -84,36 +88,44 @@ func VotesDestroy(c buffalo.Context) error {
 		return c.Error(http.StatusNotFound, err)
 	}
 
-	var vote models.Vote
-	err = tx.Where("post_id = ? AND user_id = ?", postId, u.ID).First(&vote)
+	post := &models.Post{}
+	if err := tx.Eager().Find(post, postId); err != nil {
+		return err
+	}
+
+	downvoted, err := post.Board.Downvote(models.Redis, u, post)
 	if err != nil {
-		if errors.Cause(err) == sql.ErrNoRows {
-			return c.Render(http.StatusUnprocessableEntity, r.JavaScript("votes/fail.js"))
+		return err
+	}
+	if downvoted {
+		// TODO: What we need is an audit log.
+		// Indeed, it may be intereesting how often ppl change their votes.
+		var vote models.Vote
+		err = tx.Where("post_id = ? AND user_id = ?", postId, u.ID).First(&vote)
+		if err != nil {
+			if errors.Cause(err) == sql.ErrNoRows {
+				return c.Render(http.StatusUnprocessableEntity, r.JavaScript("votes/fail.js"))
+			}
+			return err
 		}
-		return err
+
+		err = tx.Destroy(&vote)
+		if err != nil {
+			return err
+		}
+	} else {
+		return c.Render(http.StatusUnprocessableEntity, r.JavaScript("votes/fail.js"))
 	}
 
-	err = tx.Destroy(&vote)
-	if err != nil {
-		return err
-	}
-
+	// TODO: Race condition, Upvote should return num post votes.
 	err = tx.RawQuery("UPDATE posts SET votes = votes - 1, updated_at = CURRENT_TIMESTAMP WHERE id = ?", postId).Exec()
 	if err != nil {
 		return fmt.Errorf("downvoting failed: %v", err)
 	}
 
-	err = tx.RawQuery("UPDATE users SET votes = votes + 1 WHERE id = ?", u.ID).Exec()
-	if err != nil {
-		return fmt.Errorf("downvoting failed: %v", err)
-	}
-	RefreshCurrentUser(c) // Number of votes changed.
-
-	post := &models.Post{}
-	if err := tx.Find(post, postId); err != nil {
-		return err
-	}
+	post.Votes = post.Votes - 1
 	c.Set("post", post)
+	c.Set("board", &post.Board)
 	return c.Render(http.StatusOK, r.JavaScript("votes/create.js"))
 }
 

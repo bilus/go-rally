@@ -12,9 +12,10 @@ import (
 
 // Post is used by pop to map your posts database table to your go code.
 type Post struct {
-	ID        uuid.UUID `json:"id" db:"id"`
-	Title     string    `json:"title" db:"title"`
-	Body      string    `json:"body" db:"body"`
+	ID    uuid.UUID `json:"id" db:"id"`
+	Title string    `json:"title" db:"title"`
+	Body  string    `json:"body" db:"body"`
+	// Votes cache values in Redis.
 	Votes     int       `json:"votes" db:"votes"`
 	CreatedAt time.Time `json:"created_at" db:"created_at"`
 	UpdatedAt time.Time `json:"updated_at" db:"updated_at"`

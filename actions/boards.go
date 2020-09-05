@@ -149,7 +149,9 @@ func (v BoardsResource) New(c buffalo.Context) error {
 // path POST /boards
 func (v BoardsResource) Create(c buffalo.Context) error {
 	// Allocate an empty Board
-	board := &models.Board{}
+	board := &models.Board{
+		VotingStrategy: models.VotingStrategy{10},
+	}
 
 	// Bind board to the html form elements
 	if err := c.Bind(board); err != nil {

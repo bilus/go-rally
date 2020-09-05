@@ -95,16 +95,25 @@ Good luck!
     - [X] Remove unnecessary routes, handlers
       Leave listing posts for administrative purposes but remove route for now.
     - [X] Remember last dashboard
-    - [ ] Vote budget is per-board, not global
+    - [X] Vote budget is per-board, not global
+    - [ ] Clean up code
+      - [ ] Real audit.
+      - [ ] Update post votes based on count from upvote/downvote in /votes create/destroy.
+      - [ ] Remove User#Votes.
     - [ ] When creating board, you specify voting policy
        - [ ] Vote refill schedule + num votes
        - [ ] Vote limit can be turned off
-    - [ ] Disable board deletion
     - [ ] Style everything
+      - [ ] Try to use morphdom to fix flicker when upvoting/downvoting
     - [ ] Test everything
-- [ ] App version
-- [ ] Voting improvements
+- [ ] Prepare for Tooploox test run
+    - [ ] Redis configuration from open redis var
     - [ ] Upvote post on its page
+    - [ ] Disable board deletion
+    - [ ] App version
+    - [ ] Deploy
+    - [ ] Test
+- [ ] Voting improvements
     - [ ] Can take votes back for X minutes
 - [ ] Board management
     - [ ] Board owner can edit/delete the board (= creator)

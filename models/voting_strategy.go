@@ -15,8 +15,8 @@ type VotingStrategy struct {
 	BoardMax int `json:"board_max"`
 }
 
-func (s VotingStrategy) VotesRemaining(store Store, user *User, post *Post) (int, error) {
-	k := s.key(user.ID, post.BoardID)
+func (s VotingStrategy) VotesRemaining(store Store, user *User, board *Board) (int, error) {
+	k := s.key(user.ID, board.ID)
 	noVotes := 0
 	votes, err := store.GetInt(k, &noVotes)
 	if err != nil {
