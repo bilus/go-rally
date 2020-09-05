@@ -38,13 +38,14 @@ func VotesCreate(c buffalo.Context) error {
 		return c.Error(http.StatusNotFound, err)
 	}
 
-	upvoted, err := post.Board.Upvote(models.Redis, u, post)
+	postVotes, upvoted, err := post.Board.Upvote(models.Redis, u, post)
 	if err != nil {
 		return err
 	}
+
 	if upvoted {
-		// TODO: Race condition, Upvote should return num post votes.
-		err = tx.RawQuery("UPDATE posts SET votes = votes + 1, updated_at = CURRENT_TIMESTAMP WHERE id = ?", postId).Exec()
+		post.Votes = postVotes
+		err := tx.UpdateColumns(post, "votes")
 		if err != nil {
 			return fmt.Errorf("upvoting failed: %v", err)
 		}
@@ -62,8 +63,6 @@ func VotesCreate(c buffalo.Context) error {
 	} else {
 		return c.Render(http.StatusUnprocessableEntity, r.JavaScript("error.js"))
 	}
-
-	post.Votes = post.Votes + 1
 
 	c.Set("post", post)
 	c.Set("board", &post.Board)
@@ -93,11 +92,16 @@ func VotesDestroy(c buffalo.Context) error {
 		return err
 	}
 
-	downvoted, err := post.Board.Downvote(models.Redis, u, post)
+	postVotes, downvoted, err := post.Board.Downvote(models.Redis, u, post)
 	if err != nil {
 		return err
 	}
 	if downvoted {
+		post.Votes = postVotes
+		err := tx.UpdateColumns(post, "votes")
+		if err != nil {
+			return fmt.Errorf("upvoting failed: %v", err)
+		}
 		// TODO: What we need is an audit log.
 		// Indeed, it may be intereesting how often ppl change their votes.
 		var vote models.Vote
@@ -116,56 +120,7 @@ func VotesDestroy(c buffalo.Context) error {
 	} else {
 		return c.Render(http.StatusUnprocessableEntity, r.JavaScript("votes/fail.js"))
 	}
-
-	// TODO: Race condition, Upvote should return num post votes.
-	err = tx.RawQuery("UPDATE posts SET votes = votes - 1, updated_at = CURRENT_TIMESTAMP WHERE id = ?", postId).Exec()
-	if err != nil {
-		return fmt.Errorf("downvoting failed: %v", err)
-	}
-
-	post.Votes = post.Votes - 1
 	c.Set("post", post)
 	c.Set("board", &post.Board)
 	return c.Render(http.StatusOK, r.JavaScript("votes/create.js"))
 }
-
-// VotesCreate upvotes a post
-// func VotesCreate2(c buffalo.Context) error {
-// 	// Get the DB connection from the context
-// 	tx, ok := c.Value("tx").(*pop.Connection)
-// 	if !ok {
-// 		return fmt.Errorf("no transaction found")
-// 	}
-
-// 	u, err := CurrentUser(c)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	postId, err := uuid.FromString(c.Param("post_id"))
-// 	if err != nil {
-// 		return c.Error(http.StatusNotFound, err)
-// 	}
-
-// 	// To find the Post the parameter post_id is used.
-// 	post := &models.Post{}
-// 	if err := tx.Eager().Find(post, postId); err != nil {
-// 		return c.Error(http.StatusNotFound, err)
-// 	}
-
-// 	upvoted, err := post.Board.VotingStrategy.Upvote(tx, u, p)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	if !upvoted {
-// 		return c.Render(http.StatusUnprocessableEntity, r.JavaScript("votes/error.js"))
-// 	}
-
-// 	// To find the Post the parameter post_id is used.
-// 	if err := tx.Find(post, postId); err != nil {
-// 		return c.Error(http.StatusNotFound, err)
-// 	}
-
-// 	c.Set("post", post)
-// 	return c.Render(http.StatusOK, r.JavaScript("votes/create.js"))
-// }

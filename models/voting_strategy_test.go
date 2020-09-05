@@ -24,7 +24,7 @@ func (s FakeStore) GetInt(key string, default_ *int) (int, error) {
 	return i, nil
 }
 
-func (s FakeStore) UpdateInts(f func(vals []int) error, keys ...string) error {
+func (s FakeStore) UpdateInts(f func(vals []int) error, keys ...string) ([]int, error) {
 	vals := make([]int, len(keys))
 	for i, k := range keys {
 		v, ok := s.m[k]
@@ -34,12 +34,12 @@ func (s FakeStore) UpdateInts(f func(vals []int) error, keys ...string) error {
 		vals[i] = v
 	}
 	if err := f(vals); err != nil {
-		return err
+		return vals, err
 	}
 	for i, k := range keys {
 		s.m[k] = vals[i]
 	}
-	return nil
+	return vals, nil
 }
 
 // Can upvote up to a limit.
@@ -56,17 +56,19 @@ func (t *ModelSuite) Test_VotingStrategy_UpvotingUpperLimit() {
 	t.NoError(err)
 	t.Equal(1, count)
 
-	upvoted, err := s.Upvote(store, u, p)
+	postVotes, upvoted, err := s.Upvote(store, u, p)
 	t.NoError(err)
 	t.True(upvoted)
+	t.Equal(1, postVotes)
 
 	count, err = s.VotesRemaining(store, u, b)
 	t.NoError(err)
 	t.Equal(0, count)
 
-	upvoted, err = s.Upvote(store, u, p)
+	postVotes, upvoted, err = s.Upvote(store, u, p)
 	t.NoError(err)
 	t.False(upvoted)
+	t.Equal(2, postVotes)
 }
 
 // Boards keep independent vote counts.
@@ -81,8 +83,10 @@ func (t *ModelSuite) Test_VotingStrategy_BoardIsolation() {
 	p1 := t.MustCreatePost(t.ValidPost(b1, u))
 	p2 := t.MustCreatePost(t.ValidPost(b2, u))
 
-	_, err := b1.Upvote(store, u, p1)
+	postVotes, upvoted, err := b1.Upvote(store, u, p1)
 	t.NoError(err)
+	t.True(upvoted)
+	t.Equal(1, postVotes)
 
 	count, err := b1.VotesRemaining(store, u, b1)
 	t.NoError(err)
@@ -91,6 +95,15 @@ func (t *ModelSuite) Test_VotingStrategy_BoardIsolation() {
 	count, err = b2.VotesRemaining(store, u, b2)
 	t.NoError(err)
 	t.Equal(1, count)
+
+	postVotes, upvoted, err = b2.Upvote(store, u, p2)
+	t.NoError(err)
+	t.True(upvoted)
+	t.Equal(1, postVotes)
+
+	count, err = b2.VotesRemaining(store, u, b2)
+	t.NoError(err)
+	t.Equal(0, count)
 }
 
 // Can take votes back until going to zero.
@@ -104,33 +117,37 @@ func (t *ModelSuite) Test_VotingStrategy_Backsies() {
 
 	s := b.VotingStrategy
 
-	upvoted, err := s.Upvote(store, u, p)
+	postVotes, upvoted, err := s.Upvote(store, u, p)
 	t.NoError(err)
 	t.True(upvoted)
+	t.Equal(1, postVotes)
 
 	count, err := s.VotesRemaining(store, u, b)
 	t.NoError(err)
 	t.Equal(0, count)
 
-	downvoted, err := s.Downvote(store, u, p)
+	postVotes, downvoted, err := s.Downvote(store, u, p)
 	t.NoError(err)
 	t.True(downvoted)
+	t.Equal(0, postVotes)
 
 	count, err = s.VotesRemaining(store, u, b)
 	t.NoError(err)
 	t.Equal(1, count)
 
-	downvoted, err = s.Downvote(store, u, p)
+	postVotes, downvoted, err = s.Downvote(store, u, p)
 	t.NoError(err)
 	t.False(downvoted)
+	t.Equal(0, postVotes)
 
 	count, err = s.VotesRemaining(store, u, b)
 	t.NoError(err)
 	t.Equal(1, count)
 
-	upvoted, err = s.Upvote(store, u, p)
+	postVotes, upvoted, err = s.Upvote(store, u, p)
 	t.NoError(err)
 	t.True(upvoted)
+	t.Equal(1, postVotes)
 
 	count, err = s.VotesRemaining(store, u, b)
 	t.NoError(err)
@@ -149,8 +166,10 @@ func (t *ModelSuite) Test_VotingStrategy_BacksiesForUpvotedPosts() {
 	p1 := t.MustCreatePost(t.ValidPost(b, u))
 	p2 := t.MustCreatePost(t.ValidPost(b, u))
 
-	_, err := b.Upvote(store, u, p1)
+	postVotes, upvoted, err := b.Upvote(store, u, p1)
 	t.NoError(err)
+	t.True(upvoted)
+	t.Equal(1, postVotes)
 
 	count, err := b.VotesRemaining(store, u, b1)
 	t.NoError(err)
@@ -160,9 +179,10 @@ func (t *ModelSuite) Test_VotingStrategy_BacksiesForUpvotedPosts() {
 	t.NoError(err)
 	t.Equal(0, count)
 
-	downvoted, err := b.Downvote(store, u, p2)
+	postVotes, downvoted, err := b.Downvote(store, u, p2)
 	t.NoError(err)
 	t.False(downvoted)
+	t.Equal(0, postVotes)
 
 	count, err = b.VotesRemaining(store, u, b1)
 	t.NoError(err)
@@ -172,9 +192,10 @@ func (t *ModelSuite) Test_VotingStrategy_BacksiesForUpvotedPosts() {
 	t.NoError(err)
 	t.Equal(0, count)
 
-	downvoted, err = b.Downvote(store, u, p1)
+	postVotes, downvoted, err = b.Downvote(store, u, p1)
 	t.NoError(err)
 	t.True(downvoted)
+	t.Equal(0, postVotes)
 
 	count, err = b.VotesRemaining(store, u, b1)
 	t.NoError(err)

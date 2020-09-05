@@ -7,7 +7,7 @@ import (
 )
 
 type Store interface {
-	UpdateInts(f func(vals []int) error, keys ...string) error
+	UpdateInts(f func(vals []int) error, keys ...string) ([]int, error)
 	GetInt(key string, default_ *int) (int, error)
 }
 
@@ -26,11 +26,11 @@ func (s VotingStrategy) VotesRemaining(store Store, user *User, board *Board) (i
 	return s.BoardMax - votes, nil
 }
 
-func (s VotingStrategy) Downvote(store Store, user *User, post *Post) (bool, error) {
+func (s VotingStrategy) Downvote(store Store, user *User, post *Post) (postVotes int, success bool, err error) {
 	boardKey := s.key(user.ID, post.BoardID)
 	pageKey := s.key(user.ID, post.ID)
 	ErrLimit := fmt.Errorf("limit reached")
-	err := store.UpdateInts(func(xs []int) error {
+	xs, err := store.UpdateInts(func(xs []int) error {
 		boardVotes := xs[0]
 		if boardVotes <= 0 {
 			return ErrLimit
@@ -43,20 +43,21 @@ func (s VotingStrategy) Downvote(store Store, user *User, post *Post) (bool, err
 		xs[1] = pageVotes - 1
 		return nil
 	}, boardKey, pageKey)
+
 	if err == ErrLimit {
-		return false, nil
+		return 0, false, nil
 	}
 	if err != nil {
-		return false, err
+		return 0, false, err
 	}
-	return true, nil
+	return xs[1], true, nil
 }
 
-func (s VotingStrategy) Upvote(store Store, user *User, post *Post) (bool, error) {
+func (s VotingStrategy) Upvote(store Store, user *User, post *Post) (postVotes int, success bool, err error) {
 	boardKey := s.key(user.ID, post.BoardID)
 	pageKey := s.key(user.ID, post.ID)
 	ErrLimit := fmt.Errorf("limit reached")
-	err := store.UpdateInts(func(xs []int) error {
+	xs, err := store.UpdateInts(func(xs []int) error {
 		boardVotes := xs[0]
 		if boardVotes >= s.BoardMax {
 			return ErrLimit
@@ -66,13 +67,14 @@ func (s VotingStrategy) Upvote(store Store, user *User, post *Post) (bool, error
 		xs[1] = pageVotes + 1
 		return nil
 	}, boardKey, pageKey)
+
 	if err == ErrLimit {
-		return false, nil
+		return 0, false, nil // TODO: Is it intuitive to return zero here?
 	}
 	if err != nil {
-		return false, err
+		return 0, false, err
 	}
-	return true, nil
+	return xs[1], true, nil
 }
 
 func (s VotingStrategy) key(IDs ...uuid.UUID) string {

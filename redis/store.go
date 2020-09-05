@@ -28,13 +28,10 @@ func (s Store) GetInt(key string, default_ *int) (int, error) {
 	return i, err
 }
 
-// func (s Store) Inc(key string, delta int) (int, error) {
-// }
-
 func (s Store) IncWithin(key string, delta, max int) (int, bool, error) {
 	var ErrLimit = fmt.Errorf("limit reached")
 
-	v, updated, err := s.update(key, func(key string, v *redis.StringCmd) (interface{}, error) {
+	v, vals, err := s.update(key, func(key string, v *redis.StringCmd) (interface{}, error) {
 		i, err := v.Int()
 		if err == redis.Nil {
 			err = nil
@@ -52,18 +49,24 @@ func (s Store) IncWithin(key string, delta, max int) (int, bool, error) {
 	if err == ErrLimit {
 		i, ok := v.(int)
 		if !ok {
-			return 0, updated, fmt.Errorf("unexpected value for %q: not int", key)
+			return 0, vals, fmt.Errorf("unexpected value for %q: not int", key)
 		}
-		return i, updated, nil
+		return i, vals, nil
 	}
 
-	return 0, updated, err
+	return 0, vals, err
 }
 
-func (s Store) UpdateInts(f func(vals []int) error, keys ...string) error {
+// UpdateInts performs atomic update on multiple keys by passing an array of values for each key
+// to function f, expected to modify them in-place.
+// The UpdateInts function can be expected to return an array of values, regardless of whether
+// it also returns an error or not, returning values after the update if the f function succeeds.
+func (s Store) UpdateInts(f func(vals []int) error, keys ...string) ([]int, error) {
+	var vals []int
+
 	// Transactional function.
 	txf := func(tx *redis.Tx) error {
-		vals := make([]int, len(keys))
+		vals = make([]int, len(keys))
 		for i, k := range keys {
 			v, err := tx.Get(k).Int()
 			if err != nil && err != redis.Nil {
@@ -85,24 +88,27 @@ func (s Store) UpdateInts(f func(vals []int) error, keys ...string) error {
 			}
 			return nil
 		})
-		return err
+		if err != nil {
+			return err
+		}
+		return nil
 	}
 
 	for i := 0; i < s.MaxConflictRetries; i++ {
 		err := s.r.Watch(txf, keys...)
 		if err == nil {
 			// Success.
-			return nil
+			return vals, nil
 		}
 		if err == redis.TxFailedErr {
 			// Optimistic lock lost. Retry.
 			continue
 		}
 		// Return any other error.
-		return err
+		return nil, err
 	}
 
-	return redis.TxFailedErr
+	return nil, redis.TxFailedErr
 }
 
 type UpdateFunc = func(key string, v *redis.StringCmd) (interface{}, error)

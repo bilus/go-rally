@@ -97,8 +97,8 @@ Good luck!
     - [X] Remember last dashboard
     - [X] Vote budget is per-board, not global
     - [ ] Clean up code
+      - [X] Update post votes based on count from upvote/downvote in /votes create/destroy.
       - [ ] Real audit.
-      - [ ] Update post votes based on count from upvote/downvote in /votes create/destroy.
       - [ ] Remove User#Votes.
     - [ ] When creating board, you specify voting policy
        - [ ] Vote refill schedule + num votes
@@ -138,6 +138,8 @@ Good luck!
 - [ ] Tenancy
 - [ ] Admin can delete/edit any posts
 - [ ] BUG: Navbar collapsing but no hamburger menu
+- [ ] Slack/email integration
+  beehive? https://github.com/muesli/beehive
 - [ ] Better urls
     - [ ] Board slugs
     - [ ] Post slugs
