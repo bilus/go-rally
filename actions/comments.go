@@ -113,33 +113,36 @@ func (v CommentsResource) New(c buffalo.Context) error {
 // Create adds a Comment to the DB. This function is mapped to the
 // path POST /comments
 func (v CommentsResource) Create(c buffalo.Context) error {
-	// Allocate an empty Comment
-	comment := &models.Comment{}
-
-	// Bind comment to the html form elements
-	if err := c.Bind(comment); err != nil {
-		return err
-	}
-
-	// Set author
-	currentUser, err := CurrentUser(c)
-	if err != nil {
-		return err
-	}
-	comment.AuthorID = currentUser.ID
-	comment.Author = *currentUser
-	postID, err := uuid.FromString(c.Param("post_id"))
-	if err != nil {
-		return c.Error(http.StatusNotFound, err)
-	}
-
-	comment.PostID = postID
-
 	// Get the DB connection from the context
 	tx, ok := c.Value("tx").(*pop.Connection)
 	if !ok {
 		return fmt.Errorf("no transaction found")
 	}
+
+	// Bind comment to the html form elements
+	comment := &models.Comment{}
+	if err := c.Bind(comment); err != nil {
+		return err
+	}
+
+	currentUser, err := CurrentUser(c)
+	if err != nil {
+		return err
+	}
+
+	postID, err := uuid.FromString(c.Param("post_id"))
+	if err != nil {
+		return c.Error(http.StatusNotFound, err)
+	}
+
+	post := &models.Post{}
+	if err := tx.Find(post, postID.String()); err != nil {
+		return c.Error(http.StatusNotFound, err)
+	}
+
+	comment.PostID = postID
+	comment.AuthorID = currentUser.ID
+	comment.Author = *currentUser
 
 	// Validate the data from the html form
 	verrs, err := tx.ValidateAndCreate(comment)
@@ -149,19 +152,13 @@ func (v CommentsResource) Create(c buffalo.Context) error {
 
 	if verrs.HasAny() {
 		return responder.Wants("html", func(c buffalo.Context) error {
-			// Make the errors available inside the html template
 			c.Set("errors", verrs)
-
-			// Render again the new.html template that the user can
-			// correct the input.
 			c.Set("comment", comment)
-
 			return c.Render(http.StatusUnprocessableEntity, r.HTML("/comments/new.plush.html"))
 		}).Wants("javascript", func(c buffalo.Context) error {
 			// Make the errors available inside the html template
 			c.Set("errors", verrs)
 			c.Set("comment", comment)
-
 			return c.Render(http.StatusUnprocessableEntity, r.JavaScript("/comments/failed.plush.js")) // TODO:
 		}).Wants("json", func(c buffalo.Context) error {
 			return c.Render(http.StatusUnprocessableEntity, r.JSON(verrs))
@@ -178,6 +175,7 @@ func (v CommentsResource) Create(c buffalo.Context) error {
 		return c.Redirect(http.StatusSeeOther, "/comments/%v", comment.ID)
 	}).Wants("javascript", func(c buffalo.Context) error {
 		c.Set("comment", comment)
+		c.Set("post", post)
 
 		comments := &models.Comments{}
 		if err := listComments(pop.Q(tx), postID, comments); err != nil {

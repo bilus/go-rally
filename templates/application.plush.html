@@ -30,10 +30,10 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav mr-auto mr-2 mt-lg-0">
-                        <li class="nav-item">
                             <%= if (board && boards) { %>
+                        <li class="nav-item">
                             <div class="dropdown">
-                            <a class="btn btn-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <a class="btn btn-primary dropdown-toggle pl-2 pr-2" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <%= board.Name %>
                             </a>
 
@@ -43,8 +43,14 @@
                                 <% } %>
                             </div>
                             </div>
+                        </li>
+
+                        <li class="nav-item">
+                            <%= linkTo(newBoardsPath(), {class: "btn btn-primary btn-large pl-2 pr-2", title: "Create new board"}) { %>
+                            <i class="icon-plus icon-large"></i>
                             <% } %>
                         </li>
+                            <% } %>
                     </ul>
 
                     <ul class="navbar-nav mr-auto mr-2 mr-lg-0">

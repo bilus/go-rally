@@ -107,10 +107,10 @@ Good luck!
     - [X] Allow empty max votes
     - [X] Board creator can edit/destroy board
     - [X] Board creator can reset votes
-    - [ ] Board owner can delete comments
-    - [ ] Board owner can delete and edit posts
     - [ ] Style everything
       - [ ] Try to use morphdom to fix flicker when upvoting/downvoting
+    - [ ] Board owner can delete comments
+    - [ ] Board owner can delete and edit posts
     - [ ] Test everything
 - [ ] Prepare for Tooploox test run
     - [ ] Redis configuration from open redis var

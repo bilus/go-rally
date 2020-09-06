@@ -74,8 +74,8 @@ CREATE TABLE public.board_members (
     board_id uuid NOT NULL,
     user_id uuid NOT NULL,
     is_owner boolean NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
 );
 
 

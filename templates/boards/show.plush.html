@@ -8,13 +8,19 @@
                             <%= board.Name %>
 
                             <div class="float-right">
-                                <%= remoteLinkTo(boardPostsPath({ board_id: board.ID }), {class: "btn btn-primary", data-method: "POST"}) { %>
-                                    <i class="icon-plus"></i>
-                                <% } %>
                                 <%= if (canManageBoard(board)) { %>
-                                    <%= linkTo(editBoardPath({ board_id: board.ID }), {class: "btn btn-warning", body: "Edit"}) %>
-                                    <%= linkTo(boardPath({ board_id: board.ID }), {class: "btn btn-danger", "data-method": "DELETE", "data-confirm": "Are you sure?"}) { %>
+                                    <%= remoteLinkTo(boardPostsPath({ board_id: board.ID }), {class: "btn btn-primary", data-method: "POST", title: "Create new post"}) { %>
+                                        New post
+                                    <% } %>
+                                    <%= linkTo(editBoardPath({ board_id: board.ID }), {class: "btn btn-warning", title: "Board settings"}) { %>
+                                        <i class="icon-cog"></i>
+                                    <% } %>
+                                    <%= linkTo(boardPath({ board_id: board.ID }), {class: "btn btn-danger", "data-method": "DELETE", "data-confirm": "Are you sure?", "title": "Delete board"}) { %>
                                         <i class="icon-trash-o"></i>
+                                    <% } %>
+                                <% } else { %>
+                                    <%= remoteLinkTo(boardPostsPath({ board_id: board.ID }), {class: "btn btn-primary", data-method: "POST"}) { %>
+                                        <i class="icon-plus"></i>
                                     <% } %>
                                 <% } %>
                             </div>

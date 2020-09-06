@@ -12,6 +12,10 @@
 
 <ul id="comment-list" class="list-unstyled">
     <%= for (comment) in comments { %>
+
+    <%# TODO: Partial won't work, something is broken. %>
+    <%#= partial("/comments/item.plush.html") %>
+    <%# REMEMBER TO UPDATE _item.plush.html %>
     <li class='media media-small <%= if (isOriginalPosterComment(comment, post)) { return "comment-original-poster" } %>' data-comment-id="<%= comment.ID %>">
         <img class="mr-3" src='<%= commentAvatarURL(comment) %>' alt='<%= commentAuthor(comment) %>'>
         <div class="media-body">
