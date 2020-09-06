@@ -64,6 +64,10 @@ func (t ActionSuite) BoardPath(b *models.Board) string {
 	return t.Path("boardPath", Opts{"board_id": b.ID})
 }
 
+func (t ActionSuite) BoardsPath() string {
+	return t.Path("boardsPath", nil)
+}
+
 func Test_ActionSuite(t *testing.T) {
 	action, err := suite.NewActionWithFixtures(App(), packr.New("Test_ActionSuite", "../fixtures"))
 	if err != nil {

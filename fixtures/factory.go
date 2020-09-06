@@ -97,30 +97,33 @@ func (f Factory) mustCreateBoard(b *models.Board) *models.Board {
 }
 
 func (f Factory) MustCreateBoard() *models.Board {
-	b := &models.Board{
-		Name: randomdata.SillyName(),
-	}
-	return f.mustCreateBoard(b)
+	return f.MustCreateBoardWithNoVoteLimit()
 }
 
-func (f Factory) MustCreateBoardWithVoteLimit(max int) *models.Board {
-	b := &models.Board{
-		Name: randomdata.SillyName(),
-		// VotingStrategyRaw: slices.NewMap(),
-		VotingStrategy: models.VotingStrategy{
-			BoardMax: nulls.NewInt(max),
-		},
-	}
-	return f.mustCreateBoard(b)
-}
-
-func (f Factory) MustCreateBoardWithNoVoteLimit() *models.Board {
-	b := &models.Board{
+func (f Factory) ValidBoard() *models.Board {
+	return &models.Board{
 		Name: randomdata.SillyName(),
 		// VotingStrategyRaw: slices.NewMap(),
 		VotingStrategy: models.VotingStrategy{
 			BoardMax: nulls.Int{Valid: false},
 		},
 	}
-	return f.mustCreateBoard(b)
+}
+
+func (f Factory) ValidBoardWithVoteLimit(max int) *models.Board {
+	return &models.Board{
+		Name: randomdata.SillyName(),
+		// VotingStrategyRaw: slices.NewMap(),
+		VotingStrategy: models.VotingStrategy{
+			BoardMax: nulls.NewInt(max),
+		},
+	}
+}
+
+func (f Factory) MustCreateBoardWithVoteLimit(max int) *models.Board {
+	return f.mustCreateBoard(f.ValidBoardWithVoteLimit(max))
+}
+
+func (f Factory) MustCreateBoardWithNoVoteLimit() *models.Board {
+	return f.mustCreateBoard(f.ValidBoard())
 }

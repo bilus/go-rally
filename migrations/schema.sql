@@ -66,6 +66,22 @@ CREATE TABLE public.audit_events (
 ALTER TABLE public.audit_events OWNER TO postgres;
 
 --
+-- Name: board_members; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.board_members (
+    id uuid NOT NULL,
+    board_id uuid NOT NULL,
+    user_id uuid NOT NULL,
+    is_owner boolean NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE public.board_members OWNER TO postgres;
+
+--
 -- Name: boards; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -159,6 +175,14 @@ ALTER TABLE ONLY public.attachments
 
 ALTER TABLE ONLY public.audit_events
     ADD CONSTRAINT audit_events_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: board_members board_members_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.board_members
+    ADD CONSTRAINT board_members_pkey PRIMARY KEY (id);
 
 
 --

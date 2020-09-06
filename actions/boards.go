@@ -2,6 +2,7 @@ package actions
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"rally/models"
 
@@ -162,6 +163,11 @@ func (v BoardsResource) Create(c buffalo.Context) error {
 		return fmt.Errorf("no transaction found")
 	}
 
+	currentUser, err := CurrentUser(c)
+	if err != nil {
+		return err
+	}
+
 	// Validate the data from the html form
 	verrs, err := tx.ValidateAndCreate(board)
 	if err != nil {
@@ -183,6 +189,19 @@ func (v BoardsResource) Create(c buffalo.Context) error {
 		}).Wants("xml", func(c buffalo.Context) error {
 			return c.Render(http.StatusUnprocessableEntity, r.XML(verrs))
 		}).Respond(c)
+	}
+
+	// Make the current user the owner of the board.
+	log.Println("Adding member")
+	member := &models.BoardMember{
+		BoardID: board.ID,
+		UserID:  currentUser.ID,
+		IsOwner: true,
+	}
+
+	if err := tx.Create(member); err != nil {
+		log.Printf("Error creating owner for board %v: %v", board.ID, err)
+		return err
 	}
 
 	return responder.Wants("html", func(c buffalo.Context) error {
