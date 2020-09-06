@@ -101,6 +101,7 @@ Good luck!
       - [X] Failing tests
       - [X] Remove User#Votes.
       - [X] Real audit.
+      - [X] Remove Vote.
     - [ ] When creating board, you specify voting policy
        - [ ] Vote refill schedule + num votes
        - [ ] Vote limit can be turned off
