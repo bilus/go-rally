@@ -100,7 +100,7 @@ Good luck!
       - [X] Update post votes based on count from upvote/downvote in /votes create/destroy.
       - [X] Failing tests
       - [X] Remove User#Votes.
-      - [ ] Real audit.
+      - [X] Real audit.
     - [ ] When creating board, you specify voting policy
        - [ ] Vote refill schedule + num votes
        - [ ] Vote limit can be turned off
@@ -137,6 +137,10 @@ Good luck!
       See a list of who reacted, slack-like
       Users can define conventions e.g. "I want to help"
 - [ ] Tenancy
+- [ ] Use websockets to show user activity in real-time
+      "Gina just upvoted a post"
+- [ ] User can see their action history
+      Admin can see it too. (Anonymous actions?)
 - [ ] Admin can delete/edit any posts
 - [ ] BUG: Navbar collapsing but no hamburger menu
 - [ ] Slack/email integration

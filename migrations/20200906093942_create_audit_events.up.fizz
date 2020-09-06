@@ -1,7 +1,7 @@
-create_table("boards") {
+create_table("audit_events") {
 	t.Column("id", "uuid", {primary: true})
-	t.Column("name", "string", {})
-	t.Column("description", "text", {null: true})
+	t.Column("type", "string", {})
+	t.Column("payload", "jsonb", {})
     t.Column("created_at", "timestamp with time zone", {})
     t.Column("updated_at", "timestamp with time zone", {})
 }

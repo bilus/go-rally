@@ -51,6 +51,21 @@ CREATE TABLE public.attachments (
 ALTER TABLE public.attachments OWNER TO postgres;
 
 --
+-- Name: audit_events; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.audit_events (
+    id uuid NOT NULL,
+    type character varying(255) NOT NULL,
+    payload jsonb NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.audit_events OWNER TO postgres;
+
+--
 -- Name: boards; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -179,6 +194,14 @@ ALTER TABLE ONLY public.votes ALTER COLUMN id SET DEFAULT nextval('public.votes_
 
 ALTER TABLE ONLY public.attachments
     ADD CONSTRAINT attachments_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: audit_events audit_events_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.audit_events
+    ADD CONSTRAINT audit_events_pkey PRIMARY KEY (id);
 
 
 --

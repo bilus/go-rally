@@ -1,15 +1,16 @@
 package actions
 
 import (
-	"database/sql"
 	"fmt"
 	"net/http"
 	"rally/models"
 
+	"log"
+
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/pop/v5"
+	"github.com/gobuffalo/pop/v5/slices"
 	"github.com/gofrs/uuid"
-	"github.com/pkg/errors"
 )
 
 // VotesCreate upvotes a post
@@ -49,17 +50,7 @@ func VotesCreate(c buffalo.Context) error {
 		if err != nil {
 			return fmt.Errorf("upvoting failed: %v", err)
 		}
-		// TODO: What we need is an audit log.
-		vote := &models.Vote{PostID: postId, UserID: u.ID}
-		verrs, err := tx.ValidateAndCreate(vote)
-		if err != nil {
-			return fmt.Errorf("upvoting failed: %v", err)
-		}
-		if verrs.HasAny() {
-			// TODO: This is an internal error.
-			c.Set("errors", verrs)
-			return c.Render(http.StatusUnprocessableEntity, r.JavaScript("error.js"))
-		}
+		logVotingAuditEvent(c, "upvote", post)
 	} else {
 		return c.Render(http.StatusUnprocessableEntity, r.JavaScript("error.js"))
 	}
@@ -102,25 +93,41 @@ func VotesDestroy(c buffalo.Context) error {
 		if err != nil {
 			return fmt.Errorf("upvoting failed: %v", err)
 		}
-		// TODO: What we need is an audit log.
-		// Indeed, it may be intereesting how often ppl change their votes.
-		var vote models.Vote
-		err = tx.Where("post_id = ? AND user_id = ?", postId, u.ID).First(&vote)
-		if err != nil {
-			if errors.Cause(err) == sql.ErrNoRows {
-				return c.Render(http.StatusUnprocessableEntity, r.JavaScript("votes/fail.js"))
-			}
-			return err
-		}
-
-		err = tx.Destroy(&vote)
-		if err != nil {
-			return err
-		}
+		logVotingAuditEvent(c, "downpvote", post)
 	} else {
 		return c.Render(http.StatusUnprocessableEntity, r.JavaScript("votes/fail.js"))
 	}
 	c.Set("post", post)
 	c.Set("board", &post.Board)
 	return c.Render(http.StatusOK, r.JavaScript("votes/create.js"))
+}
+
+func logVotingAuditEvent(c buffalo.Context, type_ string, post *models.Post) {
+	tx, ok := c.Value("tx").(*pop.Connection)
+	if !ok {
+		log.Printf("unable to log event: %v", fmt.Errorf("no transaction found"))
+	}
+
+	userID := uuid.UUID{}
+	u, err := CurrentUser(c)
+	if err != nil {
+		log.Printf("unable to retrieve current user for auditing purposes: %v", err)
+	} else {
+		userID = u.ID
+	}
+
+	event := &models.AuditEvent{
+		Type: type_,
+		Payload: slices.Map{
+			"current_user": userID,
+			"board_id":     post.BoardID,
+			"post_id":      post.ID,
+			"author_id":    post.AuthorID,
+			"post_votes":   post.Votes,
+		},
+	}
+	err = tx.Create(event)
+	if err != nil {
+		log.Printf("unable to log event: %v", err)
+	}
 }

@@ -4,5 +4,6 @@ create_table("votes") {
 	t.Column("user_id", "uuid", {})
     t.ForeignKey("post_id", {"posts": ["id"]}, {"on_delete": "cascade"})
     t.ForeignKey("user_id", {"users": ["id"]}, {"on_delete": "cascade"})
-    t.Timestamps()
+    t.Column("created_at", "timestamp with time zone", {})
+    t.Column("updated_at", "timestamp with time zone", {})
 }
