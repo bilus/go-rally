@@ -112,8 +112,8 @@ Good luck!
     - [X] Board owner can delete and edit posts
     - [X] Test everything
 - [ ] Prepare for Tooploox test run
-    - [ ] Redis configuration from open redis var
-    - [ ] App version
+    - [X] Redis configuration from open redis var
+    - [X] App version
     - [ ] Deploy
     - [ ] Test
 - [ ] Refactor

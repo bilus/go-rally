@@ -70,9 +70,10 @@ func App() *buffalo.App {
 		app.Use(SetCurrentUser)
 		app.Use(Authorize)
 
-		postsResource := PostsResource{}
 		app.GET("/", Home)
+		app.GET("/changelog", Changelog)
 
+		postsResource := PostsResource{}
 		app.GET("/posts/{post_id}/edit", postsResource.Edit)
 		app.GET("/posts/{post_id}", postsResource.Show)
 		app.PUT("/posts/{post_id}", postsResource.Update)

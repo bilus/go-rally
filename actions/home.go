@@ -19,6 +19,10 @@ func Home(c buffalo.Context) error {
 	return c.Redirect(http.StatusSeeOther, fmt.Sprintf("/boards/%s", boardID.String()))
 }
 
+func Changelog(c buffalo.Context) error {
+	return c.Render(http.StatusOK, r.HTML("/CHANGELOG.md"))
+}
+
 func GetLastBoardID(c buffalo.Context) (uuid.UUID, bool, error) {
 	v := c.Session().Get("last_board_id")
 	if v == nil {

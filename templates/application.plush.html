@@ -73,6 +73,11 @@
                 <%= yield %>
             </div>
         </main>
+        <footer>
+            <%= linkTo(changelogPath(), {class: "btn btn-link"}) { %>
+            <i class="icon-file-text-o"></i> Changelog
+            <% } %>
+        </footer>
 
         <%= javascriptTag("application.js") %>
     </body>
