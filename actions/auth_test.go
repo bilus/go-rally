@@ -52,7 +52,6 @@ func (t *ActionSuite) Test_Auth_Create() {
 			res := t.HTML("/auth").Post(&models.User{
 				Email:    tcase.Email,
 				Password: tcase.Password,
-				Votes:    1,
 			})
 
 			t.Equal(tcase.Status, res.Code)

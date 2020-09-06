@@ -20,11 +20,9 @@ type User struct {
 	CreatedAt    time.Time    `json:"created_at" db:"created_at"`
 	UpdatedAt    time.Time    `json:"updated_at" db:"updated_at"`
 	Email        string       `json:"email" db:"email"`
-	PasswordHash nulls.String `json:"password_hash" db:"password_hash"`
+	PasswordHash nulls.String `json:"password_hash" db:"password_hash" form:"-"`
 
 	GoogleUserID nulls.String `json:"google_user_id" db:"google_user_id"`
-
-	Votes int `json:"votes" db:"votes"`
 
 	Password             string `json:"-" db:"-"`
 	PasswordConfirmation string `json:"-" db:"-"`

@@ -99,8 +99,8 @@ Good luck!
     - [ ] Clean up code
       - [X] Update post votes based on count from upvote/downvote in /votes create/destroy.
       - [X] Failing tests
+      - [X] Remove User#Votes.
       - [ ] Real audit.
-      - [ ] Remove User#Votes.
     - [ ] When creating board, you specify voting policy
        - [ ] Vote refill schedule + num votes
        - [ ] Vote limit can be turned off

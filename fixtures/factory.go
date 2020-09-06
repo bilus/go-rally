@@ -72,7 +72,6 @@ func (f Factory) MustCreateUser() *models.User {
 		Password:             "password",
 		PasswordConfirmation: "password",
 		GoogleUserID:         nulls.NewString("123"),
-		Votes:                5,
 	}
 
 	verrs, err := u.Create(f.db)

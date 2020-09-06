@@ -17,7 +17,6 @@ func (as *ActionSuite) Test_Users_Create() {
 		Email:                "mark@example.com",
 		Password:             "password",
 		PasswordConfirmation: "password",
-		Votes:                100,
 	}
 
 	res := as.HTML("/users").Post(u)
