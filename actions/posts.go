@@ -239,7 +239,7 @@ func (v PostsResource) Update(c buffalo.Context) error {
 		c.Flash().Add("success", T.Translate(c, "post.updated.success"))
 
 		// and redirect to the show page
-		return c.Redirect(http.StatusSeeOther, "/posts/%v", post.ID)
+		return c.Redirect(http.StatusSeeOther, "/boards/%v", post.BoardID)
 	}).Wants("json", func(c buffalo.Context) error {
 		return c.Render(http.StatusOK, r.JSON(post))
 	}).Wants("xml", func(c buffalo.Context) error {
