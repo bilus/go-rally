@@ -26,11 +26,10 @@ func init() {
 	}
 	pop.Debug = env == "development"
 
-	// TODO
-	rds := r.NewClient(&r.Options{
-		Addr:     "localhost:6379",
-		Password: "", // no password set
-		DB:       0,  // use default DB
-	})
+	redisOptions, err := r.ParseURL(envy.Get("OPENREDIS_URL", "redis://localhost:6379"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	rds := r.NewClient(redisOptions)
 	Redis = redis.NewStore(rds)
 }
