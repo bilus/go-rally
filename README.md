@@ -107,19 +107,18 @@ Good luck!
     - [X] Allow empty max votes
     - [X] Board creator can edit/destroy board
     - [X] Board creator can reset votes
-    - [ ] Style everything
-      - [ ] Try to use morphdom to fix flicker when upvoting/downvoting
+    - [X] Style everything
+    - [X] Upvote post on its page
     - [ ] Board owner can delete comments
     - [ ] Board owner can delete and edit posts
     - [ ] Test everything
 - [ ] Prepare for Tooploox test run
     - [ ] Redis configuration from open redis var
-    - [ ] Upvote post on its page
     - [ ] App version
     - [ ] Deploy
     - [ ] Test
 - [ ] Reactions
-
+- [ ] Try to use morphdom to fix flicker when upvoting/downvoting
 - [ ] Voting improvements
     - [ ] Can take votes back for X minutes
     - [ ] Vote limit can be turned off

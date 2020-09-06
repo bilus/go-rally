@@ -4,4 +4,6 @@
     Upvotes left: <%= votesRemaining(current_user, board) %> <span data-toggle="tooltip" title="Votes are refilled periodically but unused votes do not roll over to the next period."><i class="icon-question-circle"></i></abbr>
     <% } %>
 </span>
+<% } else { %>
+<span>&nbsp;</span>
 <% } %>

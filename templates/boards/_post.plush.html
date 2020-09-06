@@ -3,9 +3,7 @@
         <%= remoteLinkTo(postVotesPath({ post_id: post.ID}), { "data-method": "POST" }) { %>
         <i class="icon-caret-up"></i>
         <% } %>
-        <h5 class="num-votes">
-            <%= post.Votes %>
-        </h5>
+        <%= partial("boards/post_votes.html")%>
         <%= remoteLinkTo(postVotesPath({ post_id: post.ID}), { "data-method": "DELETE" }) { %>
         <i class="icon-caret-down"></i>
         <% } %>

@@ -98,7 +98,7 @@ func VotesDestroy(c buffalo.Context) error {
 	}
 	c.Set("post", post)
 	c.Set("board", &post.Board)
-	return c.Render(http.StatusOK, r.JavaScript("votes/create.js"))
+	return c.Render(http.StatusOK, r.JavaScript("votes/destroy.js"))
 }
 
 func logVotingAuditEvent(c buffalo.Context, type_ string, post *models.Post) {

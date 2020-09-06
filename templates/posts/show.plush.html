@@ -10,11 +10,24 @@
     </nav>
 </div>
 
-<div class="media raised p-5 post-view">
+<h6 class="col text-right text-secondary user-votes">
+    <%= partial("user_votes.html") %>
+</h6>
+
+<div class="media raised p-5 post-view" data-post-id="<%= post.ID %>">
     <img class="mr-3" src='<%= postAvatarURL(post) %>' alt="<%= postAuthor(post) %>">
     <div class="media-body">
         <div class="container">
             <div class="row">
+                <div class="col-1 align-middle text-center font-weight-bold votes">
+                    <%= remoteLinkTo(postVotesPath({ post_id: post.ID}), { "data-method": "POST" }) { %>
+                    <i class="icon-caret-up"></i>
+                    <% } %>
+                    <%= partial("boards/post_votes.html")%>
+                    <%= remoteLinkTo(postVotesPath({ post_id: post.ID}), { "data-method": "DELETE" }) { %>
+                    <i class="icon-caret-down"></i>
+                    <% } %>
+                </div>
                 <div class="col-9">
                     <h3 class="d-inline-block w-100">
                         <%= safeTitle(post.Title) %>
@@ -24,7 +37,7 @@
                     </h3>
                     <h6 class="mt-0"><%= postAuthor(post) %> <span class="time-ago"><%= timeAgo(post.CreatedAt) %></span></h6>
                 </div>
-                <div class="col-3 text-right">
+                <div class="col-2 text-right">
                     <%= if (canManagePost(post)) { %>
                     <%= linkTo(editPostPath({ post_id: post.ID }), {class: "btn btn-primary btn-sm", body: "Edit"}) %>
                     <%= linkTo(postPath({ post_id: post.ID }), {class: "btn btn-danger btn-sm", "data-method": "DELETE", "data-confirm": "Are you sure?"}) { %>
@@ -32,9 +45,12 @@
                     <% } %>
                     <% } %>
                 </div>
+
+
             </div>
             <div class="row">
-                <div class="col">
+                <div class="col-1"></div>
+                <div class="col-11">
                     <%= markdown(post.Body) %>
                 </div>
             </div>
