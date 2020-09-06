@@ -167,18 +167,11 @@ OAuth callback: https://console.developers.google.com/apis/credentials?pli=1
 
 ## Font Awesome icons
 
-A list of icons we use:
+To minimize the size of the CSS, we build a custom one using https://icomoon.io/app/. If you want to add another icon, rebuild `assets/css/icons.css`, and copy fonts into `public/fonts/` (see [The Easy Way](https://blog.webjeda.com/optimize-fontawesome/)).
 
-- `fa-caret-down`
-- `fa-caret-up`
-- `fa-google`
-- `fa-home`
-- `fa-lightbulb`
-- `fa-plus`
-- `fa-question-circle`
-- `fa-trash-alt`
+Icomoon project JSON is in `/icomoon.json`, load it into https://icomoon.io/app/ to manage icons..
 
-To minimize the size of the CSS, we build a custom one using https://icomoon.io/app/. If you want to add another icon, rebuild the `font-awesome.css` (see [The Easy Way](https://blog.webjeda.com/optimize-fontawesome/)).
+> IMPORTANT: After copying over `icons.css`, change font paths to absolute.
 
 ## Design ideas
 

@@ -41,10 +41,14 @@ func (v CommentsResource) List(c buffalo.Context) error {
 	if err != nil {
 		return c.Error(http.StatusNotFound, err)
 	}
+
+	post := &models.Post{}
+	if err := tx.Find(post, postID.String()); err != nil {
+		return c.Error(http.StatusNotFound, err)
+	}
+
 	q := tx.PaginateFromParams(c.Params())
-
 	comments := &models.Comments{}
-
 	if err := listComments(q, postID, comments); err != nil {
 		return err
 	}
@@ -56,10 +60,12 @@ func (v CommentsResource) List(c buffalo.Context) error {
 		// Add the paginator to the context so it can be used in the template.
 		c.Set("pagination", q.Paginator)
 		c.Set("comments", comments)
+		c.Set("post", post)
 		return c.Render(http.StatusOK, r.HTML("/comments/index.plush.html"))
 	}).Wants("javascript", func(c buffalo.Context) error {
 		c.Set("comments", comments)
 		c.Set("comment", &models.Comment{PostID: postID}) // Inline new comment form.
+		c.Set("post", post)
 		return c.Render(http.StatusOK, r.JavaScript("/comments/index.plush.js"))
 	}).Wants("json", func(c buffalo.Context) error {
 		return c.Render(200, r.JSON(comments))

@@ -84,3 +84,15 @@ tr.spacer {
     font-size: 11px!important;
     min-width: 60px!important;
 }
+
+#comment-list li {
+    margin-bottom: 2em;
+}
+
+#comment-list .mic {
+    display: none;
+}
+
+#comment-list .comment-original-poster .mic {
+    display: inline;
+}

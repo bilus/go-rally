@@ -94,6 +94,14 @@ func init() {
 				}
 				return avatarURL(u.Email, size, true)
 			},
+			"isOriginalPosterComment": func(comment, post interface{}) bool {
+				c := toCommentPtr(comment)
+				p := toPostPtr(post)
+				if c.Anonymous || p.Anonymous {
+					return false
+				}
+				return c.AuthorID == p.AuthorID
+			},
 			"canManageComment": func(comment interface{}, help plush.HelperContext) bool {
 				return canManageComment(comment, help.Context)
 			},
