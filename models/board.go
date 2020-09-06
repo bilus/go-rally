@@ -25,7 +25,7 @@ type Board struct {
 func DefaultBoard() *Board {
 	return &Board{
 		VotingStrategy: VotingStrategy{
-			BoardMax: 10,
+			BoardMax: nulls.NewInt(10),
 		},
 	}
 }

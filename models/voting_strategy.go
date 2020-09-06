@@ -3,10 +3,12 @@ package models
 import (
 	"fmt"
 
+	"github.com/gobuffalo/nulls"
 	"github.com/gofrs/uuid"
 )
 
 var ErrLimit = fmt.Errorf("limit reached")
+var ErrNoLimit = fmt.Errorf("board has no vote limit")
 
 type Store interface {
 	UpdateInts(f func(vals []int) error, keys ...string) ([]int, error)
@@ -14,10 +16,13 @@ type Store interface {
 }
 
 type VotingStrategy struct {
-	BoardMax int `json:"board_max"`
+	BoardMax nulls.Int `json:"board_max"`
 }
 
 func (s VotingStrategy) VotesRemaining(store Store, user *User, board *Board) (int, error) {
+	if !s.BoardMax.Valid {
+		return 0, ErrNoLimit
+	}
 	k := s.key(user.ID, board.ID)
 	noVotes := 0
 	votes, err := store.GetInt(k, &noVotes)
@@ -25,7 +30,7 @@ func (s VotingStrategy) VotesRemaining(store Store, user *User, board *Board) (i
 		return 0, err
 	}
 
-	return s.BoardMax - votes, nil
+	return s.BoardMax.Int - votes, nil
 }
 
 func (s VotingStrategy) Downvote(store Store, user *User, post *Post) (postVotes int, success bool, err error) {
@@ -47,8 +52,10 @@ func (s VotingStrategy) Downvote(store Store, user *User, post *Post) (postVotes
 func (s VotingStrategy) Upvote(store Store, user *User, post *Post) (postVotes int, success bool, err error) {
 	return s.update(store, user, post, func(xs []int) error {
 		boardVotes := xs[0]
-		if boardVotes >= s.BoardMax {
-			return ErrLimit
+		if s.BoardMax.Valid {
+			if boardVotes >= s.BoardMax.Int {
+				return ErrLimit
+			}
 		}
 		xs[0] = boardVotes + 1
 		pageVotes := xs[1]

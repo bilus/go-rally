@@ -104,6 +104,7 @@ Good luck!
       - [X] Remove Vote.
     - [X] When creating/editing board, you specify voting policy
        - [X] Board limit
+    - [X] Allow empty max votes
     - [ ] Board creator can edit/destroy board
     - [ ] Board creator can reset votes
     - [ ] Style everything

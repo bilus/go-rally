@@ -2,7 +2,6 @@ package models_test
 
 import (
 	"fmt"
-	"rally/models"
 )
 
 type FakeStore struct {
@@ -43,11 +42,35 @@ func (s FakeStore) UpdateInts(f func(vals []int) error, keys ...string) ([]int, 
 }
 
 // Can upvote up to a limit.
+func (t *ModelSuite) Test_VotingStrategy_UpvotingNoUpperLimit() {
+	store := NewFakeStore()
+
+	u := t.MustCreateUser()
+	b := t.MustCreateBoardWithNoVoteLimit()
+
+	p := t.MustCreatePost(t.ValidPost(b, u))
+
+	s := b.VotingStrategy
+	_, err := s.VotesRemaining(store, u, b)
+	t.Error(err) // No limit.
+
+	postVotes, upvoted, err := s.Upvote(store, u, p)
+	t.NoError(err)
+	t.True(upvoted)
+	t.Equal(1, postVotes)
+
+	postVotes, upvoted, err = s.Upvote(store, u, p)
+	t.NoError(err)
+	t.True(upvoted)
+	t.Equal(2, postVotes)
+}
+
+// Vote limit can be turned off.
 func (t *ModelSuite) Test_VotingStrategy_UpvotingUpperLimit() {
 	store := NewFakeStore()
 
 	u := t.MustCreateUser()
-	b := t.MustCreateBoardWithVotingStrategy(models.VotingStrategy{BoardMax: 1})
+	b := t.MustCreateBoardWithVoteLimit(1)
 
 	p := t.MustCreatePost(t.ValidPost(b, u))
 
@@ -77,8 +100,8 @@ func (t *ModelSuite) Test_VotingStrategy_BoardIsolation() {
 
 	u := t.MustCreateUser()
 
-	b1 := t.MustCreateBoardWithVotingStrategy(models.VotingStrategy{BoardMax: 1})
-	b2 := t.MustCreateBoardWithVotingStrategy(models.VotingStrategy{BoardMax: 1})
+	b1 := t.MustCreateBoardWithVoteLimit(1)
+	b2 := t.MustCreateBoardWithVoteLimit(1)
 
 	p1 := t.MustCreatePost(t.ValidPost(b1, u))
 	p2 := t.MustCreatePost(t.ValidPost(b2, u))
@@ -111,7 +134,7 @@ func (t *ModelSuite) Test_VotingStrategy_Backsies() {
 	store := NewFakeStore()
 
 	u := t.MustCreateUser()
-	b := t.MustCreateBoardWithVotingStrategy(models.VotingStrategy{BoardMax: 1})
+	b := t.MustCreateBoardWithVoteLimit(1)
 
 	p := t.MustCreatePost(t.ValidPost(b, u))
 
@@ -156,12 +179,12 @@ func (t *ModelSuite) Test_VotingStrategy_Backsies() {
 }
 
 // Cannot take votes back for non-upvoted posts.
-func (t *ModelSuite) Test_VotingStrategy_BacksiesForUpvotedPosts() {
+func (t *ModelSuite) Test_VotingStrategy_BacksiesOnlyForUpvotedPosts() {
 	store := NewFakeStore()
 
 	u := t.MustCreateUser()
 
-	b := t.MustCreateBoardWithVotingStrategy(models.VotingStrategy{BoardMax: 1})
+	b := t.MustCreateBoardWithVoteLimit(1)
 
 	p1 := t.MustCreatePost(t.ValidPost(b, u))
 	p2 := t.MustCreatePost(t.ValidPost(b, u))

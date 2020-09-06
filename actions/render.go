@@ -100,6 +100,10 @@ func init() {
 			"canManagePost": func(post interface{}, help plush.HelperContext) bool {
 				return canManagePost(post, help.Context) // Crashes otherwise.
 			},
+			"isBoardVoteLimit": func(u *models.User, b *models.Board) bool {
+				_, err := b.VotesRemaining(models.Redis, u, b)
+				return err != models.ErrNoLimit
+			},
 			"votesRemaining": func(u *models.User, b *models.Board) int {
 				votes, err := b.VotesRemaining(models.Redis, u, b)
 				if err != nil {
@@ -154,6 +158,7 @@ func toPostPtr(post interface{}) *models.Post {
 	panic("Expecting models.Post or *models.Post")
 }
 
+// TODO: Move this into a value passed in context.
 func canManageComment(comment interface{}, help context.Context) bool {
 	c := toCommentPtr(comment)
 	u, err := CurrentUser(help)

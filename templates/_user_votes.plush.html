@@ -1,5 +1,7 @@
 <%= if (board) { %>
 <span class='user-votes <%= if (votesRemaining(current_user, board) <= 0) { return "text-danger" } %>'>
+    <%= if (isBoardVoteLimit(current_user, board)) { %>
     Upvotes left: <%= votesRemaining(current_user, board) %> <span data-toggle="tooltip" title="Votes are refilled periodically but unused votes do not roll over to the next period."><i class="icon-question-circle"></i></abbr>
+    <% } %>
 </span>
 <% } %>
