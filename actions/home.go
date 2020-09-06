@@ -20,7 +20,7 @@ func Home(c buffalo.Context) error {
 }
 
 func Changelog(c buffalo.Context) error {
-	return c.Render(http.StatusOK, r.HTML("/CHANGELOG.md"))
+	return c.Render(http.StatusOK, r.HTML("/changelog.md"))
 }
 
 func GetLastBoardID(c buffalo.Context) (uuid.UUID, bool, error) {

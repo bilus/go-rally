@@ -114,8 +114,13 @@ Good luck!
 - [ ] Prepare for Tooploox test run
     - [X] Redis configuration from open redis var
     - [X] App version
-    - [ ] Deploy
+    - [X] Deploy
     - [ ] Test
+      - [ ] Changelog gives 500
+
+
+
+
 - [ ] Refactor
     - [ ] Understand how code is connected
     - [ ] Define services, extracting repetitive code into helpers.
