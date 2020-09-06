@@ -5,6 +5,8 @@ import (
 
 	"github.com/gobuffalo/nulls"
 	"github.com/gofrs/uuid"
+
+	log "github.com/sirupsen/logrus"
 )
 
 var ErrLimit = fmt.Errorf("limit reached")
@@ -13,6 +15,7 @@ var ErrNoLimit = fmt.Errorf("board has no vote limit")
 type Store interface {
 	UpdateInts(f func(vals []int) error, keys ...string) ([]int, error)
 	GetInt(key string, default_ *int) (int, error)
+	SetInt(key string, x int) error
 }
 
 type VotingStrategy struct {
@@ -62,6 +65,19 @@ func (s VotingStrategy) Upvote(store Store, user *User, post *Post) (postVotes i
 		xs[1] = pageVotes + 1
 		return nil
 	})
+}
+
+func (s VotingStrategy) Refill(store Store, board *Board, userIDs ...uuid.UUID) error {
+	var lastErr error
+	for _, ID := range userIDs {
+		boardKey := s.key(ID, board.ID)
+		if err := store.SetInt(boardKey, 0); err != nil {
+			log.Errorf("Failed to refill board %v votes for user %v: %v", board.ID, ID, err)
+			lastErr = err
+
+		}
+	}
+	return lastErr
 }
 
 func (s VotingStrategy) update(store Store, user *User, post *Post, f func(xs []int) error) (postVotes int, success bool, err error) {

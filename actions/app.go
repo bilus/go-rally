@@ -82,6 +82,7 @@ func App() *buffalo.App {
 
 		app.POST("/posts/{post_id}/votes", VotesCreate)
 		app.DELETE("/posts/{post_id}/votes", VotesDestroy)
+
 		app.POST("/posts/{post_id}/images", ImagesCreate)
 		app.GET("/posts/{post_id}/images/{image_id}", ImagesShow)
 		app.Middleware.Skip(csrf, ImagesCreate) // TODO: Handle csrf token sent by the editor.
@@ -112,6 +113,7 @@ func App() *buffalo.App {
 
 		app.Resource("/boards", BoardsResource{})
 		app.POST("/boards/{board_id}/posts", postsResource.Create)
+		app.POST("/boards/{board_id}/refill", RefillCreate)
 
 		app.ServeFiles("/", assetsBox) // serve files from the public directory
 	}

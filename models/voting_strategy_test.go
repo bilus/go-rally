@@ -23,6 +23,11 @@ func (s FakeStore) GetInt(key string, default_ *int) (int, error) {
 	return i, nil
 }
 
+func (s FakeStore) SetInt(key string, x int) error {
+	s.m[key] = x
+	return nil
+}
+
 func (s FakeStore) UpdateInts(f func(vals []int) error, keys ...string) ([]int, error) {
 	vals := make([]int, len(keys))
 	for i, k := range keys {
@@ -42,30 +47,6 @@ func (s FakeStore) UpdateInts(f func(vals []int) error, keys ...string) ([]int, 
 }
 
 // Can upvote up to a limit.
-func (t *ModelSuite) Test_VotingStrategy_UpvotingNoUpperLimit() {
-	store := NewFakeStore()
-
-	u := t.MustCreateUser()
-	b := t.MustCreateBoardWithNoVoteLimit()
-
-	p := t.MustCreatePost(t.ValidPost(b, u))
-
-	s := b.VotingStrategy
-	_, err := s.VotesRemaining(store, u, b)
-	t.Error(err) // No limit.
-
-	postVotes, upvoted, err := s.Upvote(store, u, p)
-	t.NoError(err)
-	t.True(upvoted)
-	t.Equal(1, postVotes)
-
-	postVotes, upvoted, err = s.Upvote(store, u, p)
-	t.NoError(err)
-	t.True(upvoted)
-	t.Equal(2, postVotes)
-}
-
-// Vote limit can be turned off.
 func (t *ModelSuite) Test_VotingStrategy_UpvotingUpperLimit() {
 	store := NewFakeStore()
 
@@ -92,6 +73,30 @@ func (t *ModelSuite) Test_VotingStrategy_UpvotingUpperLimit() {
 	t.NoError(err)
 	t.False(upvoted)
 	t.Equal(1, postVotes)
+}
+
+// Vote limit can be turned off.
+func (t *ModelSuite) Test_VotingStrategy_UpvotingNoUpperLimit() {
+	store := NewFakeStore()
+
+	u := t.MustCreateUser()
+	b := t.MustCreateBoardWithNoVoteLimit()
+
+	p := t.MustCreatePost(t.ValidPost(b, u))
+
+	s := b.VotingStrategy
+	_, err := s.VotesRemaining(store, u, b)
+	t.Error(err) // No limit.
+
+	postVotes, upvoted, err := s.Upvote(store, u, p)
+	t.NoError(err)
+	t.True(upvoted)
+	t.Equal(1, postVotes)
+
+	postVotes, upvoted, err = s.Upvote(store, u, p)
+	t.NoError(err)
+	t.True(upvoted)
+	t.Equal(2, postVotes)
 }
 
 // Boards keep independent vote counts.
@@ -227,4 +232,45 @@ func (t *ModelSuite) Test_VotingStrategy_BacksiesOnlyForUpvotedPosts() {
 	count, err = b.VotesRemaining(store, u, b)
 	t.NoError(err)
 	t.Equal(1, count)
+}
+
+// Votes can be refilled.
+func (t *ModelSuite) Test_VotingStrategy_Refill() {
+	store := NewFakeStore()
+
+	u := t.MustCreateUser()
+	b := t.MustCreateBoardWithVoteLimit(1)
+
+	p := t.MustCreatePost(t.ValidPost(b, u))
+
+	s := b.VotingStrategy
+	count, err := s.VotesRemaining(store, u, b)
+	t.NoError(err)
+	t.Equal(1, count)
+
+	postVotes, upvoted, err := s.Upvote(store, u, p)
+	t.NoError(err)
+	t.True(upvoted)
+	t.Equal(1, postVotes)
+
+	count, err = s.VotesRemaining(store, u, b)
+	t.NoError(err)
+	t.Equal(0, count)
+
+	postVotes, upvoted, err = s.Upvote(store, u, p)
+	t.NoError(err)
+	t.False(upvoted)
+	t.Equal(1, postVotes)
+
+	err = s.Refill(store, b, u.ID)
+	t.NoError(err)
+
+	count, err = s.VotesRemaining(store, u, b)
+	t.NoError(err)
+	t.Equal(1, count)
+
+	postVotes, upvoted, err = s.Upvote(store, u, p)
+	t.NoError(err)
+	t.True(upvoted)
+	t.Equal(2, postVotes)
 }

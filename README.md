@@ -106,7 +106,9 @@ Good luck!
        - [X] Board limit
     - [X] Allow empty max votes
     - [X] Board creator can edit/destroy board
-    - [ ] Board creator can reset votes
+    - [X] Board creator can reset votes
+    - [ ] Board owner can delete comments
+    - [ ] Board owner can delete and edit posts
     - [ ] Style everything
       - [ ] Try to use morphdom to fix flicker when upvoting/downvoting
     - [ ] Test everything
@@ -116,6 +118,8 @@ Good luck!
     - [ ] App version
     - [ ] Deploy
     - [ ] Test
+- [ ] Reactions
+
 - [ ] Voting improvements
     - [ ] Can take votes back for X minutes
     - [ ] Vote limit can be turned off
@@ -137,7 +141,6 @@ Good luck!
       Board A -> Board B -> Board C
       Pipeline view
 - [ ] Private boards
-- [ ] Reactions
       See a list of who reacted, slack-like
       Users can define conventions e.g. "I want to help"
 - [ ] Tenancy

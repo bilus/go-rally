@@ -28,6 +28,10 @@ func (s Store) GetInt(key string, default_ *int) (int, error) {
 	return i, err
 }
 
+func (s Store) SetInt(key string, x int) error {
+	return s.r.Set(key, x, 0).Err()
+}
+
 func (s Store) IncWithin(key string, delta, max int) (int, bool, error) {
 	var ErrLimit = fmt.Errorf("limit reached")
 
