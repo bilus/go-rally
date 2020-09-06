@@ -6,6 +6,8 @@ import (
 	"github.com/gofrs/uuid"
 )
 
+var ErrLimit = fmt.Errorf("limit reached")
+
 type Store interface {
 	UpdateInts(f func(vals []int) error, keys ...string) ([]int, error)
 	GetInt(key string, default_ *int) (int, error)
@@ -27,10 +29,7 @@ func (s VotingStrategy) VotesRemaining(store Store, user *User, board *Board) (i
 }
 
 func (s VotingStrategy) Downvote(store Store, user *User, post *Post) (postVotes int, success bool, err error) {
-	boardKey := s.key(user.ID, post.BoardID)
-	pageKey := s.key(user.ID, post.ID)
-	ErrLimit := fmt.Errorf("limit reached")
-	xs, err := store.UpdateInts(func(xs []int) error {
+	return s.update(store, user, post, func(xs []int) error {
 		boardVotes := xs[0]
 		if boardVotes <= 0 {
 			return ErrLimit
@@ -42,22 +41,11 @@ func (s VotingStrategy) Downvote(store Store, user *User, post *Post) (postVotes
 		}
 		xs[1] = pageVotes - 1
 		return nil
-	}, boardKey, pageKey)
-
-	if err == ErrLimit {
-		return 0, false, nil
-	}
-	if err != nil {
-		return 0, false, err
-	}
-	return xs[1], true, nil
+	})
 }
 
 func (s VotingStrategy) Upvote(store Store, user *User, post *Post) (postVotes int, success bool, err error) {
-	boardKey := s.key(user.ID, post.BoardID)
-	pageKey := s.key(user.ID, post.ID)
-	ErrLimit := fmt.Errorf("limit reached")
-	xs, err := store.UpdateInts(func(xs []int) error {
+	return s.update(store, user, post, func(xs []int) error {
 		boardVotes := xs[0]
 		if boardVotes >= s.BoardMax {
 			return ErrLimit
@@ -66,10 +54,21 @@ func (s VotingStrategy) Upvote(store Store, user *User, post *Post) (postVotes i
 		pageVotes := xs[1]
 		xs[1] = pageVotes + 1
 		return nil
-	}, boardKey, pageKey)
+	})
+}
+
+func (s VotingStrategy) update(store Store, user *User, post *Post, f func(xs []int) error) (postVotes int, success bool, err error) {
+	boardKey := s.key(user.ID, post.BoardID)
+	pageKey := s.key(user.ID, post.ID)
+	xs, err := store.UpdateInts(f, boardKey, pageKey)
 
 	if err == ErrLimit {
-		return 0, false, nil // TODO: Is it intuitive to return zero here?
+		zero := 0
+		votes, err := store.GetInt(pageKey, &zero)
+		if err != nil {
+			return 0, false, err
+		}
+		return votes, false, nil
 	}
 	if err != nil {
 		return 0, false, err

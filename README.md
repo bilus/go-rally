@@ -98,6 +98,7 @@ Good luck!
     - [X] Vote budget is per-board, not global
     - [ ] Clean up code
       - [X] Update post votes based on count from upvote/downvote in /votes create/destroy.
+      - [X] Failing tests
       - [ ] Real audit.
       - [ ] Remove User#Votes.
     - [ ] When creating board, you specify voting policy

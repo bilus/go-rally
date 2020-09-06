@@ -17,7 +17,7 @@ type Board struct {
 	Name              string       `json:"name" db:"name"`
 	Description       nulls.String `json:"description" db:"description"`
 	VotingStrategy    `json:"-" db:"-"`
-	VotingStrategyRaw json.RawMessage `json:"-" db:"voting_strategy"`
+	VotingStrategyRaw json.RawMessage `json:"-" db:"voting_strategy" form:"-"`
 	CreatedAt         time.Time       `json:"created_at" db:"created_at"`
 	UpdatedAt         time.Time       `json:"updated_at" db:"updated_at"`
 }

@@ -15,10 +15,12 @@ type Post struct {
 	ID    uuid.UUID `json:"id" db:"id"`
 	Title string    `json:"title" db:"title"`
 	Body  string    `json:"body" db:"body"`
+
 	// Votes cache values in Redis.
-	Votes     int       `json:"votes" db:"votes"`
-	CreatedAt time.Time `json:"created_at" db:"created_at"`
-	UpdatedAt time.Time `json:"updated_at" db:"updated_at"`
+	Votes int `json:"votes" db:"votes" form:"-"`
+
+	CreatedAt time.Time `json:"created_at" db:"created_at" form:"-"`
+	UpdatedAt time.Time `json:"updated_at" db:"updated_at" form:"-"`
 
 	AuthorID uuid.UUID `json:"-" db:"author_id"`
 	Author   User      `json:"author,omitempty" belongs_to:"user" db:"-"`

@@ -30,7 +30,7 @@ func (t *ActionSuite) Test_PostsResource_CreateDraft() {
 
 func (t *ActionSuite) Test_PostsResource_Update() {
 	u := t.Authenticated(t.MustCreateUser())
-	b := t.MustCreateBoard()
+	b := t.MustCreateBoardWithVotingStrategy(models.VotingStrategy{BoardMax: 10})
 	p := t.MustCreatePost(t.ValidPost(b, u))
 	p.Title = "New title"
 	res := t.HTML(t.PostPath(p)).Put(p)

@@ -68,7 +68,7 @@ func (t *ModelSuite) Test_VotingStrategy_UpvotingUpperLimit() {
 	postVotes, upvoted, err = s.Upvote(store, u, p)
 	t.NoError(err)
 	t.False(upvoted)
-	t.Equal(2, postVotes)
+	t.Equal(1, postVotes)
 }
 
 // Boards keep independent vote counts.
@@ -171,11 +171,11 @@ func (t *ModelSuite) Test_VotingStrategy_BacksiesForUpvotedPosts() {
 	t.True(upvoted)
 	t.Equal(1, postVotes)
 
-	count, err := b.VotesRemaining(store, u, b1)
+	count, err := b.VotesRemaining(store, u, b)
 	t.NoError(err)
 	t.Equal(0, count)
 
-	count, err = b.VotesRemaining(store, u, b2)
+	count, err = b.VotesRemaining(store, u, b)
 	t.NoError(err)
 	t.Equal(0, count)
 
@@ -184,11 +184,11 @@ func (t *ModelSuite) Test_VotingStrategy_BacksiesForUpvotedPosts() {
 	t.False(downvoted)
 	t.Equal(0, postVotes)
 
-	count, err = b.VotesRemaining(store, u, b1)
+	count, err = b.VotesRemaining(store, u, b)
 	t.NoError(err)
 	t.Equal(0, count)
 
-	count, err = b.VotesRemaining(store, u, b2)
+	count, err = b.VotesRemaining(store, u, b)
 	t.NoError(err)
 	t.Equal(0, count)
 
@@ -197,11 +197,11 @@ func (t *ModelSuite) Test_VotingStrategy_BacksiesForUpvotedPosts() {
 	t.True(downvoted)
 	t.Equal(0, postVotes)
 
-	count, err = b.VotesRemaining(store, u, b1)
+	count, err = b.VotesRemaining(store, u, b)
 	t.NoError(err)
 	t.Equal(1, count)
 
-	count, err = b.VotesRemaining(store, u, b2)
+	count, err = b.VotesRemaining(store, u, b)
 	t.NoError(err)
 	t.Equal(1, count)
 }
