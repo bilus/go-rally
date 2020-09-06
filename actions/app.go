@@ -79,8 +79,6 @@ func App() *buffalo.App {
 		app.PUT("/posts/{post_id}", postsResource.Update)
 		app.DELETE("/posts/{post_id}", postsResource.Destroy)
 
-		app.Resource("/posts", PostsResource{})
-
 		app.POST("/posts/{post_id}/votes", VotesCreate)
 		app.DELETE("/posts/{post_id}/votes", VotesDestroy)
 

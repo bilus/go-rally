@@ -277,7 +277,7 @@ func (v PostsResource) Destroy(c buffalo.Context) error {
 		c.Flash().Add("success", T.Translate(c, "post.destroyed.success"))
 
 		// Redirect to the index page
-		return c.Redirect(http.StatusSeeOther, "/posts")
+		return c.Redirect(http.StatusSeeOther, "/boards/%v", post.BoardID)
 	}).Wants("json", func(c buffalo.Context) error {
 		return c.Render(http.StatusOK, r.JSON(post))
 	}).Wants("xml", func(c buffalo.Context) error {
