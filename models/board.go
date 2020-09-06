@@ -22,6 +22,14 @@ type Board struct {
 	UpdatedAt         time.Time       `json:"updated_at" db:"updated_at"`
 }
 
+func DefaultBoard() *Board {
+	return &Board{
+		VotingStrategy: VotingStrategy{
+			BoardMax: 10,
+		},
+	}
+}
+
 // String is not required by pop and may be deleted
 func (b Board) String() string {
 	jb, _ := json.Marshal(b)

@@ -5,4 +5,5 @@
                             uploadImage: false,
                             imageCSRFToken: "<%= authenticity_token %>"});
 </script>
+<%= f.InputTag("VotingStrategy.BoardMax", { label: "Vote limit per user" }) %>
 <button class="btn btn-success" role="submit">Save</button>

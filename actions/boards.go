@@ -140,7 +140,7 @@ func (v BoardsResource) Show(c buffalo.Context) error {
 // New renders the form for creating a new Board.
 // This function is mapped to the path GET /boards/new
 func (v BoardsResource) New(c buffalo.Context) error {
-	c.Set("board", &models.Board{})
+	c.Set("board", models.DefaultBoard())
 
 	return c.Render(http.StatusOK, r.HTML("/boards/new.plush.html"))
 }
@@ -149,9 +149,7 @@ func (v BoardsResource) New(c buffalo.Context) error {
 // path POST /boards
 func (v BoardsResource) Create(c buffalo.Context) error {
 	// Allocate an empty Board
-	board := &models.Board{
-		VotingStrategy: models.VotingStrategy{10},
-	}
+	board := &models.Board{}
 
 	// Bind board to the html form elements
 	if err := c.Bind(board); err != nil {

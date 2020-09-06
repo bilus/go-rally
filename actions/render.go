@@ -105,6 +105,9 @@ func init() {
 				if err != nil {
 					log.Printf("Error checking user's remaining votes: %v (user: %v, board: %v)", err, u.ID, b.ID)
 				}
+				if votes < 0 {
+					return 0 // Can happen after board owner changes voting strategy.
+				}
 				return votes
 			},
 		},
