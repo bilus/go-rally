@@ -199,7 +199,7 @@ func (v PostsResource) Update(c buffalo.Context) error {
 	// Allocate an empty Post
 	post := &models.Post{}
 
-	if err := tx.Find(post, c.Param("post_id")); err != nil {
+	if err := tx.Eager().Find(post, c.Param("post_id")); err != nil {
 		return c.Error(http.StatusNotFound, err)
 	}
 
@@ -260,7 +260,7 @@ func (v PostsResource) Destroy(c buffalo.Context) error {
 	post := &models.Post{}
 
 	// To find the Post the parameter post_id is used.
-	if err := tx.Find(post, c.Param("post_id")); err != nil {
+	if err := tx.Eager().Find(post, c.Param("post_id")); err != nil {
 		return c.Error(http.StatusNotFound, err)
 	}
 

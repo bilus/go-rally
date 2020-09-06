@@ -24,7 +24,7 @@ func canManagePost(post interface{}, help context.Context) bool {
 	if err != nil {
 		return false
 	}
-	return p.AuthorID == u.ID
+	return p.AuthorID == u.ID || canManageBoard(p.Board, help)
 }
 
 func authorizeCommentManagement(comment *models.Comment, c buffalo.Context) error {

@@ -86,7 +86,7 @@ Good luck!
     - [X] Set up env variables
     - [X] OAuth callback
     - [X] Attachments in PG
-- [ ] Boards
+- [X] Boards
     - [X] Board resource
     - [X] User can create a new board
     - [X] Posts are associated with a board
@@ -109,26 +109,30 @@ Good luck!
     - [X] Board creator can reset votes
     - [X] Style everything
     - [X] Upvote post on its page
-    - [ ] Board owner can delete comments
-    - [ ] Board owner can delete and edit posts
-    - [ ] Test everything
+    - [X] Board owner can delete and edit posts
+    - [X] Test everything
 - [ ] Prepare for Tooploox test run
     - [ ] Redis configuration from open redis var
     - [ ] App version
     - [ ] Deploy
     - [ ] Test
+- [ ] Refactor
+    - [ ] Understand how code is connected
+    - [ ] Define services, extracting repetitive code into helpers.
+      What about context?
+    - [ ] Make board model available in context for routes nested under /routes
+      c.Set("board", board)
+    - [ ] Helpers relying on board, use board from context
+    - [ ] Deleted board is just marked as deleted.
 - [ ] Reactions
-- [ ] Try to use morphdom to fix flicker when upvoting/downvoting
 - [ ] Voting improvements
     - [ ] Can take votes back for X minutes
     - [ ] Vote limit can be turned off
     - [ ] Vote reefill schedule.
 - [ ] Board management
-    - [ ] Board owner can edit/delete the board (= creator)
+    - [ ] Board owner can delete comments
     - [ ] Board records are only marked as deleted
     - [ ] Owners can add other owners
-    - [ ] Board list
-    - [ ] Changing board title
     - [ ] Posting rights can be limited to owners
 - [ ] Moderation
 - [ ] Scheduled job to reset available votes
