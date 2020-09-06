@@ -1,7 +1,7 @@
 package models
 
 import (
-	"log"
+	log "github.com/sirupsen/logrus"
 
 	"rally/redis"
 

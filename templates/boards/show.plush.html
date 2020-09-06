@@ -9,12 +9,13 @@
 
                             <div class="float-right">
                                 <%= remoteLinkTo(boardPostsPath({ board_id: board.ID }), {class: "btn btn-primary", data-method: "POST"}) { %>
-                                <i class="icon-plus"></i>
+                                    <i class="icon-plus"></i>
                                 <% } %>
-
-                                <%= linkTo(editBoardPath({ board_id: board.ID }), {class: "btn btn-warning", body: "Edit"}) %>
-                                <%= linkTo(boardPath({ board_id: board.ID }), {class: "btn btn-danger", "data-method": "DELETE", "data-confirm": "Are you sure?"}) { %>
-                                <i class="icon-trash-o"></i>
+                                <%= if (canManageBoard(board)) { %>
+                                    <%= linkTo(editBoardPath({ board_id: board.ID }), {class: "btn btn-warning", body: "Edit"}) %>
+                                    <%= linkTo(boardPath({ board_id: board.ID }), {class: "btn btn-danger", "data-method": "DELETE", "data-confirm": "Are you sure?"}) { %>
+                                        <i class="icon-trash-o"></i>
+                                    <% } %>
                                 <% } %>
                             </div>
                         </h2>

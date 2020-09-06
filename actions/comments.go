@@ -308,10 +308,3 @@ func listComments(q *pop.Query, postID uuid.UUID, comments *models.Comments) err
 	// Retrieve all Comments from the DB
 	return q.Where("post_id = ?", postID).Order("created_at").Eager().All(comments)
 }
-
-func authorizeCommentManagement(comment *models.Comment, c buffalo.Context) error {
-	if !canManageComment(comment, c) {
-		return fmt.Errorf("no access to comment %q", comment.ID)
-	}
-	return nil
-}

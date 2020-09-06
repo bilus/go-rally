@@ -284,10 +284,3 @@ func (v PostsResource) Destroy(c buffalo.Context) error {
 		return c.Render(http.StatusOK, r.XML(post))
 	}).Respond(c)
 }
-
-func authorizePostManagement(post *models.Post, c buffalo.Context) error {
-	if !canManagePost(post, c) {
-		return fmt.Errorf("no access to post %q", post.ID)
-	}
-	return nil
-}

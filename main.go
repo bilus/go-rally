@@ -1,7 +1,7 @@
 package main
 
 import (
-	"log"
+	log "github.com/sirupsen/logrus"
 
 	"rally/actions"
 )
@@ -15,7 +15,7 @@ import (
 func main() {
 	app := actions.App()
 	if err := app.Serve(); err != nil {
-		log.Fatal(err)
+		log.Fatalf("Cannot start the application: %v", err)
 	}
 }
 

@@ -5,12 +5,11 @@ import (
 	"net/http"
 	"rally/models"
 
-	"log"
-
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/pop/v5"
 	"github.com/gobuffalo/pop/v5/slices"
 	"github.com/gofrs/uuid"
+	log "github.com/sirupsen/logrus"
 )
 
 // VotesCreate upvotes a post
@@ -105,13 +104,13 @@ func VotesDestroy(c buffalo.Context) error {
 func logVotingAuditEvent(c buffalo.Context, type_ string, post *models.Post) {
 	tx, ok := c.Value("tx").(*pop.Connection)
 	if !ok {
-		log.Printf("unable to log event: %v", fmt.Errorf("no transaction found"))
+		log.Errorf("unable to log event: %v", fmt.Errorf("no transaction found"))
 	}
 
 	userID := uuid.UUID{}
 	u, err := CurrentUser(c)
 	if err != nil {
-		log.Printf("unable to retrieve current user for auditing purposes: %v", err)
+		log.Errorf("unable to retrieve current user for auditing purposes: %v", err)
 	} else {
 		userID = u.ID
 	}
@@ -128,6 +127,6 @@ func logVotingAuditEvent(c buffalo.Context, type_ string, post *models.Post) {
 	}
 	err = tx.Create(event)
 	if err != nil {
-		log.Printf("unable to log event: %v", err)
+		log.Errorf("unable to log event: %v", err)
 	}
 }

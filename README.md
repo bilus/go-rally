@@ -105,7 +105,7 @@ Good luck!
     - [X] When creating/editing board, you specify voting policy
        - [X] Board limit
     - [X] Allow empty max votes
-    - [ ] Board creator can edit/destroy board
+    - [X] Board creator can edit/destroy board
     - [ ] Board creator can reset votes
     - [ ] Style everything
       - [ ] Try to use morphdom to fix flicker when upvoting/downvoting

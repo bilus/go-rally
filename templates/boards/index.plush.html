@@ -19,8 +19,6 @@
         <td>
           <div class="float-right">
             <%= linkTo(boardPath({ board_id: board.ID }), {class: "btn btn-info", body: "View"}) %>
-            <%= linkTo(editBoardPath({ board_id: board.ID }), {class: "btn btn-warning", body: "Edit"}) %>
-            <%= linkTo(boardPath({ board_id: board.ID }), {class: "btn btn-danger", "data-method": "DELETE", "data-confirm": "Are you sure?", body: "Destroy"}) %>
           </div>
         </td>
       </tr>

@@ -1,7 +1,8 @@
 package fixtures
 
 import (
-	"log"
+	log "github.com/sirupsen/logrus"
+
 	"rally/models"
 
 	"github.com/Pallinder/go-randomdata"

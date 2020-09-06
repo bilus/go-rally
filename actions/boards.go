@@ -2,9 +2,10 @@ package actions
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"rally/models"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/pop/v5"
@@ -192,7 +193,6 @@ func (v BoardsResource) Create(c buffalo.Context) error {
 	}
 
 	// Make the current user the owner of the board.
-	log.Println("Adding member")
 	member := &models.BoardMember{
 		BoardID: board.ID,
 		UserID:  currentUser.ID,
@@ -200,7 +200,7 @@ func (v BoardsResource) Create(c buffalo.Context) error {
 	}
 
 	if err := tx.Create(member); err != nil {
-		log.Printf("Error creating owner for board %v: %v", board.ID, err)
+		log.Errorf("Error creating owner for board %v: %v", board.ID, err)
 		return err
 	}
 
@@ -251,6 +251,10 @@ func (v BoardsResource) Update(c buffalo.Context) error {
 
 	if err := tx.Find(board, c.Param("board_id")); err != nil {
 		return c.Error(http.StatusNotFound, err)
+	}
+
+	if err := authorizeBoardManagement(board, c); err != nil {
+		return err
 	}
 
 	// Bind Board to the html form elements
@@ -308,6 +312,10 @@ func (v BoardsResource) Destroy(c buffalo.Context) error {
 	// To find the Board the parameter board_id is used.
 	if err := tx.Find(board, c.Param("board_id")); err != nil {
 		return c.Error(http.StatusNotFound, err)
+	}
+
+	if err := authorizeBoardManagement(board, c); err != nil {
+		return err
 	}
 
 	if err := tx.Destroy(board); err != nil {

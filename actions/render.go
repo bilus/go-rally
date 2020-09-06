@@ -1,12 +1,12 @@
 package actions
 
 import (
-	"context"
 	"fmt"
-	"log"
 	"net/url"
 	"rally/models"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/dustin/go-humanize"
 	"github.com/gobuffalo/buffalo/render"
@@ -100,6 +100,9 @@ func init() {
 			"canManagePost": func(post interface{}, help plush.HelperContext) bool {
 				return canManagePost(post, help.Context) // Crashes otherwise.
 			},
+			"canManageBoard": func(board interface{}, help plush.HelperContext) bool {
+				return canManageBoard(board, help.Context) // Crashes otherwise.
+			},
 			"isBoardVoteLimit": func(u *models.User, b *models.Board) bool {
 				_, err := b.VotesRemaining(models.Redis, u, b)
 				return err != models.ErrNoLimit
@@ -107,7 +110,7 @@ func init() {
 			"votesRemaining": func(u *models.User, b *models.Board) int {
 				votes, err := b.VotesRemaining(models.Redis, u, b)
 				if err != nil {
-					log.Printf("Error checking user's remaining votes: %v (user: %v, board: %v)", err, u.ID, b.ID)
+					log.Errorf("Error checking user's remaining votes: %v (user: %v, board: %v)", err, u.ID, b.ID)
 				}
 				if votes < 0 {
 					return 0 // Can happen after board owner changes voting strategy.
@@ -132,47 +135,4 @@ func avatarURL(seed, size string, round bool) string {
 		opts = "&b=%%23ffffff&m=8&r=50"
 	}
 	return fmt.Sprintf("https://avatars.dicebear.com/api/bottts/%v.com.svg?colorful=1&w=%v&h=%v&deterministic=1%v", url.QueryEscape(seed), px, px, opts)
-}
-
-func toCommentPtr(comment interface{}) *models.Comment {
-	ptr, ok := comment.(*models.Comment)
-	if ok {
-		return ptr
-	}
-	val, ok := comment.(models.Comment)
-	if ok {
-		return &val
-	}
-	panic("Expecting models.Comment or *models.Comment")
-}
-
-func toPostPtr(post interface{}) *models.Post {
-	ptr, ok := post.(*models.Post)
-	if ok {
-		return ptr
-	}
-	val, ok := post.(models.Post)
-	if ok {
-		return &val
-	}
-	panic("Expecting models.Post or *models.Post")
-}
-
-// TODO: Move this into a value passed in context.
-func canManageComment(comment interface{}, help context.Context) bool {
-	c := toCommentPtr(comment)
-	u, err := CurrentUser(help)
-	if err != nil {
-		return false
-	}
-	return c.AuthorID == u.ID
-}
-
-func canManagePost(post interface{}, help context.Context) bool {
-	p := toPostPtr(post)
-	u, err := CurrentUser(help)
-	if err != nil {
-		return false
-	}
-	return p.AuthorID == u.ID
 }
