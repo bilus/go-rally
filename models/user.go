@@ -7,6 +7,7 @@ import (
 
 	"github.com/gobuffalo/nulls"
 	"github.com/gobuffalo/pop/v5"
+	"github.com/gobuffalo/pop/v5/slices"
 	"github.com/gobuffalo/validate/v3"
 	"github.com/gobuffalo/validate/v3/validators"
 	"github.com/gofrs/uuid"
@@ -26,6 +27,8 @@ type User struct {
 
 	Password             string `json:"-" db:"-"`
 	PasswordConfirmation string `json:"-" db:"-"`
+
+	StarredBoards slices.Map `json:"starred_boards" db:"starred_boards"`
 }
 
 // Create wraps up the pattern of encrypting the password and
@@ -100,4 +103,19 @@ func (u *User) ValidateCreate(tx *pop.Connection) (*validate.Errors, error) {
 // This method is not required and may be deleted.
 func (u *User) ValidateUpdate(tx *pop.Connection) (*validate.Errors, error) {
 	return validate.NewErrors(), nil
+}
+
+func (u *User) IsBoardStarred(board *Board) bool {
+	if u.StarredBoards == nil {
+		return false
+	}
+	starred, ok := u.StarredBoards[board.ID.String()].(bool)
+	return starred && ok
+}
+
+func (u *User) StarBoard(board *Board, starred bool) {
+	if u.StarredBoards == nil {
+		u.StarredBoards = slices.Map(map[string]interface{}{})
+	}
+	u.StarredBoards[board.ID.String()] = starred
 }

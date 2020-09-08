@@ -1,0 +1,11 @@
+<span id="star">
+    <%= if (isBoardStarred(board)) { %>
+        <%= remoteLinkTo(boardStarPath({board_id: board.ID}), {data-method: "DELETE"}) { %>
+            <i class="icon-star"></i>
+        <% } %>
+    <% } else { %>
+        <%= remoteLinkTo(boardStarPath({board_id: board.ID}), {data-method: "POST"}) { %>
+            <i class="icon-star-o"></i>
+        <% } %>
+    <% } %>
+</span>

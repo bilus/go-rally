@@ -111,6 +111,7 @@ func init() {
 			"canManageBoard": func(board interface{}, help plush.HelperContext) bool {
 				return canManageBoard(board, help.Context) // Crashes otherwise.
 			},
+			// TODO: User can be taken from context.
 			"isBoardVoteLimit": func(u *models.User, b *models.Board) bool {
 				_, err := b.VotesRemaining(models.Redis, u, b)
 				return err != models.ErrNoLimit
@@ -124,6 +125,14 @@ func init() {
 					return 0 // Can happen after board owner changes voting strategy.
 				}
 				return votes
+			},
+			"isBoardStarred": func(board *models.Board, help plush.HelperContext) bool {
+				u, err := CurrentUser(help)
+				if err != nil {
+					log.Errorf("Unable to retrieve current user to determine if board starred: %v", err)
+					return false
+				}
+				return u.IsBoardStarred(board)
 			},
 		},
 	})

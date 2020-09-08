@@ -155,7 +155,8 @@ CREATE TABLE public.users (
     password_hash character varying(255),
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    google_user_id character varying(255)
+    google_user_id character varying(255),
+    starred_boards jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 

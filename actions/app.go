@@ -113,6 +113,8 @@ func App() *buffalo.App {
 		app.Resource("/boards", BoardsResource{})
 		app.POST("/boards/{board_id}/posts", postsResource.Create)
 		app.POST("/boards/{board_id}/refill", RefillCreate)
+		app.POST("/boards/{board_id}/star", StarCreate)
+		app.DELETE("/boards/{board_id}/star", StarDestroy)
 
 		app.ServeFiles("/", assetsBox) // serve files from the public directory
 	}
