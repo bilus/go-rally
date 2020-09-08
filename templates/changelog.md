@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.3.0
+
+- Users can star boards, starred boards appearing on the user's dashboard.
+- Board selection navbar drop-down contains starred and most recent boards, in
+  that order, up to a limit.
+
+
 ## v0.2.1
 
 - Fix discrepancy of number of votes per post.

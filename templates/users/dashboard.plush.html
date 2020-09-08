@@ -1,5 +1,5 @@
 <%= if (len(boards) == 0) { %>
-<h3 class="d-inline-block">Welcome</h3>
+<h3 class="d-inline-block"><%= greeting() %></h3>
 <p class="lead">There are no boards yet...
     <%= linkTo(newBoardsPath(), {class: "btn btn-primary btn-small"}) { %>
     Create New Board
@@ -23,14 +23,12 @@
 
 <table class="table table-hover table-noborders">
     <tbody>
-        <%= for (board) in boards { %>
-          <%= if  (isBoardStarred(board)) { %>
+        <%= for (board) in starredBoards { %>
             <tr class="clickable" data-href="<%= boardPath({ board_id: board.ID }) %>">
                 <td>
                     <%= board.Name %>
                 </td>
             </tr>
-          <% } %>
         <% } %>
     </tbody>
 </table>

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"rally/models"
+	"rally/services"
 
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/pop/v5"
@@ -48,14 +49,28 @@ func UserDashboard(c buffalo.Context) error {
 		return fmt.Errorf("no transaction found")
 	}
 
-	boards := &models.Boards{}
+	u, err := CurrentUser(c)
+	if err != nil {
+		return err
+	}
+
+	q, err := services.ListStarredBoards(tx, u)
+	if err != nil {
+		return err
+	}
 
 	// Paginate results. Params "page" and "per_page" control pagination.
 	// Default values are "page=1" and "per_page=20".
-	q := tx.PaginateFromParams(c.Params())
+	q = q.PaginateFromParams(c.Params())
 
+	starredBoards := &models.Boards{}
 	// Retrieve all Boards from the DB
-	if err := q.All(boards); err != nil {
+	if err := q.All(starredBoards); err != nil {
+		return err
+	}
+
+	numBoards, err := tx.Count(&models.Board{})
+	if err != nil {
 		return err
 	}
 
@@ -63,12 +78,15 @@ func UserDashboard(c buffalo.Context) error {
 		// Add the paginator to the context so it can be used in the template.
 		c.Set("pagination", q.Paginator)
 
-		c.Set("boards", boards)
+		c.Set("starredBoards", starredBoards)
+		if numBoards == 0 {
+			c.Set("showWelcome", true)
+		}
 		return c.Render(http.StatusOK, r.HTML("/users/dashboard.plush.html"))
 	}).Wants("json", func(c buffalo.Context) error {
-		return c.Render(200, r.JSON(boards))
+		return c.Render(200, r.JSON(starredBoards))
 	}).Wants("xml", func(c buffalo.Context) error {
-		return c.Render(200, r.XML(boards))
+		return c.Render(200, r.XML(starredBoards))
 	}).Respond(c)
 }
 
