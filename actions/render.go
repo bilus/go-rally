@@ -2,6 +2,7 @@ package actions
 
 import (
 	"fmt"
+	"math/rand"
 	"net/url"
 	"rally/models"
 	"time"
@@ -126,13 +127,20 @@ func init() {
 				}
 				return votes
 			},
-			"isBoardStarred": func(board *models.Board, help plush.HelperContext) bool {
+			"isBoardStarred": func(board interface{}, help plush.HelperContext) bool {
+				b := toBoardPtr(board)
 				u, err := CurrentUser(help)
 				if err != nil {
 					log.Errorf("Unable to retrieve current user to determine if board starred: %v", err)
 					return false
 				}
-				return u.IsBoardStarred(board)
+				return u.IsBoardStarred(b)
+			},
+			"greeting": func() string {
+				greetings := []string{
+					"Salut! 👋", "Hola! 👋", "Privet! 👋", "Nǐ hǎo 👋", "Ciao! 👋", "Yā, Yō 👋", "Hallo! 👋", "Hello! 👋", "Cześć! 👋", "Helo! 👋", "Hey! 👋", "Hei! 👋",
+				}
+				return greetings[rand.Intn(len(greetings))]
 			},
 		},
 	})

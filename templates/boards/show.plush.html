@@ -5,8 +5,8 @@
                 <div class="row">
                     <div class="col align-middle">
                         <h2 class="d-inline-block w-100">
-                            <%= board.Name %>
                             <%= partial("boards/star.html") %>
+                            <%= board.Name %>
                             <div class="float-right">
                                 <%= if (canManageBoard(board)) { %>
                                     <%= remoteLinkTo(boardPostsPath({ board_id: board.ID }), {class: "btn btn-primary", data-method: "POST", title: "Create new post"}) { %>

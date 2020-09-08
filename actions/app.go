@@ -72,6 +72,7 @@ func App() *buffalo.App {
 
 		app.GET("/", Home)
 		app.GET("/changelog", Changelog)
+		app.GET("/dashboard", UserDashboard)
 
 		postsResource := PostsResource{}
 		app.GET("/posts/{post_id}/edit", postsResource.Edit)

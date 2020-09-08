@@ -2,10 +2,13 @@ package actions
 
 import (
 	"context"
+	"fmt"
+	"net/http"
 	"rally/models"
 
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/pop/v5"
+	"github.com/gobuffalo/x/responder"
 	"github.com/pkg/errors"
 )
 
@@ -36,6 +39,37 @@ func UsersCreate(c buffalo.Context) error {
 	}
 
 	return Login(u, c)
+}
+
+func UserDashboard(c buffalo.Context) error {
+	// Get the DB connection from the context
+	tx, ok := c.Value("tx").(*pop.Connection)
+	if !ok {
+		return fmt.Errorf("no transaction found")
+	}
+
+	boards := &models.Boards{}
+
+	// Paginate results. Params "page" and "per_page" control pagination.
+	// Default values are "page=1" and "per_page=20".
+	q := tx.PaginateFromParams(c.Params())
+
+	// Retrieve all Boards from the DB
+	if err := q.All(boards); err != nil {
+		return err
+	}
+
+	return responder.Wants("html", func(c buffalo.Context) error {
+		// Add the paginator to the context so it can be used in the template.
+		c.Set("pagination", q.Paginator)
+
+		c.Set("boards", boards)
+		return c.Render(http.StatusOK, r.HTML("/users/dashboard.plush.html"))
+	}).Wants("json", func(c buffalo.Context) error {
+		return c.Render(200, r.JSON(boards))
+	}).Wants("xml", func(c buffalo.Context) error {
+		return c.Render(200, r.XML(boards))
+	}).Respond(c)
 }
 
 func Login(u *models.User, c buffalo.Context) error {

@@ -12,7 +12,7 @@ import (
 func Home(c buffalo.Context) error {
 	boardID, found, err := GetLastBoardID(c)
 	if err != nil || !found {
-		return c.Redirect(http.StatusSeeOther, "/boards/")
+		return c.Redirect(http.StatusSeeOther, "/dashboard/")
 	}
 
 	// TODO: Use route helper.

@@ -8,7 +8,7 @@
 <% } else { %>
 
 <div class="py-4 mb-2">
-  <h3 class="d-inline-block">Boards</h3>
+  <h3 class="d-inline-block"><%= greeting() %></h3>
   <div class="float-right">
       <%= linkTo(newBoardsPath(), {class: "btn btn-primary", title: "Create new board"}) { %>
       <i class="icon-plus"></i>
@@ -16,14 +16,21 @@
   </div>
 </div>
 
+<h3 class="d-inline-block">
+    <i class="icon-star text-primary"></i>
+    Starred boards
+</h3>
+
 <table class="table table-hover table-noborders">
     <tbody>
         <%= for (board) in boards { %>
+          <%= if  (isBoardStarred(board)) { %>
             <tr class="clickable" data-href="<%= boardPath({ board_id: board.ID }) %>">
                 <td>
                     <%= board.Name %>
                 </td>
             </tr>
+          <% } %>
         <% } %>
     </tbody>
 </table>
@@ -33,3 +40,7 @@
 <div class="text-center">
   <%= paginator(pagination) %>
 </div>
+
+<h4 class="d-inline-block">
+<%= linkTo(boardsPath(), { body: "Browse all boards..." }) %>
+</h4>
