@@ -28,7 +28,7 @@ type User struct {
 	Password             string `json:"-" db:"-"`
 	PasswordConfirmation string `json:"-" db:"-"`
 
-	StarredBoards slices.Map `json:"starred_boards" db:"starred_boards"`
+	StarredBoards slices.Map `json:"starred_boards" db:"starred_boards" form:"-"`
 }
 
 // Create wraps up the pattern of encrypting the password and

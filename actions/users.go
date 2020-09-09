@@ -3,6 +3,7 @@ package actions
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"rally/models"
 	"rally/services"
@@ -54,18 +55,8 @@ func UserDashboard(c buffalo.Context) error {
 		return err
 	}
 
-	q, err := services.ListStarredBoards(tx, u)
+	starredBoards, err := services.ListStarredBoards(tx, u, nil)
 	if err != nil {
-		return err
-	}
-
-	// Paginate results. Params "page" and "per_page" control pagination.
-	// Default values are "page=1" and "per_page=20".
-	q = q.PaginateFromParams(c.Params())
-
-	starredBoards := &models.Boards{}
-	// Retrieve all Boards from the DB
-	if err := q.All(starredBoards); err != nil {
 		return err
 	}
 
@@ -75,9 +66,6 @@ func UserDashboard(c buffalo.Context) error {
 	}
 
 	return responder.Wants("html", func(c buffalo.Context) error {
-		// Add the paginator to the context so it can be used in the template.
-		c.Set("pagination", q.Paginator)
-
 		c.Set("starredBoards", starredBoards)
 		if numBoards == 0 {
 			c.Set("showWelcome", true)
@@ -138,6 +126,12 @@ func RefreshCurrentUser(c buffalo.Context) {
 			c.Set("current_user", nil)
 		}
 		c.Set("current_user", u)
+		boards, err := services.QuickAccessBoards(tx, u)
+		if err != nil {
+			log.Printf("Error loading quick access boards: %v", err)
+			boards = []models.Board{}
+		}
+		c.Set("quickAccessBoards", boards)
 	}
 }
 

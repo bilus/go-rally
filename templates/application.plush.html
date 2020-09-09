@@ -30,7 +30,7 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav mr-auto mr-2 mt-lg-0">
-                            <%= if (board && boards) { %>
+                        <%= if (board && quickAccessBoards) { %>
                         <li class="nav-item">
                             <div class="dropdown">
                             <a class="btn btn-primary dropdown-toggle pl-2 pr-2" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -38,9 +38,17 @@
                             </a>
 
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                <%= for (board) in boards { %>
-                                <%= linkTo(boardPath({ board_id: board.ID }), { body: board.Name, class: "dropdown-item" }) %>
+                                <%= for (board) in quickAccessBoards { %>
+                                    <%= linkTo(boardPath({ board_id: board.ID }), { class: "dropdown-item" }) { %>
+                                       <span class="mr-1""><%= board.Name %></span>
+                                       <%= if (board.UserStarred) { %>
+                                        <i class="icon-star"></i>
+                                       <% } %>
+
+                                    <% } %>
                                 <% } %>
+
+                                <%= linkTo(boardsPath(), { body: "Browse all boards...", class: "dropdown-item" }) %>
                             </div>
                             </div>
                         </li>
