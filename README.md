@@ -111,15 +111,12 @@ Good luck!
     - [X] Upvote post on its page
     - [X] Board owner can delete and edit posts
     - [X] Test everything
-- [ ] Prepare for Tooploox test run
+- [X] Prepare for Tooploox test run
     - [X] Redis configuration from open redis var
     - [X] App version
     - [X] Deploy
-    - [ ] Test
-      - [ ] Changelog gives 500
-
-
-
+    - [X] Test
+      - [X] Changelog gives 500
 
 - [ ] Refactor
     - [ ] Understand how code is connected

@@ -1,4 +1,4 @@
-<%= if (len(boards) == 0) { %>
+<%= if (showWelcome) { %>
 <h3 class="d-inline-block"><%= greeting() %></h3>
 <p class="lead">There are no boards yet...
     <%= linkTo(newBoardsPath(), {class: "btn btn-primary btn-small"}) { %>
@@ -34,10 +34,6 @@
 </table>
 <% } %>
 
-
-<div class="text-center">
-  <%= paginator(pagination) %>
-</div>
 
 <h4 class="d-inline-block">
 <%= linkTo(boardsPath(), { body: "Browse all boards..." }) %>

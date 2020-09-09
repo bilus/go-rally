@@ -20,6 +20,9 @@ type Board struct {
 	VotingStrategyRaw json.RawMessage `json:"-" db:"voting_strategy" form:"-"`
 	CreatedAt         time.Time       `json:"created_at" db:"created_at"`
 	UpdatedAt         time.Time       `json:"updated_at" db:"updated_at"`
+
+	// User-context fields.
+	UserStarred bool `json:"_user_starred" db:"-" form:"-"`
 }
 
 func DefaultBoard() *Board {
@@ -38,6 +41,17 @@ func (b Board) String() string {
 
 // Boards is not required by pop and may be deleted
 type Boards []Board
+
+func (bs Boards) Slice() []Board {
+	return ([]Board)(bs)
+}
+
+func (bs *Boards) AddUserContext(user *User) {
+	slice := bs.Slice()
+	for i, b := range slice {
+		slice[i].UserStarred = user.IsBoardStarred(&b)
+	}
+}
 
 // String is not required by pop and may be deleted
 func (b Boards) String() string {
