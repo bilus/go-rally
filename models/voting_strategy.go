@@ -26,9 +26,9 @@ func (s VotingStrategy) VotesRemaining(store Store, user *User, board *Board) (i
 	if !s.BoardMax.Valid {
 		return 0, ErrNoLimit
 	}
-	k := s.key(user.ID, board.ID)
+	boardVotesKey := s.key(user.ID, board.ID)
 	noVotes := 0
-	votes, err := store.GetInt(k, &noVotes)
+	votes, err := store.GetInt(boardVotesKey, &noVotes)
 	if err != nil {
 		return 0, err
 	}
@@ -36,23 +36,25 @@ func (s VotingStrategy) VotesRemaining(store Store, user *User, board *Board) (i
 	return s.BoardMax.Int - votes, nil
 }
 
-func (s VotingStrategy) Downvote(store Store, user *User, post *Post) (postVotes int, success bool, err error) {
+func (s VotingStrategy) Downvote(store Store, user *User, post *Post) (totalPostVotes int, success bool, err error) {
 	return s.update(store, user, post, func(xs []int) error {
 		boardVotes := xs[0]
 		if boardVotes <= 0 {
 			return ErrLimit
 		}
 		xs[0] = boardVotes - 1
-		pageVotes := xs[1]
-		if pageVotes <= 0 {
+		postVotes := xs[1]
+		if postVotes <= 0 {
 			return ErrLimit
 		}
-		xs[1] = pageVotes - 1
+		xs[1] = postVotes - 1
+		totalPostVotes := xs[2]
+		xs[2] = totalPostVotes - 1 // TODO: No negativity check?
 		return nil
 	})
 }
 
-func (s VotingStrategy) Upvote(store Store, user *User, post *Post) (postVotes int, success bool, err error) {
+func (s VotingStrategy) Upvote(store Store, user *User, post *Post) (totalPostVotes int, success bool, err error) {
 	return s.update(store, user, post, func(xs []int) error {
 		boardVotes := xs[0]
 		if s.BoardMax.Valid {
@@ -61,8 +63,10 @@ func (s VotingStrategy) Upvote(store Store, user *User, post *Post) (postVotes i
 			}
 		}
 		xs[0] = boardVotes + 1
-		pageVotes := xs[1]
-		xs[1] = pageVotes + 1
+		postVotes := xs[1]
+		xs[1] = postVotes + 1
+		totalPostVotes := xs[2]
+		xs[2] = totalPostVotes + 1
 		return nil
 	})
 }
@@ -70,8 +74,8 @@ func (s VotingStrategy) Upvote(store Store, user *User, post *Post) (postVotes i
 func (s VotingStrategy) Refill(store Store, board *Board, userIDs ...uuid.UUID) error {
 	var lastErr error
 	for _, ID := range userIDs {
-		boardKey := s.key(ID, board.ID)
-		if err := store.SetInt(boardKey, 0); err != nil {
+		boardVotesKey := s.key(ID, board.ID)
+		if err := store.SetInt(boardVotesKey, 0); err != nil {
 			log.Errorf("Failed to refill board %v votes for user %v: %v", board.ID, ID, err)
 			lastErr = err
 
@@ -81,13 +85,15 @@ func (s VotingStrategy) Refill(store Store, board *Board, userIDs ...uuid.UUID) 
 }
 
 func (s VotingStrategy) update(store Store, user *User, post *Post, f func(xs []int) error) (postVotes int, success bool, err error) {
-	boardKey := s.key(user.ID, post.BoardID)
-	pageKey := s.key(user.ID, post.ID)
-	xs, err := store.UpdateInts(f, boardKey, pageKey)
+	boardVotesKey := s.key(user.ID, post.BoardID)
+	postVotesKey := s.key(user.ID, post.ID)
+	totalPostVotesKey := s.key(post.ID)
+
+	xs, err := store.UpdateInts(f, boardVotesKey, postVotesKey, totalPostVotesKey)
 
 	if err == ErrLimit {
 		zero := 0
-		votes, err := store.GetInt(pageKey, &zero)
+		votes, err := store.GetInt(totalPostVotesKey, &zero)
 		if err != nil {
 			return 0, false, err
 		}
@@ -96,7 +102,7 @@ func (s VotingStrategy) update(store Store, user *User, post *Post, f func(xs []
 	if err != nil {
 		return 0, false, err
 	}
-	return xs[1], true, nil
+	return xs[2], true, nil
 }
 
 func (s VotingStrategy) key(IDs ...uuid.UUID) string {

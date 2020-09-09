@@ -274,3 +274,47 @@ func (t *ModelSuite) Test_VotingStrategy_Refill() {
 	t.True(upvoted)
 	t.Equal(2, postVotes)
 }
+
+// BUG: With two users up/downvoting a post, the post's votes were getting reset
+// to the amount of votes each user placed INDIVIDUALLY.
+func (t *ModelSuite) Test_VotingStrategy_Regression_MultipleUsers() {
+	store := NewFakeStore()
+
+	u1 := t.MustCreateUser()
+	u2 := t.MustCreateUser()
+
+	b := t.MustCreateBoardWithVoteLimit(10)
+
+	p := t.MustCreatePost(t.ValidPost(b, u1))
+
+	postVotes, upvoted, err := b.Upvote(store, u1, p)
+	t.NoError(err)
+	t.True(upvoted)
+	t.Equal(1, postVotes)
+
+	postVotes, upvoted, err = b.Upvote(store, u2, p)
+	t.NoError(err)
+	t.True(upvoted)
+	t.Equal(2, postVotes)
+
+	count, err := b.VotesRemaining(store, u1, b)
+	t.NoError(err)
+	t.Equal(9, count)
+
+	count, err = b.VotesRemaining(store, u2, b)
+	t.NoError(err)
+	t.Equal(9, count)
+
+	postVotes, upvoted, err = b.Downvote(store, u2, p)
+	t.NoError(err)
+	t.True(upvoted)
+	t.Equal(1, postVotes)
+
+	count, err = b.VotesRemaining(store, u1, b)
+	t.NoError(err)
+	t.Equal(9, count)
+
+	count, err = b.VotesRemaining(store, u2, b)
+	t.NoError(err)
+	t.Equal(10, count)
+}

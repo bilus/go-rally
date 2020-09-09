@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.2.1
+
+- Fix discrepancy of number of votes per post.
+
 
 ## v0.2.0
 
