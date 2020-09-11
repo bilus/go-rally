@@ -11,7 +11,6 @@ import (
 
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/nulls"
-	"github.com/gobuffalo/pop/v5"
 	"github.com/gobuffalo/validate/v3"
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/gothic"
@@ -31,12 +30,12 @@ func init() {
 	goth.UseProviders(google)
 }
 
-func AuthCallback(c buffalo.Context) error {
+func (ct Controller) AuthCallback(c buffalo.Context) error {
 	profile, err := gothic.CompleteUserAuth(c.Response(), c.Request())
 	if err != nil {
 		return c.Error(401, err)
 	}
-	tx := c.Value("tx").(*pop.Connection)
+	tx := ct.Tx
 	q := tx.Where("google_user_id = ?", profile.UserID)
 	user := models.User{}
 	err = q.First(&user)
@@ -64,20 +63,20 @@ func AuthCallback(c buffalo.Context) error {
 }
 
 // AuthNew loads the signin page
-func AuthNew(c buffalo.Context) error {
+func (ct Controller) AuthNew(c buffalo.Context) error {
 	c.Set("user", models.User{})
 	c.Set("signupEnabled", isSignupEnabled())
 	return c.Render(200, r.HTML("auth/new.plush.html"))
 }
 
 // AuthCreate attempts to log the user in with an existing account.
-func AuthCreate(c buffalo.Context) error {
+func (ct Controller) AuthCreate(c buffalo.Context) error {
 	u := &models.User{}
 	if err := c.Bind(u); err != nil {
 		return errors.WithStack(err)
 	}
 
-	tx := c.Value("tx").(*pop.Connection)
+	tx := ct.Tx
 
 	// find a user with the email
 	err := tx.Where("email = ?", strings.ToLower(strings.TrimSpace(u.Email))).First(u)
@@ -115,7 +114,7 @@ func AuthCreate(c buffalo.Context) error {
 }
 
 // AuthDestroy clears the session and logs a user out
-func AuthDestroy(c buffalo.Context) error {
+func (ct Controller) AuthDestroy(c buffalo.Context) error {
 	c.Session().Clear()
 	c.Flash().Add("success", "You have been logged out!")
 	return c.Redirect(302, "newAuthPath()")

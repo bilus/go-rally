@@ -94,11 +94,15 @@ func App() *buffalo.App {
 
 		//Routes for Auth
 		auth := app.Group("/auth")
+		AuthNew := WithController(Controller.AuthNew)
 		auth.GET("/new", AuthNew)
+		AuthCreate := WithController(Controller.AuthCreate)
 		auth.POST("/", AuthCreate)
+		AuthDestroy := WithController(Controller.AuthDestroy)
 		auth.DELETE("/", AuthDestroy)
 		authProviderNew := buffalo.WrapHandlerFunc(gothic.BeginAuthHandler)
 		auth.GET("/{provider}", authProviderNew)
+		AuthCallback := WithController(Controller.AuthCallback)
 		auth.GET("/{provider}/callback", AuthCallback)
 		auth.Middleware.Skip(Authorize, AuthNew, AuthCreate, authProviderNew, AuthCallback)
 
