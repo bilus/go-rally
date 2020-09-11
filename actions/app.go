@@ -74,11 +74,10 @@ func App() *buffalo.App {
 		app.GET("/changelog", Changelog)
 		app.GET("/dashboard", UserDashboard)
 
-		postsResource := PostsResource{}
-		app.GET("/posts/{post_id}/edit", postsResource.Edit)
-		app.GET("/posts/{post_id}", postsResource.Show)
-		app.PUT("/posts/{post_id}", postsResource.Update)
-		app.DELETE("/posts/{post_id}", postsResource.Destroy)
+		app.GET("/posts/{post_id}/edit", WithAuthenticatedController(AuthenticatedController.Edit))
+		app.GET("/posts/{post_id}", WithAuthenticatedController(AuthenticatedController.Show))
+		app.PUT("/posts/{post_id}", WithAuthenticatedController(AuthenticatedController.Update))
+		app.DELETE("/posts/{post_id}", WithAuthenticatedController(AuthenticatedController.Destroy))
 
 		app.POST("/posts/{post_id}/votes", VotesCreate)
 		app.DELETE("/posts/{post_id}/votes", VotesDestroy)
@@ -116,7 +115,7 @@ func App() *buffalo.App {
 		}
 
 		app.Resource("/boards", BoardsResource{})
-		app.POST("/boards/{board_id}/posts", postsResource.Create)
+		app.POST("/boards/{board_id}/posts", WithAuthenticatedController(AuthenticatedController.Create))
 		app.POST("/boards/{board_id}/refill", RefillCreate)
 		app.POST("/boards/{board_id}/star", StarCreate)
 		app.DELETE("/boards/{board_id}/star", StarDestroy)
