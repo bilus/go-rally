@@ -12,18 +12,7 @@ type Controller struct {
 	Tx *pop.Connection
 }
 
-func (ct *Controller) SetUp(c buffalo.Context) error {
-	// Get the DB connection from the context
-	tx, ok := c.Value("tx").(*pop.Connection)
-	if !ok {
-		return fmt.Errorf("no transaction found")
-	}
-	ct.Tx = tx
-	ct.Context = c
-	return nil
-}
-
-func WithController(action func(ct Controller) error) func(c buffalo.Context) error {
+func WithController(action func(c Controller) error) func(ctx buffalo.Context) error {
 	return func(c buffalo.Context) error {
 		ct := Controller{}
 		if err := ct.SetUp(c); err != nil {
@@ -31,4 +20,15 @@ func WithController(action func(ct Controller) error) func(c buffalo.Context) er
 		}
 		return action(ct)
 	}
+}
+
+func (c *Controller) SetUp(ctx buffalo.Context) error {
+	// Get the DB connection from the context
+	tx, ok := ctx.Value("tx").(*pop.Connection)
+	if !ok {
+		return fmt.Errorf("no transaction found")
+	}
+	c.Tx = tx
+	c.Context = ctx
+	return nil
 }

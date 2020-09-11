@@ -74,10 +74,12 @@ func App() *buffalo.App {
 		app.GET("/changelog", Changelog)
 		app.GET("/dashboard", UserDashboard)
 
-		app.GET("/posts/{post_id}/edit", WithAuthenticatedController(AuthenticatedController.Edit))
-		app.GET("/posts/{post_id}", WithAuthenticatedController(AuthenticatedController.Show))
-		app.PUT("/posts/{post_id}", WithAuthenticatedController(AuthenticatedController.Update))
-		app.DELETE("/posts/{post_id}", WithAuthenticatedController(AuthenticatedController.Destroy))
+		// IDEA: Pass struct specifying route params, annotate required with required
+		// Or make the struct the param and use reflection!
+		app.GET("/posts/{post_id}/edit", WithPostsController(PostsController.Edit))
+		app.GET("/posts/{post_id}", WithPostsController(PostsController.Show))
+		app.PUT("/posts/{post_id}", WithPostsController(PostsController.Update))
+		app.DELETE("/posts/{post_id}", WithPostsController(PostsController.Destroy))
 
 		app.POST("/posts/{post_id}/votes", VotesCreate)
 		app.DELETE("/posts/{post_id}/votes", VotesDestroy)
@@ -115,7 +117,7 @@ func App() *buffalo.App {
 		}
 
 		app.Resource("/boards", BoardsResource{})
-		app.POST("/boards/{board_id}/posts", WithAuthenticatedController(AuthenticatedController.Create))
+		app.POST("/boards/{board_id}/posts", WithPostsController(PostsController.Create))
 		app.POST("/boards/{board_id}/refill", RefillCreate)
 		app.POST("/boards/{board_id}/star", StarCreate)
 		app.DELETE("/boards/{board_id}/star", StarDestroy)
