@@ -9,7 +9,6 @@ import (
 
 	"rally/models"
 
-	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/nulls"
 	"github.com/gobuffalo/validate/v3"
 	"github.com/markbates/goth"
@@ -30,12 +29,12 @@ func init() {
 	goth.UseProviders(google)
 }
 
-func (ct Controller) AuthCallback(c buffalo.Context) error {
+func (c Controller) AuthCallback() error {
 	profile, err := gothic.CompleteUserAuth(c.Response(), c.Request())
 	if err != nil {
 		return c.Error(401, err)
 	}
-	tx := ct.Tx
+	tx := c.Tx
 	q := tx.Where("google_user_id = ?", profile.UserID)
 	user := models.User{}
 	err = q.First(&user)
@@ -63,20 +62,20 @@ func (ct Controller) AuthCallback(c buffalo.Context) error {
 }
 
 // AuthNew loads the signin page
-func (ct Controller) AuthNew(c buffalo.Context) error {
+func (c Controller) AuthNew() error {
 	c.Set("user", models.User{})
 	c.Set("signupEnabled", isSignupEnabled())
 	return c.Render(200, r.HTML("auth/new.plush.html"))
 }
 
 // AuthCreate attempts to log the user in with an existing account.
-func (ct Controller) AuthCreate(c buffalo.Context) error {
+func (c Controller) AuthCreate() error {
 	u := &models.User{}
 	if err := c.Bind(u); err != nil {
 		return errors.WithStack(err)
 	}
 
-	tx := ct.Tx
+	tx := c.Tx
 
 	// find a user with the email
 	err := tx.Where("email = ?", strings.ToLower(strings.TrimSpace(u.Email))).First(u)
@@ -114,7 +113,7 @@ func (ct Controller) AuthCreate(c buffalo.Context) error {
 }
 
 // AuthDestroy clears the session and logs a user out
-func (ct Controller) AuthDestroy(c buffalo.Context) error {
+func (c Controller) AuthDestroy() error {
 	c.Session().Clear()
 	c.Flash().Add("success", "You have been logged out!")
 	return c.Redirect(302, "newAuthPath()")

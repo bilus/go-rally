@@ -8,6 +8,7 @@ import (
 )
 
 type Controller struct {
+	buffalo.Context
 	Tx *pop.Connection
 }
 
@@ -18,15 +19,16 @@ func (ct *Controller) SetUp(c buffalo.Context) error {
 		return fmt.Errorf("no transaction found")
 	}
 	ct.Tx = tx
+	ct.Context = c
 	return nil
 }
 
-func WithController(action func(ct Controller, c buffalo.Context) error) func(c buffalo.Context) error {
+func WithController(action func(ct Controller) error) func(c buffalo.Context) error {
 	return func(c buffalo.Context) error {
 		ct := Controller{}
 		if err := ct.SetUp(c); err != nil {
 			return err
 		}
-		return action(ct, c)
+		return action(ct)
 	}
 }
