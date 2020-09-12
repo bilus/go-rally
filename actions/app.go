@@ -70,8 +70,8 @@ func App() *buffalo.App {
 		app.Use(SetCurrentUser)
 		app.Use(Authorize)
 
-		app.GET("/", Home)
-		app.GET("/changelog", Changelog)
+		app.GET("/", WithAuthenticatedController(AuthenticatedController.Home))
+		app.GET("/changelog", WithAuthenticatedController(AuthenticatedController.Changelog))
 		app.GET("/dashboard", WithAuthenticatedController(AuthenticatedController.UserDashboard))
 
 		// IDEA: Pass struct specifying route params, annotate required with required
@@ -84,9 +84,14 @@ func App() *buffalo.App {
 		app.POST("/posts/{post_id}/votes", WithPostsController(PostsController.VotesCreate))
 		app.DELETE("/posts/{post_id}/votes", WithPostsController(PostsController.VotesDestroy))
 
-		app.POST("/posts/{post_id}/images", ImagesCreate)
-		app.GET("/posts/{post_id}/images/{image_id}", ImagesShow)
-		app.Middleware.Skip(csrf, ImagesCreate) // TODO: Handle csrf token sent by the editor.
+		// IMPORTANT: Buffalo Skip is stupid because it uses function name as the key.
+		// But because a function returned from multiple invocations of WithPostsController has the same name every time,
+		// Skipping it for one handler, skips it for all handlers to the given controller type.
+		imagesCreate := func(ctx buffalo.Context) error { return WithPostsController(PostsController.ImagesCreate)(ctx) }
+		app.POST("/posts/{post_id}/images", imagesCreate)
+		app.GET("/posts/{post_id}/images/{image_id}", WithPostsController(PostsController.ImagesShow))
+
+		app.Middleware.Skip(csrf, imagesCreate) // TODO: Handle csrf token sent by the editor.
 
 		commentsResource := CommentsResource{}
 		app.GET("/posts/{post_id}/comments", commentsResource.List)
@@ -95,17 +100,20 @@ func App() *buffalo.App {
 
 		//Routes for Auth
 		auth := app.Group("/auth")
-		AuthNew := WithController(Controller.AuthNew)
-		auth.GET("/new", AuthNew)
-		AuthCreate := WithController(Controller.AuthCreate)
-		auth.POST("/", AuthCreate)
-		AuthDestroy := WithController(Controller.AuthDestroy)
-		auth.DELETE("/", AuthDestroy)
+		authNew := WithAuthFlowController(AuthFlowController.AuthNew)
+		auth.GET("/new", authNew)
+		authCreate := WithAuthFlowController(AuthFlowController.AuthCreate)
+		auth.POST("/", authCreate)
 		authProviderNew := buffalo.WrapHandlerFunc(gothic.BeginAuthHandler)
 		auth.GET("/{provider}", authProviderNew)
-		AuthCallback := WithController(Controller.AuthCallback)
-		auth.GET("/{provider}/callback", AuthCallback)
-		auth.Middleware.Skip(Authorize, AuthNew, AuthCreate, authProviderNew, AuthCallback)
+		authCallback := WithAuthFlowController(AuthFlowController.AuthCallback)
+		auth.GET("/{provider}/callback", authCallback)
+		// IMPORTANT: Skipping for any AuthFlowController action skips it for all the others.
+		// See the note above.
+		auth.Middleware.Skip(Authorize, authNew, authCreate, authProviderNew, authCallback)
+
+		authDestroy := WithAuthenticatedController(AuthenticatedController.AuthDestroy)
+		auth.DELETE("/", authDestroy)
 
 		if isSignupEnabled() {
 			//Routes for User registration
@@ -116,7 +124,13 @@ func App() *buffalo.App {
 			users.Middleware.Remove(Authorize)
 		}
 
-		app.Resource("/boards", BoardsResource{})
+		app.GET("/boards", WithBoardsController(BoardsController.List))
+		app.GET("/boards/{board_id}", WithBoardsController(BoardsController.Show))
+		app.GET("/boards/new", WithBoardsController(BoardsController.New))
+		app.POST("/boards", WithBoardsController(BoardsController.Create))
+		app.GET("/boards/{board_id}/edit", WithBoardsController(BoardsController.Edit))
+		app.PUT("/boards/{board_id}", WithBoardsController(BoardsController.Update))
+		app.DELETE("/boards/{board_id}", WithBoardsController(BoardsController.Destroy))
 		app.POST("/boards/{board_id}/posts", WithPostsController(PostsController.Create))
 		app.POST("/boards/{board_id}/refill", RefillCreate)
 		app.POST("/boards/{board_id}/star", StarCreate)

@@ -5,10 +5,6 @@ import (
 	"net/http"
 	"rally/buffalox"
 	"rally/models"
-
-	"github.com/gobuffalo/buffalo"
-	"github.com/gobuffalo/pop/v5"
-	"github.com/gofrs/uuid"
 )
 
 type UploadLocation struct {
@@ -23,15 +19,8 @@ type UploadError struct {
 	Error string `json:"error"`
 }
 
-func ImagesCreate(c buffalo.Context) error {
-	// Get the DB connection from the context
-	tx, ok := c.Value("tx").(*pop.Connection)
-	if !ok {
-		return fmt.Errorf("no transaction found")
-	}
-
-	postId, err := uuid.FromString(c.Param("post_id"))
-	if err != nil {
+func (c PostsController) ImagesCreate() error {
+	if err := c.RequirePostWithWriteAccess(); err != nil {
 		return c.Render(400, r.JSON(&UploadError{err.Error()}))
 	}
 
@@ -41,16 +30,15 @@ func ImagesCreate(c buffalo.Context) error {
 	}
 
 	image := &models.Attachment{
-		PostID:   postId,
+		PostID:   c.Post.ID,
 		Filename: f.FileHeader.Filename,
 	}
 
-	err = image.Save(f)
-	if err != nil {
+	if err := image.Save(f); err != nil {
 		return c.Render(500, r.JSON(&UploadError{err.Error()}))
 	}
 
-	verrs, err := tx.ValidateAndCreate(image)
+	verrs, err := c.Tx.ValidateAndCreate(image)
 	if err != nil {
 		return c.Render(500, r.JSON(&UploadError{err.Error()}))
 	}
@@ -60,31 +48,27 @@ func ImagesCreate(c buffalo.Context) error {
 
 	success := &UploadSuccess{
 		Data: UploadLocation{
-			FilePath: fmt.Sprintf("/posts/%s/images/%s", postId, image.ID),
+			FilePath: fmt.Sprintf("/posts/%s/images/%s", c.Post.ID, image.ID),
 		},
 	}
 
 	return c.Render(http.StatusOK, r.JSON(success))
 }
 
-func ImagesShow(c buffalo.Context) error {
-	// Get the DB connection from the context
-	tx, ok := c.Value("tx").(*pop.Connection)
-	if !ok {
-		return fmt.Errorf("no transaction found")
+func (c PostsController) ImagesShow() error {
+	if err := c.RequirePost(); err != nil {
+		return err
 	}
 
-	postId := c.Param("post_id")
-	imageId := c.Param("image_id")
-
 	// Find the attachment.
+	imageId := c.Param("image_id")
 	image := &models.Attachment{}
-	if err := tx.Find(image, imageId); err != nil {
+	if err := c.Tx.Find(image, imageId); err != nil {
 		return c.Error(http.StatusNotFound, err)
 	}
 
 	// Check if it belongs to the post.
-	if image.PostID.String() != postId {
+	if image.PostID != c.Post.ID {
 		return c.Error(http.StatusNotFound, fmt.Errorf("image not found"))
 	}
 

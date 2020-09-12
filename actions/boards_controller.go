@@ -50,3 +50,14 @@ func (c *BoardsController) RequireBoard() error {
 	}
 	return nil
 }
+
+func (c *BoardsController) RequireBoardWithWriteAccess() error {
+	if err := c.RequireBoard(); err != nil {
+		return err
+	}
+	if err := authorizeBoardManagement(c.Board, c); err != nil {
+		return c.Error(http.StatusUnauthorized, err)
+	}
+
+	return nil
+}

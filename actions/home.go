@@ -5,12 +5,11 @@ import (
 	"net/http"
 	"rally/models"
 
-	"github.com/gobuffalo/buffalo"
 	"github.com/gofrs/uuid"
 )
 
-func Home(c buffalo.Context) error {
-	boardID, found, err := GetLastBoardID(c)
+func (c AuthenticatedController) Home() error {
+	boardID, found, err := c.GetLastBoardID()
 	if err != nil || !found {
 		return c.Redirect(http.StatusSeeOther, "/dashboard/")
 	}
@@ -19,11 +18,11 @@ func Home(c buffalo.Context) error {
 	return c.Redirect(http.StatusSeeOther, fmt.Sprintf("/boards/%s", boardID.String()))
 }
 
-func Changelog(c buffalo.Context) error {
+func (c AuthenticatedController) Changelog() error {
 	return c.Render(http.StatusOK, r.HTML("/changelog.md"))
 }
 
-func GetLastBoardID(c buffalo.Context) (uuid.UUID, bool, error) {
+func (c AuthenticatedController) GetLastBoardID() (uuid.UUID, bool, error) {
 	v := c.Session().Get("last_board_id")
 	if v == nil {
 		return uuid.UUID{}, false, nil
@@ -48,6 +47,6 @@ func GetLastBoardID(c buffalo.Context) (uuid.UUID, bool, error) {
 	return boardID, true, nil
 }
 
-func SetLastBoardID(boardID uuid.UUID, c buffalo.Context) {
+func (c AuthenticatedController) SetLastBoardID(boardID uuid.UUID) {
 	c.Session().Set("last_board_id", boardID.String())
 }

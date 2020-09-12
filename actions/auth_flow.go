@@ -29,7 +29,7 @@ func init() {
 	goth.UseProviders(google)
 }
 
-func (c Controller) AuthCallback() error {
+func (c AuthFlowController) AuthCallback() error {
 	profile, err := gothic.CompleteUserAuth(c.Response(), c.Request())
 	if err != nil {
 		return c.Error(401, err)
@@ -62,14 +62,14 @@ func (c Controller) AuthCallback() error {
 }
 
 // AuthNew loads the signin page
-func (c Controller) AuthNew() error {
+func (c AuthFlowController) AuthNew() error {
 	c.Set("user", models.User{})
 	c.Set("signupEnabled", isSignupEnabled())
 	return c.Render(200, r.HTML("auth/new.plush.html"))
 }
 
 // AuthCreate attempts to log the user in with an existing account.
-func (c Controller) AuthCreate() error {
+func (c AuthFlowController) AuthCreate() error {
 	u := &models.User{}
 	if err := c.Bind(u); err != nil {
 		return errors.WithStack(err)
@@ -113,7 +113,7 @@ func (c Controller) AuthCreate() error {
 }
 
 // AuthDestroy clears the session and logs a user out
-func (c Controller) AuthDestroy() error {
+func (c AuthenticatedController) AuthDestroy() error {
 	c.Session().Clear()
 	c.Flash().Add("success", "You have been logged out!")
 	return c.Redirect(302, "newAuthPath()")
