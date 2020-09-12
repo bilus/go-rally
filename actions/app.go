@@ -93,10 +93,9 @@ func App() *buffalo.App {
 
 		app.Middleware.Skip(csrf, imagesCreate) // TODO: Handle csrf token sent by the editor.
 
-		commentsResource := CommentsResource{}
-		app.GET("/posts/{post_id}/comments", commentsResource.List)
-		app.POST("/posts/{post_id}/comments", commentsResource.Create)
-		app.DELETE("/posts/{post_id}/comments/{comment_id}", commentsResource.Destroy)
+		app.GET("/posts/{post_id}/comments", WithCommentsController(CommentsController.List))
+		app.POST("/posts/{post_id}/comments", WithCommentsController(CommentsController.Create))
+		app.DELETE("/posts/{post_id}/comments/{comment_id}", WithCommentsController(CommentsController.Destroy))
 
 		//Routes for Auth
 		auth := app.Group("/auth")
