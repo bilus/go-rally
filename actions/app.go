@@ -72,7 +72,7 @@ func App() *buffalo.App {
 
 		app.GET("/", Home)
 		app.GET("/changelog", Changelog)
-		app.GET("/dashboard", UserDashboard)
+		app.GET("/dashboard", WithAuthenticatedController(AuthenticatedController.UserDashboard))
 
 		// IDEA: Pass struct specifying route params, annotate required with required
 		// Or make the struct the param and use reflection!
@@ -81,8 +81,8 @@ func App() *buffalo.App {
 		app.PUT("/posts/{post_id}", WithPostsController(PostsController.Update))
 		app.DELETE("/posts/{post_id}", WithPostsController(PostsController.Destroy))
 
-		app.POST("/posts/{post_id}/votes", VotesCreate)
-		app.DELETE("/posts/{post_id}/votes", VotesDestroy)
+		app.POST("/posts/{post_id}/votes", WithPostsController(PostsController.VotesCreate))
+		app.DELETE("/posts/{post_id}/votes", WithPostsController(PostsController.VotesDestroy))
 
 		app.POST("/posts/{post_id}/images", ImagesCreate)
 		app.GET("/posts/{post_id}/images/{image_id}", ImagesShow)

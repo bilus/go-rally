@@ -5,128 +5,74 @@ import (
 	"net/http"
 	"rally/models"
 
-	"github.com/gobuffalo/buffalo"
-	"github.com/gobuffalo/pop/v5"
 	"github.com/gobuffalo/pop/v5/slices"
-	"github.com/gofrs/uuid"
 	log "github.com/sirupsen/logrus"
 )
 
 // VotesCreate upvotes a post
-func VotesCreate(c buffalo.Context) error {
-	// Get the DB connection from the context
-	tx, ok := c.Value("tx").(*pop.Connection)
-	if !ok {
-		return fmt.Errorf("no transaction found")
-	}
-
-	u, err := CurrentUser(c)
-	if err != nil {
+func (c PostsController) VotesCreate() error {
+	if err := c.RequirePost(); err != nil {
 		return err
 	}
 
-	postId, err := uuid.FromString(c.Param("post_id"))
-	if err != nil {
-		return c.Error(http.StatusNotFound, err)
-	}
-
-	// Allocate an empty Post
-	post := &models.Post{}
-
-	// To find the Post the parameter post_id is used.
-	if err := tx.Eager().Find(post, postId); err != nil {
-		return c.Error(http.StatusNotFound, err)
-	}
-
-	postVotes, upvoted, err := post.Board.Upvote(models.Redis, u, post)
+	postVotes, upvoted, err := c.Post.Board.Upvote(models.Redis, &c.CurrentUser, c.Post)
 	if err != nil {
 		return err
 	}
 
 	if upvoted {
-		post.Votes = postVotes
-		err := tx.UpdateColumns(post, "votes")
+		c.Post.Votes = postVotes
+		err := c.Tx.UpdateColumns(c.Post, "votes")
 		if err != nil {
 			return fmt.Errorf("upvoting failed: %v", err)
 		}
-		logVotingAuditEvent(c, "upvote", post)
+		c.logVotingAuditEvent("upvote")
 	} else {
 		return c.Render(http.StatusUnprocessableEntity, r.JavaScript("error.js"))
 	}
 
-	c.Set("post", post)
-	c.Set("board", &post.Board)
+	c.Set("post", c.Post)
+	c.Set("board", &c.Post.Board)
 	return c.Render(http.StatusOK, r.JavaScript("votes/create.js"))
 }
 
 // VotesDestroy downvotes a post
-func VotesDestroy(c buffalo.Context) error {
-	// Get the DB connection from the context
-	tx, ok := c.Value("tx").(*pop.Connection)
-	if !ok {
-		return fmt.Errorf("no transaction found")
-	}
-
-	u, err := CurrentUser(c)
-	if err != nil {
+func (c PostsController) VotesDestroy() error {
+	if err := c.RequirePost(); err != nil {
 		return err
 	}
 
-	postId, err := uuid.FromString(c.Param("post_id"))
-	if err != nil {
-		return c.Error(http.StatusNotFound, err)
-	}
-
-	post := &models.Post{}
-	if err := tx.Eager().Find(post, postId); err != nil {
-		return err
-	}
-
-	postVotes, downvoted, err := post.Board.Downvote(models.Redis, u, post)
+	postVotes, downvoted, err := c.Post.Board.Downvote(models.Redis, &c.CurrentUser, c.Post)
 	if err != nil {
 		return err
 	}
 	if downvoted {
-		post.Votes = postVotes
-		err := tx.UpdateColumns(post, "votes")
+		c.Post.Votes = postVotes
+		err := c.Tx.UpdateColumns(c.Post, "votes")
 		if err != nil {
 			return fmt.Errorf("upvoting failed: %v", err)
 		}
-		logVotingAuditEvent(c, "downpvote", post)
+		c.logVotingAuditEvent("downpvote")
 	} else {
 		return c.Render(http.StatusUnprocessableEntity, r.JavaScript("votes/fail.js"))
 	}
-	c.Set("post", post)
-	c.Set("board", &post.Board)
+	c.Set("post", c.Post)
+	c.Set("board", &c.Post.Board)
 	return c.Render(http.StatusOK, r.JavaScript("votes/destroy.js"))
 }
 
-func logVotingAuditEvent(c buffalo.Context, type_ string, post *models.Post) {
-	tx, ok := c.Value("tx").(*pop.Connection)
-	if !ok {
-		log.Errorf("unable to log event: %v", fmt.Errorf("no transaction found"))
-	}
-
-	userID := uuid.UUID{}
-	u, err := CurrentUser(c)
-	if err != nil {
-		log.Errorf("unable to retrieve current user for auditing purposes: %v", err)
-	} else {
-		userID = u.ID
-	}
-
+func (c PostsController) logVotingAuditEvent(type_ string) {
 	event := &models.AuditEvent{
 		Type: type_,
 		Payload: slices.Map{
-			"current_user": userID,
-			"board_id":     post.BoardID,
-			"post_id":      post.ID,
-			"author_id":    post.AuthorID,
-			"post_votes":   post.Votes,
+			"current_user": c.CurrentUser.ID,
+			"board_id":     c.Post.BoardID,
+			"post_id":      c.Post.ID,
+			"author_id":    c.Post.AuthorID,
+			"post_votes":   c.Post.Votes,
 		},
 	}
-	err = tx.Create(event)
-	if err != nil {
+	if err := c.Tx.Create(event); err != nil {
 		log.Errorf("unable to log event: %v", err)
 	}
 }

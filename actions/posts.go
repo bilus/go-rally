@@ -95,7 +95,7 @@ func (c PostsController) Create() error {
 		return err
 	}
 
-	// Allocate an empty Post
+	// Allocate an empty Post draft.
 	c.Post = &models.Post{
 		Draft:    true,
 		BoardID:  c.Board.ID,

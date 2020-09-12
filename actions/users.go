@@ -2,7 +2,6 @@ package actions
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"net/http"
 	"rally/models"
@@ -43,38 +42,27 @@ func UsersCreate(c buffalo.Context) error {
 	return Login(u, c)
 }
 
-func UserDashboard(c buffalo.Context) error {
-	// Get the DB connection from the context
-	tx, ok := c.Value("tx").(*pop.Connection)
-	if !ok {
-		return fmt.Errorf("no transaction found")
-	}
-
-	u, err := CurrentUser(c)
+func (c AuthenticatedController) UserDashboard() error {
+	starredBoards, err := services.ListStarredBoards(c.Tx, &c.CurrentUser, nil)
 	if err != nil {
 		return err
 	}
 
-	starredBoards, err := services.ListStarredBoards(tx, u, nil)
+	numBoards, err := c.Tx.Count(&models.Board{})
 	if err != nil {
 		return err
 	}
 
-	numBoards, err := tx.Count(&models.Board{})
-	if err != nil {
-		return err
-	}
-
-	return responder.Wants("html", func(c buffalo.Context) error {
-		c.Set("starredBoards", starredBoards)
+	return responder.Wants("html", func(ctx buffalo.Context) error {
+		ctx.Set("starredBoards", starredBoards)
 		if numBoards == 0 {
-			c.Set("showWelcome", true)
+			ctx.Set("showWelcome", true)
 		}
-		return c.Render(http.StatusOK, r.HTML("/users/dashboard.plush.html"))
-	}).Wants("json", func(c buffalo.Context) error {
-		return c.Render(200, r.JSON(starredBoards))
-	}).Wants("xml", func(c buffalo.Context) error {
-		return c.Render(200, r.XML(starredBoards))
+		return ctx.Render(http.StatusOK, r.HTML("/users/dashboard.plush.html"))
+	}).Wants("json", func(ctx buffalo.Context) error {
+		return ctx.Render(200, r.JSON(starredBoards))
+	}).Wants("xml", func(ctx buffalo.Context) error {
+		return ctx.Render(200, r.XML(starredBoards))
 	}).Respond(c)
 }
 
