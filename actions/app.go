@@ -99,15 +99,15 @@ func App() *buffalo.App {
 
 		//Routes for Auth
 		auth := app.Group("/auth")
-		authNew := WithAuthFlowController(AuthFlowController.AuthNew)
+		authNew := WithUnauthenticatedController(UnauthenticatedController.AuthNew)
 		auth.GET("/new", authNew)
-		authCreate := WithAuthFlowController(AuthFlowController.AuthCreate)
+		authCreate := WithUnauthenticatedController(UnauthenticatedController.AuthCreate)
 		auth.POST("/", authCreate)
 		authProviderNew := buffalo.WrapHandlerFunc(gothic.BeginAuthHandler)
 		auth.GET("/{provider}", authProviderNew)
-		authCallback := WithAuthFlowController(AuthFlowController.AuthCallback)
+		authCallback := WithUnauthenticatedController(UnauthenticatedController.AuthCallback)
 		auth.GET("/{provider}/callback", authCallback)
-		// IMPORTANT: Skipping for any AuthFlowController action skips it for all the others.
+		// IMPORTANT: Skipping for any UnauthenticatedController action skips it for all the others.
 		// See the note above.
 		auth.Middleware.Skip(Authorize, authNew, authCreate, authProviderNew, authCallback)
 
@@ -118,8 +118,10 @@ func App() *buffalo.App {
 			//Routes for User registration
 			users := app.Group("/users")
 
-			users.GET("/new", UsersNew)
-			users.POST("/", UsersCreate)
+			users.GET("/new", WithUnauthenticatedController(UnauthenticatedController.UsersNew))
+			users.POST("/", WithUnauthenticatedController(UnauthenticatedController.UsersCreate))
+			// NOTE: The routes are unautherized anyway because they use UnauthenticatedController which
+			// is referenced around the auth routes. See the notes above.
 			users.Middleware.Remove(Authorize)
 		}
 

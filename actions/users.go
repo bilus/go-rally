@@ -14,21 +14,20 @@ import (
 )
 
 //UsersNew renders the users form
-func UsersNew(c buffalo.Context) error {
-	u := models.User{}
+func (c UnauthenticatedController) UsersNew() error {
+	u := &models.User{}
 	c.Set("user", u)
 	return c.Render(200, r.HTML("users/new.plush.html"))
 }
 
 // UsersCreate registers a new user with the application.
-func UsersCreate(c buffalo.Context) error {
+func (c UnauthenticatedController) UsersCreate() error {
 	u := &models.User{}
 	if err := c.Bind(u); err != nil {
 		return errors.WithStack(err)
 	}
 
-	tx := c.Value("tx").(*pop.Connection)
-	verrs, err := u.Create(tx)
+	verrs, err := u.Create(c.Tx)
 	if err != nil {
 		return errors.WithStack(err)
 	}

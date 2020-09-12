@@ -29,7 +29,7 @@ func init() {
 	goth.UseProviders(google)
 }
 
-func (c AuthFlowController) AuthCallback() error {
+func (c UnauthenticatedController) AuthCallback() error {
 	profile, err := gothic.CompleteUserAuth(c.Response(), c.Request())
 	if err != nil {
 		return c.Error(401, err)
@@ -62,14 +62,14 @@ func (c AuthFlowController) AuthCallback() error {
 }
 
 // AuthNew loads the signin page
-func (c AuthFlowController) AuthNew() error {
+func (c UnauthenticatedController) AuthNew() error {
 	c.Set("user", models.User{})
 	c.Set("signupEnabled", isSignupEnabled())
 	return c.Render(200, r.HTML("auth/new.plush.html"))
 }
 
 // AuthCreate attempts to log the user in with an existing account.
-func (c AuthFlowController) AuthCreate() error {
+func (c UnauthenticatedController) AuthCreate() error {
 	u := &models.User{}
 	if err := c.Bind(u); err != nil {
 		return errors.WithStack(err)
