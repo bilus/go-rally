@@ -2,8 +2,10 @@ package actions
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"rally/models"
+	"rally/services"
 
 	"github.com/gobuffalo/buffalo"
 	"github.com/gofrs/uuid"
@@ -12,7 +14,8 @@ import (
 type BoardsController struct {
 	AuthenticatedController
 
-	Board *models.Board
+	Board             *models.Board
+	QuickAccessBoards []models.Board
 }
 
 func WithBoardsController(action func(c BoardsController) error) func(c buffalo.Context) error {
@@ -40,7 +43,16 @@ func (c *BoardsController) SetUp(ctx buffalo.Context) error {
 		if err := c.Tx.Find(c.Board, boardID); err != nil {
 			return ctx.Error(http.StatusNotFound, err)
 		}
+
+		c.Set("currentBoard", c.Board)
 	}
+
+	var err error
+	if c.QuickAccessBoards, err = services.QuickAccessBoards(c.Tx, &c.CurrentUser); err != nil {
+		log.Printf("Error loading quick access boards: %v", err)
+		c.Set("quickAccessBoards", c.QuickAccessBoards)
+	}
+
 	return nil
 }
 

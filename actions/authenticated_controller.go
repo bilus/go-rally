@@ -31,5 +31,6 @@ func (c *AuthenticatedController) SetUp(ctx buffalo.Context) error {
 		return err
 	}
 	c.CurrentUser = *user
+
 	return nil
 }

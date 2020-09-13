@@ -118,19 +118,17 @@ Good luck!
     - [X] Test
       - [X] Changelog gives 500
 
-- [ ] Refactor
-    - [ ] Understand how code is connected
-    - [ ] Define services, extracting repetitive code into helpers.
-      What about context?
-    - [ ] Make board model available in context for routes nested under /routes
-      c.Set("board", board)
-    - [ ] Helpers relying on board, use board from context
-    - [ ] Deleted board is just marked as deleted.
+- [X] Refactor
 - [ ] Reactions
 - [ ] Voting improvements
     - [ ] Can take votes back for X minutes
     - [ ] Vote limit can be turned off
     - [ ] Vote reefill schedule.
+- [ ] Deleted board is just marked as deleted.
+- [ ] Refactor 2
+    - [ ] Helpers use Controller (via wrapper)
+    - [ ] Get rid of SetCurrentUser middleware
+    - [ ] Clean up authentication
 - [ ] Board management
     - [ ] Board owner can delete comments
     - [ ] Board records are only marked as deleted
