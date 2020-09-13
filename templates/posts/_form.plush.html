@@ -1,12 +1,5 @@
 <%= f.InputTag("Title") %>
 <%= f.TextAreaTag("Body", {rows: 10}) %>
-<script>
- var easyMDE = new EasyMDE({forceSync: true, promptURLs: true,
-                            uploadImage: true,
-                            imageUploadEndpoint: "<%= postImagesPath({post_id: post.ID}) %>",
-                            imageCSRFToken: "<%= authenticity_token %>"});
-</script>
-
 <%= f.CheckboxTag("Anonymous", {label: "Anonymous post", unchecked: false}) %>
 <%= f.CheckboxTag("Draft", {label: "Draft", unchecked: false}) %>
 
