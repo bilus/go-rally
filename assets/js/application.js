@@ -1,26 +1,28 @@
 require("expose-loader?$!expose-loader?jQuery!jquery");
 require("bootstrap/dist/js/bootstrap.bundle.js");
+var sentinel = require("sentinel-js");
+
 import { EmojiButton } from '@joeattardi/emoji-button';
 
 $(() => {
     $('[data-toggle="tooltip"]').tooltip()
 
-    $('.clickable').click(function(e) {
-        var tr = $(e.target).closest(".clickable");
+    $('.clickable').click(e => {
+        const tr = $(e.target).closest(".clickable");
         window.location = tr.data("href");
     })
 
-    var editor = document.getElementById('post-Body');
-    if (editor !== undefined) {
-        var emojiPicker = new EmojiButton();
-        var easyMDE = new EasyMDE({
+
+    function installMarkdownEditor(editor) {
+        const emojiPicker = new EmojiButton();
+        const easyMDE = new EasyMDE({
             element: editor,
             forceSync: true,
             promptURLs: true,
             spellChecker: false,
             uploadImage: true,
-            imageUploadEndpoint: "<%= postImagesPath({post_id: post.ID}) %>",
-            imageCSRFToken: "<%= authenticity_token %>",
+            imageUploadEndpoint: $(editor).data("image-upload-endpoint"),
+            // imageCSRFToken: "<%= authenticity_token %>",
             toolbar: [
                 'undo', 'redo',
                 '|',
@@ -50,7 +52,14 @@ $(() => {
         emojiPicker.on('emoji', selection => {
             easyMDE.codemirror.replaceSelection(selection.emoji);
         });
+    }
 
-        window.easyMDE = easyMDE;
+    sentinel.on('.markdown-editor', function(el) {
+        installMarkdownEditor(el);
+    });
+    var editors = $(".markdown-editor");
+    for (var i = 0; i < editors.length; i++) {
+        const editor = editors[i];
+        installMarkdownEditor(editor);
     }
 });

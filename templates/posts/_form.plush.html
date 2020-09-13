@@ -1,5 +1,5 @@
 <%= f.InputTag("Title") %>
-<%= f.TextAreaTag("Body", {rows: 10}) %>
+<%= f.TextAreaTag("Body", {rows: 10, class: "markdown-editor", data-image-upload-endpooint: postImagesPath({post_id: post.ID})}) %>
 <%= f.CheckboxTag("Anonymous", {label: "Anonymous post", unchecked: false}) %>
 <%= f.CheckboxTag("Draft", {label: "Draft", unchecked: false}) %>
 
