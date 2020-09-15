@@ -15,12 +15,10 @@ func (c PostsController) VotesCreate() error {
 		return err
 	}
 
-	log.Println("** before upvote")
 	postVotes, upvoted, err := c.VotingService.Upvote(&c.CurrentUser, c.Post)
 	if err != nil {
 		return err
 	}
-	log.Println("** after upvote")
 
 	if upvoted {
 		c.Post.Votes = postVotes

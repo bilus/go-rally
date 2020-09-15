@@ -10,6 +10,6 @@
     </nav>
 </div>
 
-<%= formFor(post, {action: postPath({ post_id: post.ID }), method: "PUT"}) { %>
+<%= formFor(post, {action: boardPostPath({ board_id: post.BoardID, post_id: post.ID }), method: "PUT"}) { %>
   <%= partial("posts/form.html") %>
 <% } %>

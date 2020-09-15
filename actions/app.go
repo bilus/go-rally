@@ -76,13 +76,13 @@ func App() *buffalo.App {
 
 		// IDEA: Pass struct specifying route params, annotate required with required
 		// Or make the struct the param and use reflection!
-		app.GET("/posts/{post_id}/edit", WithPostsController(PostsController.Edit))
-		app.GET("/posts/{post_id}", WithPostsController(PostsController.Show))
-		app.PUT("/posts/{post_id}", WithPostsController(PostsController.Update))
-		app.DELETE("/posts/{post_id}", WithPostsController(PostsController.Destroy))
+		app.GET("/boards/{board_id}/posts/{post_id}/edit", WithPostsController(PostsController.Edit))
+		app.GET("/boards/{board_id}/posts/{post_id}", WithPostsController(PostsController.Show))
+		app.PUT("/boards/{board_id}/posts/{post_id}", WithPostsController(PostsController.Update))
+		app.DELETE("/boards/{board_id}/posts/{post_id}", WithPostsController(PostsController.Destroy))
 
-		app.POST("/posts/{post_id}/votes", WithPostsController(PostsController.VotesCreate))
-		app.DELETE("/posts/{post_id}/votes", WithPostsController(PostsController.VotesDestroy))
+		app.POST("/boards/{board_id}/posts/{post_id}/votes", WithPostsController(PostsController.VotesCreate))
+		app.DELETE("/boards/{board_id}/posts/{post_id}/votes", WithPostsController(PostsController.VotesDestroy))
 
 		// IMPORTANT: Buffalo Skip is stupid because it uses function name as the key.
 		// But because a function returned from multiple invocations of WithPostsController has the same name every time,

@@ -164,7 +164,7 @@ func (c PostsController) Update() error {
 		ctx.Flash().Add("success", T.Translate(c, "post.updated.success"))
 
 		// and redirect to the show page
-		return ctx.Redirect(http.StatusSeeOther, "/posts/%v", c.Post.ID)
+		return ctx.Redirect(http.StatusSeeOther, "/boards/%v/posts/%v", c.Post.BoardID, c.Post.ID) // TODO: Use path helper.
 	}).Wants("json", func(ctx buffalo.Context) error {
 		return ctx.Render(http.StatusOK, r.JSON(c.Post))
 	}).Wants("xml", func(ctx buffalo.Context) error {

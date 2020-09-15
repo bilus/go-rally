@@ -1,16 +1,16 @@
 <tr class='post-row raised  <%= if (post.Draft) { return "post-draft table-warning" } %>' data-post-id="<%= post.ID %>">
     <td class="align-middle text-center font-weight-bold votes">
-        <%= remoteLinkTo(postVotesPath({ post_id: post.ID}), { "data-method": "POST" }) { %>
+        <%= remoteLinkTo(boardPostVotesPath({ board_id: post.BoardID, post_id: post.ID}), { "data-method": "POST" }) { %>
         <i class="icon-caret-up"></i>
         <% } %>
         <%= partial("boards/post_votes.html")%>
-        <%= remoteLinkTo(postVotesPath({ post_id: post.ID}), { "data-method": "DELETE" }) { %>
+        <%= remoteLinkTo(boardPostVotesPath({ board_id: post.BoardID, post_id: post.ID}), { "data-method": "DELETE" }) { %>
         <i class="icon-caret-down"></i>
         <% } %>
     </td>
-    <td class="title align-middle clickable" data-href='<%= postPath({post_id: post.ID}) %>'>
+    <td class="title align-middle clickable" data-href='<%= boardPostPath({board_id: post.BoardID, post_id: post.ID}) %>'>
         <h4>
-            <%= linkTo(postPath({ post_id: post.ID }), {class: ""}) { %>
+            <%= linkTo(boardPostPath({ board_id: post.BoardID, post_id: post.ID }), {class: ""}) { %>
             <%= safeTitle(post.Title) %>
             <% } %>
             <%= if (post.Draft) { %>

@@ -8,7 +8,7 @@ func (t *ActionSuite) Test_PostsResource_Show() {
 	u := t.Authenticated(t.MustCreateUser())
 	b := t.MustCreateBoard()
 	p := t.MustCreatePost(t.ValidPost(b, u))
-	res := t.HTML(t.PostPath(p)).Get()
+	res := t.HTML(t.BoardPostPath(p)).Get()
 	t.Contains(res.Body.String(), p.Title)
 }
 
@@ -33,7 +33,7 @@ func (t *ActionSuite) Test_PostsResource_Update() {
 	b := t.MustCreateBoardWithVoteLimit(10)
 	p := t.MustCreatePost(t.ValidPost(b, u))
 	p.Title = "New title"
-	res := t.HTML(t.PostPath(p)).Put(p)
+	res := t.HTML(t.BoardPostPath(p)).Put(p)
 	t.Equal(303, res.Code)
 }
 
@@ -43,7 +43,7 @@ func (t *ActionSuite) Test_PostsResource_Update_OnlyAuthors() {
 	b := t.MustCreateBoard()
 	p := t.MustCreatePost(t.ValidPost(b, author)) // Author != current user.
 	p.Title = "New title"
-	res := t.HTML(t.PostPath(p)).Put(p)
+	res := t.HTML(t.BoardPostPath(p)).Put(p)
 	t.Equal(401, res.Code)
 }
 
@@ -52,7 +52,7 @@ func (t *ActionSuite) Test_PostsResource_Destroy() {
 	b := t.MustCreateBoard()
 	p := t.MustCreatePost(t.ValidPost(b, u))
 	p.Title = "New title"
-	res := t.HTML(t.PostPath(p)).Delete()
+	res := t.HTML(t.BoardPostPath(p)).Delete()
 	t.Equal(303, res.Code)
 
 	count, err := t.DB.Count("posts")
@@ -66,7 +66,7 @@ func (t *ActionSuite) Test_PostsResource_Destroy_OnlyAuthors() {
 	b := t.MustCreateBoard()
 	p := t.MustCreatePost(t.ValidPost(b, author)) // Author != current user.
 	p.Title = "New title"
-	res := t.HTML(t.PostPath(p)).Delete()
+	res := t.HTML(t.BoardPostPath(p)).Delete()
 	t.Equal(401, res.Code)
 
 	count, err := t.DB.Count("posts")
@@ -79,7 +79,7 @@ func (t *ActionSuite) Test_PostsResource_Edit() {
 	t.MustCreateUser()
 	b := t.MustCreateBoard()
 	p := t.MustCreatePost(t.ValidPost(b, current)) // Author == current user.
-	res := t.HTML(t.EditPostPath(p)).Get()
+	res := t.HTML(t.EditBoardPostPath(p)).Get()
 	t.Equal(200, res.Code)
 }
 
@@ -88,6 +88,6 @@ func (t *ActionSuite) Test_PostsResource_Edit_OnlyAuthors() {
 	author := (t.MustCreateUser())
 	b := t.MustCreateBoard()
 	p := t.MustCreatePost(t.ValidPost(b, author)) // Author != current user.
-	res := t.HTML(t.EditPostPath(p)).Get()
+	res := t.HTML(t.EditBoardPostPath(p)).Get()
 	t.Equal(401, res.Code)
 }
