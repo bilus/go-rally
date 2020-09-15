@@ -10,7 +10,7 @@ func (t *ActionSuite) Test_Votes_Create() {
 	b := t.MustCreateBoardWithVoteLimit(10)
 	p := t.MustCreatePost(t.ValidPost(b, u))
 
-	res := t.JavaScript(fmt.Sprintf("/posts/%v/votes", p.ID)).Post(nil)
+	res := t.JavaScript(fmt.Sprintf("/boards/%v/posts/%v/votes", p.BoardID, p.ID)).Post(nil)
 	t.Equal(200, res.Code)
 
 	var p1 models.Post
@@ -24,10 +24,10 @@ func (t *ActionSuite) Test_Votes_Destroy() {
 	b := t.MustCreateBoardWithVoteLimit(10)
 	p := t.MustCreatePost(t.ValidPost(b, u))
 
-	res := t.JavaScript(fmt.Sprintf("/posts/%v/votes", p.ID)).Post(nil)
+	res := t.JavaScript(fmt.Sprintf("/boards/%v/posts/%v/votes", p.BoardID, p.ID)).Post(nil)
 	t.Equal(200, res.Code)
 
-	res = t.JavaScript(fmt.Sprintf("/posts/%v/votes", p.ID)).Delete()
+	res = t.JavaScript(fmt.Sprintf("/boards/%v/posts/%v/votes", p.BoardID, p.ID)).Delete()
 	t.Equal(200, res.Code)
 
 	var p1 models.Post
@@ -41,7 +41,7 @@ func (t *ActionSuite) Test_Votes_Destroy_OnlyUpvoted() {
 	b := t.MustCreateBoardWithVoteLimit(10)
 	p := t.MustCreatePost(t.ValidPost(b, u))
 
-	res := t.JavaScript(fmt.Sprintf("/posts/%v/votes", p.ID)).Delete()
+	res := t.JavaScript(fmt.Sprintf("/boards/%v/posts/%v/votes", p.BoardID, p.ID)).Delete()
 	t.Equal(422, res.Code)
 
 	var p1 models.Post

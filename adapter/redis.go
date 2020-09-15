@@ -1,8 +1,6 @@
 package adapter
 
 import (
-	"fmt"
-
 	"github.com/go-redis/redis"
 )
 
@@ -31,35 +29,6 @@ func (s Redis) GetInt(key string, default_ *int) (int, error) {
 
 func (s Redis) SetInt(key string, x int) error {
 	return s.r.Set(key, x, 0).Err()
-}
-
-func (s Redis) IncWithin(key string, delta, max int) (int, bool, error) {
-	var ErrLimit = fmt.Errorf("limit reached")
-
-	v, vals, err := s.update(key, func(key string, v *redis.StringCmd) (interface{}, error) {
-		i, err := v.Int()
-		if err == redis.Nil {
-			err = nil
-		}
-		if err != nil {
-			return nil, err
-		}
-		if i+delta <= max {
-			return i + delta, nil
-		}
-
-		return nil, ErrLimit
-	})
-
-	if err == ErrLimit {
-		i, ok := v.(int)
-		if !ok {
-			return 0, vals, fmt.Errorf("unexpected value for %q: not int", key)
-		}
-		return i, vals, nil
-	}
-
-	return 0, vals, err
 }
 
 // UpdateInts performs atomic update on multiple keys by passing an array of values for each key

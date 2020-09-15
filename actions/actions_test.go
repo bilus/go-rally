@@ -48,10 +48,6 @@ func (t ActionSuite) BoardPostPath(p *models.Post) string {
 	return t.Path("boardPostPath", Opts{"board_id": p.BoardID, "post_id": p.ID})
 }
 
-func (t ActionSuite) BoardPostsPath(opts Opts) string {
-	return t.Path("boardPostsPath", opts)
-}
-
 func (t ActionSuite) EditBoardPostPath(p *models.Post) string {
 	return t.Path("editBoardPostPath", Opts{"board_id": p.BoardID, "post_id": p.ID})
 }

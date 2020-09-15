@@ -1,18 +1,20 @@
-package models_test
+package services_test
 
 import (
 	"fmt"
+	"rally/services"
+	"rally/stores"
 )
 
-type FakeStore struct {
+type FakeStorage struct {
 	m map[string]int
 }
 
-func NewFakeStore() FakeStore {
-	return FakeStore{make(map[string]int)}
+func NewFakeStore() FakeStorage {
+	return FakeStorage{make(map[string]int)}
 }
 
-func (s FakeStore) GetInt(key string, default_ *int) (int, error) {
+func (s FakeStorage) GetInt(key string, default_ *int) (int, error) {
 	i, ok := s.m[key]
 	if !ok {
 		if default_ != nil {
@@ -23,12 +25,12 @@ func (s FakeStore) GetInt(key string, default_ *int) (int, error) {
 	return i, nil
 }
 
-func (s FakeStore) SetInt(key string, x int) error {
+func (s FakeStorage) SetInt(key string, x int) error {
 	s.m[key] = x
 	return nil
 }
 
-func (s FakeStore) UpdateInts(f func(vals []int) error, keys ...string) ([]int, error) {
+func (s FakeStorage) UpdateInts(f func(vals []int) error, keys ...string) ([]int, error) {
 	vals := make([]int, len(keys))
 	for i, k := range keys {
 		v, ok := s.m[k]
@@ -47,62 +49,56 @@ func (s FakeStore) UpdateInts(f func(vals []int) error, keys ...string) ([]int, 
 }
 
 // Can upvote up to a limit.
-func (t *ModelSuite) Test_VotingStrategy_UpvotingUpperLimit() {
-	store := NewFakeStore()
-
+func (t *ServicesSuite) Test_VotingService_UpvotingUpperLimit() {
 	u := t.MustCreateUser()
 	b := t.MustCreateBoardWithVoteLimit(1)
 
 	p := t.MustCreatePost(t.ValidPost(b, u))
 
-	s := b.VotingStrategy
-	count, err := s.VotesRemaining(store, u, b)
+	s := services.NewVotingService(stores.NewVotingStore(NewFakeStore()), b.VotingStrategy)
+	count, err := s.VotesRemaining(u, b)
 	t.NoError(err)
 	t.Equal(1, count)
 
-	postVotes, upvoted, err := s.Upvote(store, u, p)
+	postVotes, upvoted, err := s.Upvote(u, p)
 	t.NoError(err)
 	t.True(upvoted)
 	t.Equal(1, postVotes)
 
-	count, err = s.VotesRemaining(store, u, b)
+	count, err = s.VotesRemaining(u, b)
 	t.NoError(err)
 	t.Equal(0, count)
 
-	postVotes, upvoted, err = s.Upvote(store, u, p)
+	postVotes, upvoted, err = s.Upvote(u, p)
 	t.NoError(err)
 	t.False(upvoted)
 	t.Equal(1, postVotes)
 }
 
 // Vote limit can be turned off.
-func (t *ModelSuite) Test_VotingStrategy_UpvotingNoUpperLimit() {
-	store := NewFakeStore()
-
+func (t *ServicesSuite) Test_VotingService_UpvotingNoUpperLimit() {
 	u := t.MustCreateUser()
 	b := t.MustCreateBoardWithNoVoteLimit()
-
 	p := t.MustCreatePost(t.ValidPost(b, u))
 
-	s := b.VotingStrategy
-	_, err := s.VotesRemaining(store, u, b)
+	s := services.NewVotingService(stores.NewVotingStore(NewFakeStore()), b.VotingStrategy)
+
+	_, err := s.VotesRemaining(u, b)
 	t.Error(err) // No limit.
 
-	postVotes, upvoted, err := s.Upvote(store, u, p)
+	postVotes, upvoted, err := s.Upvote(u, p)
 	t.NoError(err)
 	t.True(upvoted)
 	t.Equal(1, postVotes)
 
-	postVotes, upvoted, err = s.Upvote(store, u, p)
+	postVotes, upvoted, err = s.Upvote(u, p)
 	t.NoError(err)
 	t.True(upvoted)
 	t.Equal(2, postVotes)
 }
 
 // Boards keep independent vote counts.
-func (t *ModelSuite) Test_VotingStrategy_BoardIsolation() {
-	store := NewFakeStore()
-
+func (t *ServicesSuite) Test_VotingService_BoardIsolation() {
 	u := t.MustCreateUser()
 
 	b1 := t.MustCreateBoardWithVoteLimit(1)
@@ -111,82 +107,80 @@ func (t *ModelSuite) Test_VotingStrategy_BoardIsolation() {
 	p1 := t.MustCreatePost(t.ValidPost(b1, u))
 	p2 := t.MustCreatePost(t.ValidPost(b2, u))
 
-	postVotes, upvoted, err := b1.Upvote(store, u, p1)
+	// It's fine to reuse the service, both boards have identical voting strategy.
+	s := services.NewVotingService(stores.NewVotingStore(NewFakeStore()), b1.VotingStrategy)
+
+	postVotes, upvoted, err := s.Upvote(u, p1)
 	t.NoError(err)
 	t.True(upvoted)
 	t.Equal(1, postVotes)
 
-	count, err := b1.VotesRemaining(store, u, b1)
+	count, err := s.VotesRemaining(u, b1)
 	t.NoError(err)
 	t.Equal(0, count)
 
-	count, err = b2.VotesRemaining(store, u, b2)
+	count, err = s.VotesRemaining(u, b2)
 	t.NoError(err)
 	t.Equal(1, count)
 
-	postVotes, upvoted, err = b2.Upvote(store, u, p2)
+	postVotes, upvoted, err = s.Upvote(u, p2)
 	t.NoError(err)
 	t.True(upvoted)
 	t.Equal(1, postVotes)
 
-	count, err = b2.VotesRemaining(store, u, b2)
+	count, err = s.VotesRemaining(u, b2)
 	t.NoError(err)
 	t.Equal(0, count)
 }
 
 // Can take votes back until going to zero.
-func (t *ModelSuite) Test_VotingStrategy_Backsies() {
-	store := NewFakeStore()
-
+func (t *ServicesSuite) Test_VotingService_Backsies() {
 	u := t.MustCreateUser()
 	b := t.MustCreateBoardWithVoteLimit(1)
-
 	p := t.MustCreatePost(t.ValidPost(b, u))
 
-	s := b.VotingStrategy
+	s := services.NewVotingService(stores.NewVotingStore(NewFakeStore()), b.VotingStrategy)
 
-	postVotes, upvoted, err := s.Upvote(store, u, p)
+	postVotes, upvoted, err := s.Upvote(u, p)
 	t.NoError(err)
 	t.True(upvoted)
 	t.Equal(1, postVotes)
 
-	count, err := s.VotesRemaining(store, u, b)
+	count, err := s.VotesRemaining(u, b)
 	t.NoError(err)
 	t.Equal(0, count)
 
-	postVotes, downvoted, err := s.Downvote(store, u, p)
+	postVotes, downvoted, err := s.Downvote(u, p)
 	t.NoError(err)
 	t.True(downvoted)
 	t.Equal(0, postVotes)
 
-	count, err = s.VotesRemaining(store, u, b)
+	count, err = s.VotesRemaining(u, b)
 	t.NoError(err)
 	t.Equal(1, count)
 
-	postVotes, downvoted, err = s.Downvote(store, u, p)
+	postVotes, downvoted, err = s.Downvote(u, p)
 	t.NoError(err)
 	t.False(downvoted)
 	t.Equal(0, postVotes)
 
-	count, err = s.VotesRemaining(store, u, b)
+	count, err = s.VotesRemaining(u, b)
 	t.NoError(err)
 	t.Equal(1, count)
 
-	postVotes, upvoted, err = s.Upvote(store, u, p)
+	postVotes, upvoted, err = s.Upvote(u, p)
 	t.NoError(err)
 	t.True(upvoted)
 	t.Equal(1, postVotes)
 
-	count, err = s.VotesRemaining(store, u, b)
+	count, err = s.VotesRemaining(u, b)
 	t.NoError(err)
 	t.Equal(0, count)
 
 }
 
 // Cannot take votes back for non-upvoted posts.
-func (t *ModelSuite) Test_VotingStrategy_BacksiesOnlyForUpvotedPosts() {
-	store := NewFakeStore()
-
+func (t *ServicesSuite) Test_VotingService_BacksiesOnlyForUpvotedPosts() {
 	u := t.MustCreateUser()
 
 	b := t.MustCreateBoardWithVoteLimit(1)
@@ -194,82 +188,83 @@ func (t *ModelSuite) Test_VotingStrategy_BacksiesOnlyForUpvotedPosts() {
 	p1 := t.MustCreatePost(t.ValidPost(b, u))
 	p2 := t.MustCreatePost(t.ValidPost(b, u))
 
-	postVotes, upvoted, err := b.Upvote(store, u, p1)
+	s := services.NewVotingService(stores.NewVotingStore(NewFakeStore()), b.VotingStrategy)
+
+	postVotes, upvoted, err := s.Upvote(u, p1)
 	t.NoError(err)
 	t.True(upvoted)
 	t.Equal(1, postVotes)
 
-	count, err := b.VotesRemaining(store, u, b)
+	count, err := s.VotesRemaining(u, b)
 	t.NoError(err)
 	t.Equal(0, count)
 
-	count, err = b.VotesRemaining(store, u, b)
+	count, err = s.VotesRemaining(u, b)
 	t.NoError(err)
 	t.Equal(0, count)
 
-	postVotes, downvoted, err := b.Downvote(store, u, p2)
+	postVotes, downvoted, err := s.Downvote(u, p2)
 	t.NoError(err)
 	t.False(downvoted)
 	t.Equal(0, postVotes)
 
-	count, err = b.VotesRemaining(store, u, b)
+	count, err = s.VotesRemaining(u, b)
 	t.NoError(err)
 	t.Equal(0, count)
 
-	count, err = b.VotesRemaining(store, u, b)
+	count, err = s.VotesRemaining(u, b)
 	t.NoError(err)
 	t.Equal(0, count)
 
-	postVotes, downvoted, err = b.Downvote(store, u, p1)
+	postVotes, downvoted, err = s.Downvote(u, p1)
 	t.NoError(err)
 	t.True(downvoted)
 	t.Equal(0, postVotes)
 
-	count, err = b.VotesRemaining(store, u, b)
+	count, err = s.VotesRemaining(u, b)
 	t.NoError(err)
 	t.Equal(1, count)
 
-	count, err = b.VotesRemaining(store, u, b)
+	count, err = s.VotesRemaining(u, b)
 	t.NoError(err)
 	t.Equal(1, count)
 }
 
 // Votes can be refilled.
-func (t *ModelSuite) Test_VotingStrategy_Refill() {
-	store := NewFakeStore()
-
+func (t *ServicesSuite) Test_VotingService_Refill() {
 	u := t.MustCreateUser()
 	b := t.MustCreateBoardWithVoteLimit(1)
 
 	p := t.MustCreatePost(t.ValidPost(b, u))
 
-	s := b.VotingStrategy
-	count, err := s.VotesRemaining(store, u, b)
+	s := services.NewVotingService(stores.NewVotingStore(NewFakeStore()), b.VotingStrategy)
+
+	count, err := s.VotesRemaining(u, b)
 	t.NoError(err)
 	t.Equal(1, count)
 
-	postVotes, upvoted, err := s.Upvote(store, u, p)
+	postVotes, upvoted, err := s.Upvote(u, p)
 	t.NoError(err)
 	t.True(upvoted)
 	t.Equal(1, postVotes)
 
-	count, err = s.VotesRemaining(store, u, b)
+	count, err = s.VotesRemaining(u, b)
 	t.NoError(err)
 	t.Equal(0, count)
 
-	postVotes, upvoted, err = s.Upvote(store, u, p)
+	postVotes, upvoted, err = s.Upvote(u, p)
 	t.NoError(err)
 	t.False(upvoted)
 	t.Equal(1, postVotes)
 
-	err = s.Refill(store, b, u.ID)
+	err = s.Refill(b, *u)
 	t.NoError(err)
 
-	count, err = s.VotesRemaining(store, u, b)
+	count, err = s.VotesRemaining(u, b)
 	t.NoError(err)
 	t.Equal(1, count)
 
-	postVotes, upvoted, err = s.Upvote(store, u, p)
+	postVotes, upvoted, err = s.Upvote(u, p)
 	t.NoError(err)
 	t.True(upvoted)
 	t.Equal(2, postVotes)
@@ -277,9 +272,7 @@ func (t *ModelSuite) Test_VotingStrategy_Refill() {
 
 // BUG: With two users up/downvoting a post, the post's votes were getting reset
 // to the amount of votes each user placed INDIVIDUALLY.
-func (t *ModelSuite) Test_VotingStrategy_Regression_MultipleUsers() {
-	store := NewFakeStore()
-
+func (t *ServicesSuite) Test_VotingService_Regression_MultipleUsers() {
 	u1 := t.MustCreateUser()
 	u2 := t.MustCreateUser()
 
@@ -287,34 +280,36 @@ func (t *ModelSuite) Test_VotingStrategy_Regression_MultipleUsers() {
 
 	p := t.MustCreatePost(t.ValidPost(b, u1))
 
-	postVotes, upvoted, err := b.Upvote(store, u1, p)
+	s := services.NewVotingService(stores.NewVotingStore(NewFakeStore()), b.VotingStrategy)
+
+	postVotes, upvoted, err := s.Upvote(u1, p)
 	t.NoError(err)
 	t.True(upvoted)
 	t.Equal(1, postVotes)
 
-	postVotes, upvoted, err = b.Upvote(store, u2, p)
+	postVotes, upvoted, err = s.Upvote(u2, p)
 	t.NoError(err)
 	t.True(upvoted)
 	t.Equal(2, postVotes)
 
-	count, err := b.VotesRemaining(store, u1, b)
+	count, err := s.VotesRemaining(u1, b)
 	t.NoError(err)
 	t.Equal(9, count)
 
-	count, err = b.VotesRemaining(store, u2, b)
+	count, err = s.VotesRemaining(u2, b)
 	t.NoError(err)
 	t.Equal(9, count)
 
-	postVotes, upvoted, err = b.Downvote(store, u2, p)
+	postVotes, upvoted, err = s.Downvote(u2, p)
 	t.NoError(err)
 	t.True(upvoted)
 	t.Equal(1, postVotes)
 
-	count, err = b.VotesRemaining(store, u1, b)
+	count, err = s.VotesRemaining(u1, b)
 	t.NoError(err)
 	t.Equal(9, count)
 
-	count, err = b.VotesRemaining(store, u2, b)
+	count, err = s.VotesRemaining(u2, b)
 	t.NoError(err)
 	t.Equal(10, count)
 }

@@ -63,7 +63,7 @@ func (vs VotingStore) SetUserBoardVotes(user *models.User, board *models.Board, 
 	return vs.s.SetInt(boardVotesKey, numVotes)
 }
 
-func (vs VotingStore) UpdateVotes(user *models.User, post *models.Post, f func(state *VotingState) error) (bool, error) {
+func (vs VotingStore) UpdateVotes(user *models.User, post *models.Post, f func(state *VotingState) error) error {
 	boardVotesKey := vs.key(user.ID, post.BoardID)
 	postVotesKey := vs.key(user.ID, post.ID)
 	totalPostVotesKey := vs.key(post.ID)
@@ -82,17 +82,11 @@ func (vs VotingStore) UpdateVotes(user *models.User, post *models.Post, f func(s
 	}, boardVotesKey, postVotesKey, totalPostVotesKey)
 }
 
-var ErrLimit = fmt.Errorf("limit reached")
-
-func (vs VotingStore) update(f func(xs []int) error, keys ...string) (success bool, err error) {
-	_, err = vs.s.UpdateInts(f, keys...)
-	if err == ErrLimit {
-		return false, nil
+func (vs VotingStore) update(f func(xs []int) error, keys ...string) error {
+	if _, err := vs.s.UpdateInts(f, keys...); err != nil {
+		return err
 	}
-	if err != nil {
-		return false, err
-	}
-	return true, nil
+	return nil
 }
 
 func (vs VotingStore) key(IDs ...uuid.UUID) string {

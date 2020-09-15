@@ -14,7 +14,7 @@ var ErrNoLimit = fmt.Errorf("board has no vote limit")
 type Store interface {
 	GetUserBoardVotes(user *models.User, board *models.Board) (int, error)
 	SetUserBoardVotes(user *models.User, board *models.Board, numVotes int) error
-	UpdateVotes(user *models.User, post *models.Post, f func(state *stores.VotingState) error) (bool, error)
+	UpdateVotes(user *models.User, post *models.Post, f func(state *stores.VotingState) error) error
 }
 
 type VotingService struct {
@@ -45,8 +45,9 @@ func (s VotingService) VotesRemaining(user *models.User, board *models.Board) (i
 	return numVotesRemain, nil
 }
 
-func (s VotingService) Downvote(user *models.User, post *models.Post) (totalPostVotes int, success bool, err error) {
-	success, err = s.store.UpdateVotes(user, post, func(state *stores.VotingState) error {
+func (s VotingService) Downvote(user *models.User, post *models.Post) (int, bool, error) {
+	var totalPostVotes int
+	err := s.store.UpdateVotes(user, post, func(state *stores.VotingState) error {
 		if state.UserBoardVotes <= 0 {
 			return ErrLimit
 		}
@@ -59,13 +60,22 @@ func (s VotingService) Downvote(user *models.User, post *models.Post) (totalPost
 		totalPostVotes = state.TotalPostVotes // Return value.
 		return nil
 	})
-	return
+	if err != nil {
+		if err == ErrLimit {
+			return totalPostVotes, false, nil
+		} else {
+			return 0, false, err
+		}
+	}
+	return totalPostVotes, true, nil
 }
 
-func (s VotingService) Upvote(user *models.User, post *models.Post) (totalPostVotes int, success bool, err error) {
-	success, err = s.store.UpdateVotes(user, post, func(state *stores.VotingState) error {
+func (s VotingService) Upvote(user *models.User, post *models.Post) (int, bool, error) {
+	var totalPostVotes int
+	err := s.store.UpdateVotes(user, post, func(state *stores.VotingState) error {
 		if s.strategy.BoardMax.Valid {
 			if state.UserBoardVotes >= s.strategy.BoardMax.Int {
+				totalPostVotes = state.TotalPostVotes // Return value.
 				return ErrLimit
 			}
 		}
@@ -75,7 +85,14 @@ func (s VotingService) Upvote(user *models.User, post *models.Post) (totalPostVo
 		totalPostVotes = state.TotalPostVotes // Return value.
 		return nil
 	})
-	return
+	if err != nil {
+		if err == ErrLimit {
+			return totalPostVotes, false, nil
+		} else {
+			return 0, false, err
+		}
+	}
+	return totalPostVotes, true, nil
 }
 
 func (s VotingService) Refill(board *models.Board, users ...models.User) error {
