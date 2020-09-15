@@ -6,7 +6,6 @@ import (
 
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/x/responder"
-	"github.com/gofrs/uuid"
 )
 
 func (c BoardsController) RefillCreate() error {
@@ -15,17 +14,13 @@ func (c BoardsController) RefillCreate() error {
 	}
 
 	// TODO: Performance issue with large number of users.
-	users := []struct{ ID uuid.UUID }{}
-	if err := c.Tx.RawQuery("SELECT id FROM users").All(&users); err != nil {
+	users := []models.User{}
+	if err := c.Tx.RawQuery("SELECT id FROM users").Select("id").All(&users); err != nil {
 		return err
-	}
-	ids := make([]uuid.UUID, len(users))
-	for i, u := range users {
-		ids[i] = u.ID
 	}
 
 	// TODO: Show error.
-	if err := c.Board.VotingStrategy.Refill(models.Redis, c.Board, ids...); err != nil {
+	if err := c.VotingService.Refill(c.Board, users...); err != nil {
 		return c.Error(http.StatusUnprocessableEntity, err)
 	}
 	return responder.Wants("javascript", func(ctx buffalo.Context) error {

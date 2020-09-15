@@ -25,6 +25,10 @@ type Board struct {
 	UserStarred bool `json:"_user_starred" db:"-" form:"-"`
 }
 
+type VotingStrategy struct {
+	BoardMax nulls.Int `json:"board_max"`
+}
+
 func DefaultBoard() *Board {
 	return &Board{
 		VotingStrategy: VotingStrategy{

@@ -3,7 +3,7 @@ package models
 import (
 	log "github.com/sirupsen/logrus"
 
-	"rally/redis"
+	"rally/adapter"
 
 	r "github.com/go-redis/redis"
 
@@ -15,7 +15,7 @@ import (
 // throughout your application.
 var DB *pop.Connection
 
-var Redis redis.Store
+var Redis adapter.Redis
 
 func init() {
 	var err error
@@ -31,5 +31,5 @@ func init() {
 		log.Fatal(err)
 	}
 	rds := r.NewClient(redisOptions)
-	Redis = redis.NewStore(rds)
+	Redis = adapter.NewRedis(rds)
 }

@@ -1,4 +1,4 @@
-package redis
+package adapter
 
 import (
 	"fmt"
@@ -6,21 +6,22 @@ import (
 	"github.com/go-redis/redis"
 )
 
-type Store struct {
+// Redis adapts Redis to what this application needs.
+type Redis struct {
 	r                  *redis.Client
 	MaxConflictRetries int
 }
 
 const defaultMaxConflictRetries = 1000
 
-func NewStore(r *redis.Client) Store {
-	return Store{
+func NewRedis(r *redis.Client) Redis {
+	return Redis{
 		r:                  r,
 		MaxConflictRetries: defaultMaxConflictRetries,
 	}
 }
 
-func (s Store) GetInt(key string, default_ *int) (int, error) {
+func (s Redis) GetInt(key string, default_ *int) (int, error) {
 	i, err := s.r.Get(key).Int()
 	if err == redis.Nil && default_ != nil {
 		return *default_, nil
@@ -28,11 +29,11 @@ func (s Store) GetInt(key string, default_ *int) (int, error) {
 	return i, err
 }
 
-func (s Store) SetInt(key string, x int) error {
+func (s Redis) SetInt(key string, x int) error {
 	return s.r.Set(key, x, 0).Err()
 }
 
-func (s Store) IncWithin(key string, delta, max int) (int, bool, error) {
+func (s Redis) IncWithin(key string, delta, max int) (int, bool, error) {
 	var ErrLimit = fmt.Errorf("limit reached")
 
 	v, vals, err := s.update(key, func(key string, v *redis.StringCmd) (interface{}, error) {
@@ -65,7 +66,7 @@ func (s Store) IncWithin(key string, delta, max int) (int, bool, error) {
 // to function f, expected to modify them in-place.
 // The UpdateInts function can be expected to return an array of values, regardless of whether
 // it also returns an error or not, returning values after the update if the f function succeeds.
-func (s Store) UpdateInts(f func(vals []int) error, keys ...string) ([]int, error) {
+func (s Redis) UpdateInts(f func(vals []int) error, keys ...string) ([]int, error) {
 	var vals []int
 
 	// Transactional function.
@@ -118,7 +119,7 @@ func (s Store) UpdateInts(f func(vals []int) error, keys ...string) ([]int, erro
 type UpdateFunc = func(key string, v *redis.StringCmd) (interface{}, error)
 
 // Transactional update.
-func (s Store) update(key string, f UpdateFunc) (interface{}, bool, error) {
+func (s Redis) update(key string, f UpdateFunc) (interface{}, bool, error) {
 	var result interface{}
 
 	// Transactional function.

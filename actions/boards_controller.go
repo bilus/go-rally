@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"rally/models"
 	"rally/services"
+	"rally/stores"
 
 	"github.com/gobuffalo/buffalo"
 	"github.com/gofrs/uuid"
@@ -16,6 +17,8 @@ type BoardsController struct {
 
 	Board             *models.Board
 	QuickAccessBoards []models.Board
+
+	services.VotingService
 }
 
 func WithBoardsController(action func(c BoardsController) error) func(c buffalo.Context) error {
@@ -45,6 +48,20 @@ func (c *BoardsController) SetUp(ctx buffalo.Context) error {
 		}
 
 		c.Set("currentBoard", c.Board)
+
+		c.VotingService = services.NewVotingService(stores.NewVotingStore(models.Redis),
+			c.Board.VotingStrategy)
+
+		votesRemaining, err := c.VotingService.VotesRemaining(&c.CurrentUser, c.Board)
+		if err != nil {
+			if err == services.ErrNoLimit {
+				c.Set("isBoardVoteLimit", false)
+			} else {
+				log.Printf("Error determining user's remaining votes: %v", err)
+			}
+		}
+		c.Set("isBoardVoteLimit", true)
+		c.Set("votesRemaining", votesRemaining)
 	}
 
 	var err error

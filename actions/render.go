@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"math/rand"
 	"net/url"
-	"rally/models"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -111,21 +110,6 @@ func init() {
 			},
 			"canManageBoard": func(board interface{}, help plush.HelperContext) bool {
 				return canManageBoard(board, help.Context) // Crashes otherwise.
-			},
-			// TODO: User can be taken from context.
-			"isBoardVoteLimit": func(u *models.User, b *models.Board) bool {
-				_, err := b.VotesRemaining(models.Redis, u, b)
-				return err != models.ErrNoLimit
-			},
-			"votesRemaining": func(u *models.User, b *models.Board) int {
-				votes, err := b.VotesRemaining(models.Redis, u, b)
-				if err != nil {
-					log.Errorf("Error checking user's remaining votes: %v (user: %v, board: %v)", err, u.ID, b.ID)
-				}
-				if votes < 0 {
-					return 0 // Can happen after board owner changes voting strategy.
-				}
-				return votes
 			},
 			"isBoardStarred": func(board interface{}, help plush.HelperContext) bool {
 				b := toBoardPtr(board)

@@ -15,10 +15,12 @@ func (c PostsController) VotesCreate() error {
 		return err
 	}
 
-	postVotes, upvoted, err := c.Post.Board.Upvote(models.Redis, &c.CurrentUser, c.Post)
+	log.Println("** before upvote")
+	postVotes, upvoted, err := c.VotingService.Upvote(&c.CurrentUser, c.Post)
 	if err != nil {
 		return err
 	}
+	log.Println("** after upvote")
 
 	if upvoted {
 		c.Post.Votes = postVotes
@@ -42,7 +44,7 @@ func (c PostsController) VotesDestroy() error {
 		return err
 	}
 
-	postVotes, downvoted, err := c.Post.Board.Downvote(models.Redis, &c.CurrentUser, c.Post)
+	postVotes, downvoted, err := c.VotingService.Downvote(&c.CurrentUser, c.Post)
 	if err != nil {
 		return err
 	}
