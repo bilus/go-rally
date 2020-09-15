@@ -31,6 +31,11 @@ func (c PostsController) VotesCreate() error {
 		return c.Render(http.StatusUnprocessableEntity, r.JavaScript("error.js"))
 	}
 
+	votesRemaining, err := c.VotingService.VotesRemaining(&c.CurrentUser, c.Board)
+	if err == nil {
+		c.Set("votesRemaining", votesRemaining)
+	}
+
 	c.Set("post", c.Post)
 	c.Set("board", &c.Post.Board)
 	return c.Render(http.StatusOK, r.JavaScript("votes/create.js"))
@@ -56,6 +61,12 @@ func (c PostsController) VotesDestroy() error {
 	} else {
 		return c.Render(http.StatusUnprocessableEntity, r.JavaScript("votes/fail.js"))
 	}
+
+	votesRemaining, err := c.VotingService.VotesRemaining(&c.CurrentUser, c.Board)
+	if err == nil {
+		c.Set("votesRemaining", votesRemaining)
+	}
+
 	c.Set("post", c.Post)
 	c.Set("board", &c.Post.Board)
 	return c.Render(http.StatusOK, r.JavaScript("votes/destroy.js"))
