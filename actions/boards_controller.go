@@ -15,10 +15,12 @@ import (
 type BoardsController struct {
 	AuthenticatedController
 
-	Board             *models.Board
-	QuickAccessBoards []models.Board
+	Board        *models.Board
+	RecentBoards []models.Board
 
 	services.VotingService
+	services.RecentBoardsService
+	services.StarService
 }
 
 func WithBoardsController(action func(c BoardsController) error) func(c buffalo.Context) error {
@@ -64,10 +66,14 @@ func (c *BoardsController) SetUp(ctx buffalo.Context) error {
 		c.Set("votesRemaining", votesRemaining)
 	}
 
+	c.RecentBoardsService = services.NewRecentBoardsService(c.Tx)
+	c.StarService = services.NewStarService(c.Tx)
+
 	var err error
-	if c.QuickAccessBoards, err = services.QuickAccessBoards(c.Tx, &c.CurrentUser); err != nil {
-		log.Printf("Error loading quick access boards: %v", err)
-		c.Set("quickAccessBoards", c.QuickAccessBoards)
+	if c.RecentBoards, err = c.RecentBoardsService.RecentBoards(&c.CurrentUser); err != nil {
+		log.Printf("Error loading recent boards: %v", err)
+	} else {
+		c.Set("recentBoards", c.RecentBoards)
 	}
 
 	return nil

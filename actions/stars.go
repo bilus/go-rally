@@ -2,7 +2,6 @@ package actions
 
 import (
 	"net/http"
-	"rally/services"
 )
 
 func (c BoardsController) StarCreate() error {
@@ -10,7 +9,7 @@ func (c BoardsController) StarCreate() error {
 		return err
 	}
 
-	if err := services.StarBoard(c.Tx, &c.CurrentUser, c.Board, true); err != nil {
+	if err := c.StarService.StarBoard(&c.CurrentUser, c.Board, true); err != nil {
 		return c.Error(http.StatusUnprocessableEntity, err)
 	}
 
@@ -23,7 +22,7 @@ func (c BoardsController) StarDestroy() error {
 		return err
 	}
 
-	if err := services.StarBoard(c.Tx, &c.CurrentUser, c.Board, false); err != nil {
+	if err := c.StarService.StarBoard(&c.CurrentUser, c.Board, false); err != nil {
 		return c.Error(http.StatusUnprocessableEntity, err)
 	}
 

@@ -2,6 +2,7 @@ package actions
 
 import (
 	"rally/models"
+	"rally/services"
 
 	"github.com/gobuffalo/buffalo"
 )
@@ -10,6 +11,7 @@ type AuthenticatedController struct {
 	Controller
 
 	CurrentUser models.User
+	services.DashboardService
 }
 
 func WithAuthenticatedController(action func(c AuthenticatedController) error) func(c buffalo.Context) error {
@@ -31,6 +33,7 @@ func (c *AuthenticatedController) SetUp(ctx buffalo.Context) error {
 		return err
 	}
 	c.CurrentUser = *user
+	c.DashboardService = services.NewDashboardService(c.Tx)
 
 	return nil
 }

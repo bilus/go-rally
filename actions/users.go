@@ -2,10 +2,8 @@ package actions
 
 import (
 	"context"
-	"log"
 	"net/http"
 	"rally/models"
-	"rally/services"
 
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/pop/v5"
@@ -42,26 +40,19 @@ func (c UnauthenticatedController) UsersCreate() error {
 }
 
 func (c AuthenticatedController) UserDashboard() error {
-	starredBoards, err := services.ListStarredBoards(c.Tx, &c.CurrentUser, nil)
-	if err != nil {
-		return err
-	}
-
-	numBoards, err := c.Tx.Count(&models.Board{})
+	dashboard, err := c.DashboardService.GetUserDashboard(c.CurrentUser)
 	if err != nil {
 		return err
 	}
 
 	return responder.Wants("html", func(ctx buffalo.Context) error {
-		ctx.Set("starredBoards", starredBoards)
-		if numBoards == 0 {
-			ctx.Set("showWelcome", true)
-		}
+		ctx.Set("starredBoards", dashboard.StarredBoards)
+		ctx.Set("showWelcome", dashboard.ShowWelcome)
 		return ctx.Render(http.StatusOK, r.HTML("/users/dashboard.plush.html"))
 	}).Wants("json", func(ctx buffalo.Context) error {
-		return ctx.Render(200, r.JSON(starredBoards))
+		return ctx.Render(200, r.JSON(dashboard))
 	}).Wants("xml", func(ctx buffalo.Context) error {
-		return ctx.Render(200, r.XML(starredBoards))
+		return ctx.Render(200, r.XML(dashboard))
 	}).Respond(c)
 }
 
@@ -113,19 +104,13 @@ func RefreshCurrentUser(c buffalo.Context) {
 			c.Set("current_user", nil)
 		}
 		c.Set("current_user", u)
-		boards, err := services.QuickAccessBoards(tx, u)
-		if err != nil {
-			log.Printf("Error loading quick access boards: %v", err)
-			boards = []models.Board{}
-		}
-		c.Set("quickAccessBoards", boards)
 	}
 }
 
 func CurrentUser(c context.Context) (*models.User, error) {
 	u, ok := c.Value("current_user").(*models.User)
 	if !ok {
-		return nil, errors.New("current user in session has incorrect type")
+		return nil, errors.New("current user in session missing or has incorrect type")
 	}
 	return u, nil
 }
