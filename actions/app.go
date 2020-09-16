@@ -126,8 +126,8 @@ func App() *buffalo.App {
 		}
 
 		app.GET("/boards", WithBoardsController(BoardsController.List))
-		app.GET("/boards/{board_id}", WithBoardsController(BoardsController.Show))
 		app.GET("/boards/new", WithBoardsController(BoardsController.New))
+		app.GET("/boards/{board_id}", WithBoardsController(BoardsController.Show))
 		app.POST("/boards", WithBoardsController(BoardsController.Create))
 		app.GET("/boards/{board_id}/edit", WithBoardsController(BoardsController.Edit))
 		app.PUT("/boards/{board_id}", WithBoardsController(BoardsController.Update))

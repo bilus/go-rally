@@ -8,7 +8,7 @@ It looks like you chose to set up your application using a database! Fantastic!
 
 The first thing you need to do is open up the "database.yml" file and edit it to use the correct usernames, passwords, hosts, etc... that are appropriate for your environment.
 
-You will also need to make sure that **you** start/install the database of your choice. Buffalo **won't** install and start it for you.
+You will also need to make sure that **you  - [ ] start/install the database of your choice. Buffalo **won't  - [ ] install and start it for you.
 
 ### Create Your Databases
 
@@ -26,7 +26,7 @@ If you point your browser to [http://127.0.0.1:3000](http://127.0.0.1:3000) you 
 
     $ oya run browse
 
-**Congratulations!** You now have your Buffalo application up and running.
+**Congratulations!  - [ ] You now have your Buffalo application up and running.
 
 ## What Next?
 
@@ -120,6 +120,21 @@ Good luck!
 
 - [X] Refactor
 - [ ] Reactions
+  - [X] Pasting images into post broken
+  - [X] Pasting images into comment broken
+  - [ ] Clear comment after submitting
+  - [ ] Smaller comment textarea
+  - [ ] Emoji toolbar button icon
+  - [ ] TODO POST /posts/:id/reactions/:key
+  - [ ] TODO DELETE /posts/id/reactions/:key
+  - [ ] TODO Render reactions
+  - [ ] TODO User can up 1 reaction
+  - [ ] TODO User can remove their reaction
+  - [ ] TODO Reaction with zero count disappears
+  - [ ] TODO User can add a new reaction
+  - [ ] TODO "Adding" an existing reactions just ups the existing one
+  - [ ] TODO Redis + PG store
+  - [ ] TODO Test everything
 - [ ] Voting improvements
     - [ ] Can take votes back for X minutes
     - [ ] Vote limit can be turned off
