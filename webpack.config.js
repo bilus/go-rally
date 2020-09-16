@@ -8,7 +8,7 @@ const TerserPlugin = require("terser-webpack-plugin");
 const LiveReloadPlugin = require("webpack-livereload-plugin");
 
 const configurator = {
-  entries: function(){
+  entries: function() {
     var entries = {
       application: [
         './node_modules/jquery-ujs/src/rails.js',
@@ -22,11 +22,11 @@ const configurator = {
       }
 
       let key = entry.replace(/(\.\/assets\/(src|js|css|go)\/)|\.(ts|js|s[ac]ss|go)/g, '')
-      if(key.startsWith("_") || (/(ts|js|s[ac]ss|go)$/i).test(entry) == false) {
+      if (key.startsWith("_") || (/(ts|js|s[ac]ss|go)$/i).test(entry) == false) {
         return
       }
 
-      if( entries[key] == null) {
+      if (entries[key] == null) {
         entries[key] = [entry]
         return
       }
@@ -38,11 +38,11 @@ const configurator = {
 
   plugins() {
     var plugins = [
-      new Webpack.ProvidePlugin({$: "jquery",jQuery: "jquery"}),
-      new MiniCssExtractPlugin({filename: "[name].[contenthash].css"}),
-      new CopyWebpackPlugin([{from: "./assets",to: ""}], {copyUnmodified: true,ignore: ["css/**", "js/**", "src/**"] }),
-      new Webpack.LoaderOptionsPlugin({minimize: true,debug: false}),
-      new ManifestPlugin({fileName: "manifest.json"}),
+      new Webpack.ProvidePlugin({ $: "jquery", jQuery: "jquery" }),
+      new MiniCssExtractPlugin({ filename: "[name].[contenthash].css" }),
+      new CopyWebpackPlugin([{ from: "./assets", to: "" }], { copyUnmodified: true, ignore: ["css/**", "js/**", "src/**"] }),
+      new Webpack.LoaderOptionsPlugin({ minimize: true, debug: false }),
+      new ManifestPlugin({ fileName: "manifest.json" }),
       new CleanObsoleteChunks()
     ];
 
@@ -56,22 +56,22 @@ const configurator = {
           test: /\.s[ac]ss$/,
           use: [
             MiniCssExtractPlugin.loader,
-            { loader: "css-loader", options: {sourceMap: true}},
-            { loader: "postcss-loader", options: {sourceMap: true}},
-            { loader: "sass-loader", options: {sourceMap: true}}
+            { loader: "css-loader", options: { sourceMap: true } },
+            { loader: "postcss-loader", options: { sourceMap: true } },
+            { loader: "sass-loader", options: { sourceMap: true } }
           ]
         },
-        { test: /\.tsx?$/, use: "ts-loader", exclude: /node_modules/},
-        { test: /\.jsx?$/,loader: "babel-loader",exclude: /node_modules/ },
-        { test: /\.(woff|woff2|ttf|svg)(\?v=\d+\.\d+\.\d+)?$/,use: "url-loader"},
-        { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,use: "file-loader" },
-        { test: require.resolve("jquery"),use: "expose-loader?jQuery!expose-loader?$"},
-        { test: /\.go$/, use: "gopherjs-loader"}
+        { test: /\.tsx?$/, use: "ts-loader", exclude: /node_modules/ },
+        { test: /\.jsx?$/, loader: "babel-loader", exclude: /node_modules/ },
+        { test: /\.(woff|woff2|ttf|svg)(\?v=\d+\.\d+\.\d+)?$/, use: "url-loader" },
+        { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, use: "file-loader" },
+        { test: require.resolve("jquery"), use: "expose-loader?jQuery!expose-loader?$" },
+        { test: /\.go$/, use: "gopherjs-loader" }
       ]
     }
   },
 
-  buildConfig: function(){
+  buildConfig: function() {
     // NOTE: If you are having issues with this not being set "properly", make
     // sure your GO_ENV is set properly as `buffalo build` overrides NODE_ENV
     // with whatever GO_ENV is set to or "development".
@@ -80,7 +80,12 @@ const configurator = {
     var config = {
       mode: env,
       entry: configurator.entries(),
-      output: {filename: "[name].[hash].js", path: `${__dirname}/public/assets`},
+      output: {
+        filename: "[name].[hash].js",
+        path: `${__dirname}/public/assets`,
+        libraryTarget: 'var',
+        library: 'Main'
+      },
       plugins: configurator.plugins(),
       module: configurator.moduleOptions(),
       resolve: {
@@ -88,8 +93,8 @@ const configurator = {
       }
     }
 
-    if( env === "development" ){
-      config.plugins.push(new LiveReloadPlugin({appendScriptTag: true}))
+    if (env === "development") {
+      config.plugins.push(new LiveReloadPlugin({ appendScriptTag: true }))
       return config
     }
 
