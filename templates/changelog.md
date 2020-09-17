@@ -5,6 +5,10 @@
 - Users can star boards, starred boards appearing on the user's dashboard.
 - Board selection navbar drop-down contains starred and most recent boards, in
   that order, up to a limit.
+- Emojis.
+- Reactions
+- Markdown editor for comments.
+- Syntax highlighting for markdown code blocks.
 
 
 ## v0.2.1
