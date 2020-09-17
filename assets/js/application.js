@@ -51,7 +51,7 @@ $(() => {
                     action: _editor => {
                         emojiPicker.togglePicker(document.querySelector(".emoji"))
                     },
-                    className: "icon-star",
+                    className: "icon-smile-o",
                     title: "Insert emoji",
                 },
                 "|",
