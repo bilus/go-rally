@@ -3,9 +3,12 @@ require("bootstrap/dist/js/bootstrap.bundle.js");
 var sentinel = require("sentinel-js");
 
 var emoji = require('@joeattardi/emoji-button');
+
 var markdownEditors = [];
 
 $(() => {
+    hljs.configure({ languageDetectRe: '^highlight-.+$' });
+
     $('[data-toggle="tooltip"]').tooltip()
 
     $('.clickable').click(e => {
@@ -26,6 +29,9 @@ $(() => {
             minHeight: editorHeight,
             maxHeight: editorHeight,
             imageUploadEndpoint: $(editor).data("image-upload-endpoint"),
+            renderingConfig: {
+                codeSyntaxHighlighting: true,
+            },
             // imageCSRFToken: "<%= authenticity_token %>",
             toolbar: [
                 'undo', 'redo',
@@ -67,10 +73,25 @@ $(() => {
         const el = els[i];
         markdownEditors.push(installMarkdownEditor(el));
     }
+
+    sentinel.on('div.highlight pre', function(el) {
+        hljs.highlightBlock(el);
+    });
+    document.querySelectorAll('div.highlight pre').forEach((el) => {
+        hljs.highlightBlock(el);
+    });
 });
 
 module.exports = {
     clearMarkdownEditor: function() {
         markdownEditors[0].codemirror.setValue('');
-    }
+    },
+    renderMarkdown: function(md) {
+        var em = new EasyMDE({
+            renderingConfig: {
+                codeSyntaxHighlighting: true,
+            },
+        });
+        return em.markdown(md);
+    },
 };

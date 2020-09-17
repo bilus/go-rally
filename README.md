@@ -122,8 +122,10 @@ Good luck!
 - [ ] Reactions
   - [X] Pasting images into post broken
   - [X] Pasting images into comment broken
-  - [ ] Clear comment after submitting
-  - [ ] Smaller comment textarea
+  - [X] Clear comment after submitting
+  - [X] Smaller comment textarea
+  - [X] Syntax highlighting
+  - [ ] Comments not added http://127.0.0.1:3000/boards/d6db70f4-90c5-4515-bca2-b0767bea6c49/posts/282c4323-134e-49d8-bf81-2a3de8c97b57
   - [ ] Emoji toolbar button icon
   - [ ] TODO POST /posts/:id/reactions/:key
   - [ ] TODO DELETE /posts/id/reactions/:key
@@ -135,7 +137,10 @@ Good luck!
   - [ ] TODO "Adding" an existing reactions just ups the existing one
   - [ ] TODO Redis + PG store
   - [ ] TODO Test everything
+- [ ] Info that drafts are not visible
+- [ ] Avatars
 - [ ] Voting improvements
+    - [ ] Reddit-style
     - [ ] Can take votes back for X minutes
     - [ ] Vote limit can be turned off
     - [ ] Vote reefill schedule.

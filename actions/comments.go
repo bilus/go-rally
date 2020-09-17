@@ -18,8 +18,7 @@ func (c CommentsController) List() error {
 	}
 
 	comments := &models.Comments{}
-	q := c.Tx.PaginateFromParams(c.Params())
-	if err := listComments(q, c.Post.ID, comments); err != nil {
+	if err := listComments(c.Tx.Q(), c.Post.ID, comments); err != nil {
 		return err
 	}
 
@@ -28,7 +27,6 @@ func (c CommentsController) List() error {
 		// Default values are "page=1" and "per_page=20".
 
 		// Add the paginator to the context so it can be used in the template.
-		ctx.Set("pagination", q.Paginator)
 		ctx.Set("comments", comments)
 		ctx.Set("post", c.Post)
 		return ctx.Render(http.StatusOK, r.HTML("/comments/index.plush.html"))
