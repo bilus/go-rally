@@ -125,8 +125,10 @@ Good luck!
   - [X] Clear comment after submitting
   - [X] Smaller comment textarea
   - [X] Syntax highlighting
-  - [ ] Comments not added http://127.0.0.1:3000/boards/d6db70f4-90c5-4515-bca2-b0767bea6c49/posts/282c4323-134e-49d8-bf81-2a3de8c97b57
-  - [ ] Emoji toolbar button icon
+  - [X] Comments not added http://127.0.0.1:3000/boards/d6db70f4-90c5-4515-bca2-b0767bea6c49/posts/282c4323-134e-49d8-bf81-2a3de8c97b57
+  - [X] Emoji toolbar button icon
+  - [ ] Test reactions store, service
+  - [ ] Implement storage JSON functions with Redis
   - [ ] TODO POST /posts/:id/reactions/:key
   - [ ] TODO DELETE /posts/id/reactions/:key
   - [ ] TODO Render reactions
@@ -137,6 +139,7 @@ Good luck!
   - [ ] TODO "Adding" an existing reactions just ups the existing one
   - [ ] TODO Redis + PG store
   - [ ] TODO Test everything
+- [ ] Option to limit login to google & use it.
 - [ ] Info that drafts are not visible
 - [ ] Avatars
 - [ ] Voting improvements

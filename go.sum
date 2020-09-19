@@ -598,6 +598,9 @@ github.com/gobuffalo/shoulders v1.0.3/go.mod h1:LqMcHhKRuBPMAYElqOe3POHiZ1x7Ry0B
 github.com/gobuffalo/shoulders v1.0.4/go.mod h1:LqMcHhKRuBPMAYElqOe3POHiZ1x7Ry0BE8ZZ84Bx+k4=
 github.com/gobuffalo/shoulders v1.1.0/go.mod h1:kcIJs3p7VqoBJ36Mzs+x767NyzTx0pxBvzZdWTWZYF8=
 github.com/gobuffalo/shoulders v1.2.0/go.mod h1:Ia3oFybQWg4711cb2S5JkFSt9V4rMiLGusWZ6mRAdNM=
+github.com/gobuffalo/suite v1.0.0 h1:vzh0LqvlNw01WcRfXSW/aCG6AbNLgy/C1Ma7Zp3fHEY=
+github.com/gobuffalo/suite v2.8.2+incompatible h1:O4ojh6PYnov8OVNBL2fxkhr4lv5d+aYtZNSPNGbi/CM=
+github.com/gobuffalo/suite v2.8.2+incompatible/go.mod h1:VCaZ8EgrnJKbt0QGkrEKIMsJlWFxMXWYSHXqjH2UJJE=
 github.com/gobuffalo/suite/v3 v3.0.0 h1:2DygWXAShwRZIqcqI2/crh7ffWFtFen+PIx+AbTYUDU=
 github.com/gobuffalo/suite/v3 v3.0.0/go.mod h1:Q5Dx6pRObqGMg6Y3a9pbpul6qDswzc3ywyuDtXIBMeY=
 github.com/gobuffalo/syncx v0.0.0-20181120191700-98333ab04150/go.mod h1:HhnNqWY95UYwwW3uSASeV7vtgYkT2t16hJgV3AEPUpw=
@@ -814,6 +817,8 @@ github.com/jellevandenhooff/dkim v0.0.0-20150330215556-f50fe3d243e1/go.mod h1:E0
 github.com/jmoiron/sqlx v0.0.0-20180614180643-0dae4fefe7c0/go.mod h1:IiEW3SEiiErVyFdH8NTuWjSifiEQKUoyK3LNqr2kCHU=
 github.com/jmoiron/sqlx v1.2.0 h1:41Ip0zITnmWNR/vHV+S4m+VoUivnWY5E4OJfLZjCJMA=
 github.com/jmoiron/sqlx v1.2.0/go.mod h1:1FEQNm3xlJgrMD+FBdI9+xvCksHtbpVBBw5dYhBSsks=
+github.com/johncgriffin/yogofn v0.0.0-20170613212352-43d7b79df9f1 h1:hdloj/IJHyx3OWX3Z8+sUV1Q2te/UDRQUO+kMYk/asE=
+github.com/johncgriffin/yogofn v0.0.0-20170613212352-43d7b79df9f1/go.mod h1:LNKMhQbjddP+/+a2DCTPIex8xfEEgL+Ss0/4bXxNVHk=
 github.com/joho/godotenv v1.2.0/go.mod h1:7hK45KPybAkOC6peb+G5yklZfMxEjkZhHbwpqxOKXbg=
 github.com/joho/godotenv v1.3.0 h1:Zjp+RcGpHhGlrMbJzXTrZZPrWj+1vfm90La1wgB6Bhc=
 github.com/joho/godotenv v1.3.0/go.mod h1:7hK45KPybAkOC6peb+G5yklZfMxEjkZhHbwpqxOKXbg=

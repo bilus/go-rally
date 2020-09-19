@@ -1,6 +1,8 @@
 package adapter
 
 import (
+	"fmt"
+
 	"github.com/go-redis/redis"
 )
 
@@ -127,4 +129,12 @@ func (s Redis) update(key string, f UpdateFunc) (interface{}, bool, error) {
 	}
 
 	return nil, false, redis.TxFailedErr
+}
+
+func (s Redis) UpdateJSON(key string, v interface{}, f func() error) error {
+	return fmt.Errorf("not implemented")
+}
+
+func (s Redis) GetJSON(key string, v interface{}) (bool, error) {
+	return false, fmt.Errorf("not implemented")
 }

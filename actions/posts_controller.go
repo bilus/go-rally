@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"rally/models"
+	"rally/services"
 
 	"github.com/gobuffalo/buffalo"
 	"github.com/gofrs/uuid"
@@ -13,6 +14,8 @@ type PostsController struct {
 	BoardsController
 
 	Post *models.Post
+
+	services.ReactionsService
 }
 
 func WithPostsController(action func(c PostsController) error) func(ctx buffalo.Context) error {
@@ -40,6 +43,7 @@ func (c *PostsController) SetUp(ctx buffalo.Context) error {
 		if err := c.Tx.Eager().Find(c.Post, postID); err != nil {
 			return ctx.Error(http.StatusNotFound, err)
 		}
+		// c.ReactionsService = services.NewReactionsService()
 	}
 	return nil
 }

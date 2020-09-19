@@ -3,15 +3,7 @@ package stores
 import (
 	"fmt"
 	"rally/models"
-
-	"github.com/gofrs/uuid"
 )
-
-type Storage interface {
-	UpdateInts(f func(vals []int) error, keys ...string) ([]int, error)
-	GetInt(key string, default_ *int) (int, error)
-	SetInt(key string, x int) error
-}
 
 type VotingStore struct {
 	s Storage
@@ -48,7 +40,7 @@ func NewVotingStore(storage Storage) VotingStore {
 }
 
 func (vs VotingStore) GetUserBoardVotes(user *models.User, board *models.Board) (int, error) {
-	boardVotesKey := vs.key(user.ID, board.ID)
+	boardVotesKey := key(user.ID, board.ID)
 	votes := 0
 	noVotes := 0
 	var err error
@@ -59,14 +51,14 @@ func (vs VotingStore) GetUserBoardVotes(user *models.User, board *models.Board) 
 }
 
 func (vs VotingStore) SetUserBoardVotes(user *models.User, board *models.Board, numVotes int) error {
-	boardVotesKey := vs.key(user.ID, board.ID)
+	boardVotesKey := key(user.ID, board.ID)
 	return vs.s.SetInt(boardVotesKey, numVotes)
 }
 
 func (vs VotingStore) UpdateVotes(user *models.User, post *models.Post, f func(state *VotingState) error) error {
-	boardVotesKey := vs.key(user.ID, post.BoardID)
-	postVotesKey := vs.key(user.ID, post.ID)
-	totalPostVotesKey := vs.key(post.ID)
+	boardVotesKey := key(user.ID, post.BoardID)
+	postVotesKey := key(user.ID, post.ID)
+	totalPostVotesKey := key(post.ID)
 	return vs.update(func(xs []int) error {
 		state := &VotingState{}
 		if err := state.Decode(xs); err != nil {
@@ -87,17 +79,6 @@ func (vs VotingStore) update(f func(xs []int) error, keys ...string) error {
 		return err
 	}
 	return nil
-}
-
-func (vs VotingStore) key(IDs ...uuid.UUID) string {
-	key := ""
-	for _, ID := range IDs {
-		if key != "" {
-			key += ":"
-		}
-		key += ID.String()
-	}
-	return key
 }
 
 // TODO: Cleaning up redis keys when posts/boards deleted.

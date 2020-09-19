@@ -1,52 +1,10 @@
 package services_test
 
 import (
-	"fmt"
 	"rally/services"
 	"rally/stores"
+	"rally/testutil"
 )
-
-type FakeStorage struct {
-	m map[string]int
-}
-
-func NewFakeStore() FakeStorage {
-	return FakeStorage{make(map[string]int)}
-}
-
-func (s FakeStorage) GetInt(key string, default_ *int) (int, error) {
-	i, ok := s.m[key]
-	if !ok {
-		if default_ != nil {
-			return *default_, nil
-		}
-		return 0, fmt.Errorf("missing value at %q and no default", key)
-	}
-	return i, nil
-}
-
-func (s FakeStorage) SetInt(key string, x int) error {
-	s.m[key] = x
-	return nil
-}
-
-func (s FakeStorage) UpdateInts(f func(vals []int) error, keys ...string) ([]int, error) {
-	vals := make([]int, len(keys))
-	for i, k := range keys {
-		v, ok := s.m[k]
-		if !ok {
-			v = 0
-		}
-		vals[i] = v
-	}
-	if err := f(vals); err != nil {
-		return vals, err
-	}
-	for i, k := range keys {
-		s.m[k] = vals[i]
-	}
-	return vals, nil
-}
 
 // Can upvote up to a limit.
 func (t *ServicesSuite) Test_VotingService_UpvotingUpperLimit() {
@@ -55,7 +13,7 @@ func (t *ServicesSuite) Test_VotingService_UpvotingUpperLimit() {
 
 	p := t.MustCreatePost(t.ValidPost(b, u))
 
-	s := services.NewVotingService(stores.NewVotingStore(NewFakeStore()), b.VotingStrategy)
+	s := services.NewVotingService(stores.NewVotingStore(testutil.NewFakeStorage()), b.VotingStrategy)
 	count, err := s.VotesRemaining(u, b)
 	t.NoError(err)
 	t.Equal(1, count)
@@ -81,7 +39,7 @@ func (t *ServicesSuite) Test_VotingService_UpvotingNoUpperLimit() {
 	b := t.MustCreateBoardWithNoVoteLimit()
 	p := t.MustCreatePost(t.ValidPost(b, u))
 
-	s := services.NewVotingService(stores.NewVotingStore(NewFakeStore()), b.VotingStrategy)
+	s := services.NewVotingService(stores.NewVotingStore(testutil.NewFakeStorage()), b.VotingStrategy)
 
 	_, err := s.VotesRemaining(u, b)
 	t.Error(err) // No limit.
@@ -108,7 +66,7 @@ func (t *ServicesSuite) Test_VotingService_BoardIsolation() {
 	p2 := t.MustCreatePost(t.ValidPost(b2, u))
 
 	// It's fine to reuse the service, both boards have identical voting strategy.
-	s := services.NewVotingService(stores.NewVotingStore(NewFakeStore()), b1.VotingStrategy)
+	s := services.NewVotingService(stores.NewVotingStore(testutil.NewFakeStorage()), b1.VotingStrategy)
 
 	postVotes, upvoted, err := s.Upvote(u, p1)
 	t.NoError(err)
@@ -139,7 +97,7 @@ func (t *ServicesSuite) Test_VotingService_Backsies() {
 	b := t.MustCreateBoardWithVoteLimit(1)
 	p := t.MustCreatePost(t.ValidPost(b, u))
 
-	s := services.NewVotingService(stores.NewVotingStore(NewFakeStore()), b.VotingStrategy)
+	s := services.NewVotingService(stores.NewVotingStore(testutil.NewFakeStorage()), b.VotingStrategy)
 
 	postVotes, upvoted, err := s.Upvote(u, p)
 	t.NoError(err)
@@ -188,7 +146,7 @@ func (t *ServicesSuite) Test_VotingService_BacksiesOnlyForUpvotedPosts() {
 	p1 := t.MustCreatePost(t.ValidPost(b, u))
 	p2 := t.MustCreatePost(t.ValidPost(b, u))
 
-	s := services.NewVotingService(stores.NewVotingStore(NewFakeStore()), b.VotingStrategy)
+	s := services.NewVotingService(stores.NewVotingStore(testutil.NewFakeStorage()), b.VotingStrategy)
 
 	postVotes, upvoted, err := s.Upvote(u, p1)
 	t.NoError(err)
@@ -237,7 +195,7 @@ func (t *ServicesSuite) Test_VotingService_Refill() {
 
 	p := t.MustCreatePost(t.ValidPost(b, u))
 
-	s := services.NewVotingService(stores.NewVotingStore(NewFakeStore()), b.VotingStrategy)
+	s := services.NewVotingService(stores.NewVotingStore(testutil.NewFakeStorage()), b.VotingStrategy)
 
 	count, err := s.VotesRemaining(u, b)
 	t.NoError(err)
@@ -280,7 +238,7 @@ func (t *ServicesSuite) Test_VotingService_Regression_MultipleUsers() {
 
 	p := t.MustCreatePost(t.ValidPost(b, u1))
 
-	s := services.NewVotingService(stores.NewVotingStore(NewFakeStore()), b.VotingStrategy)
+	s := services.NewVotingService(stores.NewVotingStore(testutil.NewFakeStorage()), b.VotingStrategy)
 
 	postVotes, upvoted, err := s.Upvote(u1, p)
 	t.NoError(err)

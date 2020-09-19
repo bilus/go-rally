@@ -26,6 +26,7 @@ require (
 	github.com/gobuffalo/plush/v4 v4.0.0
 	github.com/gobuffalo/pop v4.13.1+incompatible
 	github.com/gobuffalo/pop/v5 v5.2.4
+	github.com/gobuffalo/suite v2.8.2+incompatible
 	github.com/gobuffalo/suite/v3 v3.0.0
 	github.com/gobuffalo/validate/v3 v3.3.0
 	github.com/gobuffalo/x v0.0.0-20190224155809-6bb134105960
@@ -35,6 +36,7 @@ require (
 	github.com/gorilla/sessions v1.2.1 // indirect
 	github.com/jackc/pgproto3/v2 v2.0.4 // indirect
 	github.com/jackc/pgx/v4 v4.8.1 // indirect
+	github.com/johncgriffin/yogofn v0.0.0-20170613212352-43d7b79df9f1
 	github.com/karrick/godirwalk v1.16.1 // indirect
 	github.com/lib/pq v1.8.0 // indirect
 	github.com/markbates/goth v1.64.2
