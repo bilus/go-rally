@@ -135,10 +135,11 @@ Good luck!
   - [X] User can up an existing reaction
   - [X] User can remove their reaction
   - [X] Reaction with zero count disappears
-  - [ ] User can add a new reaction
-  - [ ] "Adding" an existing reactions just ups the existing one
+  - [X] User can add a new reaction
+  - [X] "Adding" an existing reactions just ups the existing one
+  - [X] Styling
+  - [ ] Prevent emoji reordering
   - [ ] User list in emoji tooltip
-  - [ ] Styling
   - [ ] Audit log
   - [ ] Test everything
 - [ ] Info that drafts are not visible

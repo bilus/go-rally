@@ -106,7 +106,9 @@ module.exports = {
         });
     },
     pickEmoji: function(targetEl, callback) {
-        const emojiPicker = new emoji.EmojiButton();
+        const emojiPicker = new emoji.EmojiButton({
+            position: 'auto', // TODO: Fix scrolling issue.
+        });
         emojiPicker.on('emoji', callback)
         emojiPicker.togglePicker(targetEl)
     },
