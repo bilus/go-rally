@@ -14,12 +14,12 @@ func (c PostsController) CreateReaction() error {
 	if emoji == "" {
 		err := fmt.Errorf("missing emoji param")
 		c.Set("error", err)
-		return c.Render(http.StatusUnprocessableEntity, r.JavaScript("/fail.js"))
+		return c.Render(http.StatusUnprocessableEntity, r.JavaScript("/fail.plush.js"))
 	}
 
 	if err := c.ReactionsService.AddReactionToPost(&c.CurrentUser, c.Post, emoji); err != nil {
 		c.Set("error", err)
-		return c.Render(http.StatusUnprocessableEntity, r.JavaScript("/fail.js"))
+		return c.Render(http.StatusUnprocessableEntity, r.JavaScript("/fail.plush.js"))
 	}
 
 	reactions, err := c.ReactionsService.ListAggregateReactionsToPost(&c.CurrentUser, c.Post)
@@ -29,7 +29,7 @@ func (c PostsController) CreateReaction() error {
 
 	c.Set("reactions", reactions)
 	c.Set("post", c.Post)
-	return c.Render(http.StatusCreated, r.JavaScript("reactions/create.js"))
+	return c.Render(http.StatusCreated, r.JavaScript("reactions/create.plush.js"))
 }
 
 func (c PostsController) DestroyReaction() error {
@@ -41,12 +41,12 @@ func (c PostsController) DestroyReaction() error {
 	if emoji == "" {
 		err := fmt.Errorf("missing emoji param")
 		c.Set("error", err)
-		return c.Render(http.StatusUnprocessableEntity, r.JavaScript("/fail.js"))
+		return c.Render(http.StatusUnprocessableEntity, r.JavaScript("/fail.plush.js"))
 	}
 
 	if err := c.ReactionsService.RemoveReactionToPost(&c.CurrentUser, c.Post, emoji); err != nil {
 		c.Set("error", err)
-		return c.Render(http.StatusUnprocessableEntity, r.JavaScript("/fail.js"))
+		return c.Render(http.StatusUnprocessableEntity, r.JavaScript("/fail.plush.js"))
 	}
 
 	reactions, err := c.ReactionsService.ListAggregateReactionsToPost(&c.CurrentUser, c.Post)
@@ -57,5 +57,5 @@ func (c PostsController) DestroyReaction() error {
 
 	c.Set("reactions", reactions)
 	c.Set("post", c.Post)
-	return c.Render(http.StatusCreated, r.JavaScript("reactions/destroy.js"))
+	return c.Render(http.StatusCreated, r.JavaScript("reactions/destroy.plush.js"))
 }

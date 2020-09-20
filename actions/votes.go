@@ -28,7 +28,7 @@ func (c PostsController) VotesCreate() error {
 		}
 		c.logVotingAuditEvent("upvote")
 	} else {
-		return c.Render(http.StatusUnprocessableEntity, r.JavaScript("/fail.js"))
+		return c.Render(http.StatusUnprocessableEntity, r.JavaScript("/fail.plush.js"))
 	}
 
 	votesRemaining, err := c.VotingService.VotesRemaining(&c.CurrentUser, c.Board)
@@ -38,7 +38,7 @@ func (c PostsController) VotesCreate() error {
 
 	c.Set("post", c.Post)
 	c.Set("board", &c.Post.Board)
-	return c.Render(http.StatusOK, r.JavaScript("votes/create.js"))
+	return c.Render(http.StatusOK, r.JavaScript("votes/create.plush.js"))
 }
 
 // VotesDestroy downvotes a post
@@ -59,7 +59,7 @@ func (c PostsController) VotesDestroy() error {
 		}
 		c.logVotingAuditEvent("downpvote")
 	} else {
-		return c.Render(http.StatusUnprocessableEntity, r.JavaScript("/fail.js"))
+		return c.Render(http.StatusUnprocessableEntity, r.JavaScript("/fail.plush.js"))
 	}
 
 	votesRemaining, err := c.VotingService.VotesRemaining(&c.CurrentUser, c.Board)
@@ -69,7 +69,7 @@ func (c PostsController) VotesDestroy() error {
 
 	c.Set("post", c.Post)
 	c.Set("board", &c.Post.Board)
-	return c.Render(http.StatusOK, r.JavaScript("votes/destroy.js"))
+	return c.Render(http.StatusOK, r.JavaScript("votes/destroy.plush.js"))
 }
 
 func (c PostsController) logVotingAuditEvent(type_ string) {

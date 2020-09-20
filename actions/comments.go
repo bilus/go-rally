@@ -123,7 +123,7 @@ func (c CommentsController) Create() error {
 		}
 		ctx.Set("comments", comments)
 
-		return ctx.Render(http.StatusCreated, r.JavaScript("comments/created.js")) // TODO:
+		return ctx.Render(http.StatusCreated, r.JavaScript("comments/create.plush.js")) // TODO:
 	}).Wants("json", func(ctx buffalo.Context) error {
 		return ctx.Render(http.StatusCreated, r.JSON(comment))
 	}).Wants("xml", func(ctx buffalo.Context) error {
@@ -204,7 +204,7 @@ func (c CommentsController) Destroy() error {
 		return ctx.Redirect(http.StatusSeeOther, "/comments")
 	}).Wants("javascript", func(ctx buffalo.Context) error {
 		ctx.Set("comment", c.Comment)
-		return ctx.Render(http.StatusOK, r.JavaScript("comments/destroyed.js"))
+		return ctx.Render(http.StatusOK, r.JavaScript("comments/destroy.plush.js"))
 	}).Wants("json", func(ctx buffalo.Context) error {
 		return ctx.Render(http.StatusOK, r.JSON(c.Comment))
 	}).Wants("xml", func(ctx buffalo.Context) error {
