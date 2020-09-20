@@ -1,7 +1,7 @@
 package adapter
 
 import (
-	"fmt"
+	"encoding/json"
 
 	"github.com/go-redis/redis"
 )
@@ -132,9 +132,52 @@ func (s Redis) update(key string, f UpdateFunc) (interface{}, bool, error) {
 }
 
 func (s Redis) UpdateJSON(key string, v interface{}, f func() error) error {
-	return fmt.Errorf("not implemented")
+	// Transactional function.
+	txf := func(tx *redis.Tx) error {
+		if _, err := s.GetJSON(key, v); err != nil {
+			return err
+		}
+
+		if err := f(); err != nil {
+			return err
+		}
+
+		// Operation is commited only if the watched keys remain unchanged.
+		_, err := tx.TxPipelined(func(pipe redis.Pipeliner) error {
+			bs, err := json.Marshal(v)
+			if err != nil {
+				return err
+			}
+			return pipe.Set(key, bs, 0).Err()
+		})
+		return err
+	}
+
+	maxRetries := s.MaxConflictRetries
+	if maxRetries == 0 {
+		maxRetries = defaultMaxConflictRetries
+	}
+	for i := 0; i < maxRetries; i++ {
+		err := s.r.Watch(txf, key)
+		if err == nil {
+			// Success.
+			return nil
+		}
+		if err == redis.TxFailedErr {
+			// Optimistic lock lost. Retry.
+			continue
+		}
+		// Return any other error.
+		return err
+	}
+
+	return redis.TxFailedErr
 }
 
 func (s Redis) GetJSON(key string, v interface{}) (bool, error) {
-	return false, fmt.Errorf("not implemented")
+	bs, err := s.r.Get(key).Bytes()
+	if err == redis.Nil || bs == nil {
+		return false, nil
+	}
+	return true, json.Unmarshal(bs, v)
 }

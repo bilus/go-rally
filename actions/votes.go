@@ -28,7 +28,7 @@ func (c PostsController) VotesCreate() error {
 		}
 		c.logVotingAuditEvent("upvote")
 	} else {
-		return c.Render(http.StatusUnprocessableEntity, r.JavaScript("error.js"))
+		return c.Render(http.StatusUnprocessableEntity, r.JavaScript("/fail.js"))
 	}
 
 	votesRemaining, err := c.VotingService.VotesRemaining(&c.CurrentUser, c.Board)
@@ -59,7 +59,7 @@ func (c PostsController) VotesDestroy() error {
 		}
 		c.logVotingAuditEvent("downpvote")
 	} else {
-		return c.Render(http.StatusUnprocessableEntity, r.JavaScript("votes/fail.js"))
+		return c.Render(http.StatusUnprocessableEntity, r.JavaScript("/fail.js"))
 	}
 
 	votesRemaining, err := c.VotingService.VotesRemaining(&c.CurrentUser, c.Board)

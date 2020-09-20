@@ -137,6 +137,9 @@ func App() *buffalo.App {
 		app.POST("/boards/{board_id}/star", WithBoardsController(BoardsController.StarCreate))
 		app.DELETE("/boards/{board_id}/star", WithBoardsController(BoardsController.StarDestroy))
 
+		app.POST("/boards/{board_id}/posts/{post_id}/reactions/{emoji}", WithPostsController(PostsController.CreateReaction))
+		app.DELETE("/boards/{board_id}/posts/{post_id}/reactions/{emoji}", WithPostsController(PostsController.DestroyReaction))
+
 		app.ServeFiles("/", assetsBox) // serve files from the public directory
 	}
 

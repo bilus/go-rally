@@ -59,6 +59,13 @@
 </div>
 
 
+<div class="reactions">
+    <%= remoteLinkTo(boardPostReactionEmojiPath({board_id: post.BoardID, post_id: post.ID, emoji: "smile"}), {data-method: "POST"}) { %>
+    React!
+    <% } %>
+</div>
+
+
 
 <div id="comments" class="mt-5">
     <div class="spinner">
