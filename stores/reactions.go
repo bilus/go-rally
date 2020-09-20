@@ -14,32 +14,14 @@ func NewReactionStore(storage Storage) ReactionStore {
 	return ReactionStore{storage}
 }
 
-type ReactionInfo struct {
-	Reactions map[string][]string `json:"rs"`
-}
-
 func (s ReactionStore) AddReactionToPost(user *models.User, post *models.Post, emoji string) error {
 	info := &ReactionInfo{}
 	return s.storage.UpdateJSON(
 		scopedKey("post-reactions", post.ID),
 		info,
 		func() error {
-			return addReaction(emoji, user, info)
+			return info.addReaction(emoji, user)
 		})
-}
-
-func addReaction(emoji string, user *models.User, info *ReactionInfo) error {
-	if info.Reactions == nil {
-		info.Reactions = make(map[string][]string)
-	}
-
-	userIDs := info.Reactions[emoji]
-	_, found := findUserReaction(user.ID.String(), userIDs)
-	if found {
-		return nil
-	}
-	info.Reactions[emoji] = append(userIDs, user.ID.String())
-	return nil
 }
 
 func (s ReactionStore) RemoveReactionToPost(user *models.User, post *models.Post, emoji string) error {
@@ -48,45 +30,8 @@ func (s ReactionStore) RemoveReactionToPost(user *models.User, post *models.Post
 		scopedKey("post-reactions", post.ID),
 		info,
 		func() error {
-			return removeReaction(emoji, user, info)
+			return info.removeReaction(emoji, user)
 		})
-}
-
-func removeReaction(emoji string, user *models.User, info *ReactionInfo) error {
-	if info.Reactions == nil {
-		info.Reactions = make(map[string][]string)
-	}
-
-	userIDs := info.Reactions[emoji]
-	i, found := findUserReaction(user.ID.String(), userIDs)
-	if !found {
-		return nil
-	}
-	userIDs = remove(i, userIDs)
-	if len(userIDs) == 0 {
-		delete(info.Reactions, emoji)
-	} else {
-		info.Reactions[emoji] = userIDs
-	}
-	return nil
-}
-
-func remove(i int, ids []string) []string {
-	// Remove the element at index i from a.
-	ids[i] = ids[len(ids)-1] // Copy last element to index i.
-	ids[len(ids)-1] = ""     // Erase last element (write zero value).
-	ids = ids[:len(ids)-1]   // Truncate slice.
-	return ids
-}
-
-func findUserReaction(id string, ids []string) (int, bool) {
-	for i, x := range ids {
-		if id == x {
-			return i, true
-		}
-	}
-
-	return 0, false
 }
 
 func (s ReactionStore) ListReactionToPost(post *models.Post) ([]models.Reaction, error) {
@@ -94,29 +39,83 @@ func (s ReactionStore) ListReactionToPost(post *models.Post) ([]models.Reaction,
 	if _, err := s.storage.GetJSON(scopedKey("post-reactions", post.ID), info); err != nil {
 		return nil, err
 	}
-
-	reactions := make([]models.Reaction, 0, len(info.Reactions))
-	for emoji, userIDs := range info.Reactions {
-		uids, err := uids(userIDs)
-		if err != nil {
-			return nil, err
-		}
-		reactions = append(reactions, models.Reaction{
-			Emoji: emoji,
-			Users: uids,
-		})
-	}
-	return reactions, nil
+	return info.Reactions, nil
 }
 
-func uids(xs []string) ([]uuid.UUID, error) {
-	var err error
-	uids := make([]uuid.UUID, len(xs))
-	for i, x := range xs {
-		uids[i], err = uuid.FromString(x)
-		if err != nil {
-			return nil, err
+type ReactionInfo struct {
+	Reactions []models.Reaction `json:"rs"`
+}
+
+func (i *ReactionInfo) addReaction(emoji string, user *models.User) error {
+	reaction, _, found := i.findUserReaction(emoji, user)
+	if found {
+		return nil
+	}
+	if reaction != nil {
+		reaction.Users = append(reaction.Users, user.ID)
+		return nil
+	}
+	i.Reactions = append(i.Reactions, models.Reaction{
+		Emoji: emoji,
+		Users: []uuid.UUID{user.ID},
+	})
+	return nil
+}
+
+func (info *ReactionInfo) findUserReaction(emoji string, user *models.User) (*models.Reaction, int, bool) {
+	for i, r := range info.Reactions {
+		if r.Emoji == emoji {
+			for j, uuid := range r.Users {
+				if uuid == user.ID {
+					return &info.Reactions[i], j, true
+				}
+			}
+			return &info.Reactions[i], -1, false
 		}
 	}
-	return uids, nil
+	return nil, -1, false
+}
+
+func (info *ReactionInfo) removeReaction(emoji string, user *models.User) error {
+	reaction, i, found := info.findUserReaction(emoji, user)
+	if !found {
+		return nil
+	}
+	reaction.Users = removeUUID(i, reaction.Users)
+	if len(reaction.Users) == 0 {
+		info.Reactions = removeReactionByEmoji(emoji, info.Reactions)
+	}
+	return nil
+}
+
+func removeUUID(i int, ids []uuid.UUID) []uuid.UUID {
+	// Remove the element at index i from a.
+	ids[i] = ids[len(ids)-1]      // Copy last element to index i.
+	ids[len(ids)-1] = uuid.UUID{} // Erase last element (write zero value).
+	ids = ids[:len(ids)-1]        // Truncate slice.
+	return ids
+}
+
+func removeReactionByEmoji(emoji string, reactions []models.Reaction) []models.Reaction {
+	i, ok := findReactionByEmoji(emoji, reactions)
+	if !ok {
+		return reactions
+	}
+	return removeReaction(i, reactions)
+}
+
+func findReactionByEmoji(emoji string, reactions []models.Reaction) (int, bool) {
+	for i, r := range reactions {
+		if r.Emoji == emoji {
+			return i, true
+		}
+	}
+	return -1, false
+}
+
+func removeReaction(i int, reactions []models.Reaction) []models.Reaction {
+	reactions[i] = reactions[len(reactions)-1]      // Copy last element to index i.
+	reactions[len(reactions)-1] = models.Reaction{} // Erase last element (write zero value).
+	reactions = reactions[:len(reactions)-1]        // Truncate slice.
+	return reactions
 }

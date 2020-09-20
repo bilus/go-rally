@@ -137,10 +137,10 @@ Good luck!
   - [X] Reaction with zero count disappears
   - [X] User can add a new reaction
   - [X] "Adding" an existing reactions just ups the existing one
-  - [X] Styling
-  - [ ] Prevent emoji reordering
+  - [X] Prevent emoji reordering
   - [ ] User list in emoji tooltip
   - [ ] Audit log
+  - [ ] Styling
   - [ ] Test everything
 - [ ] Info that drafts are not visible
 - [ ] Option to limit login to google & use it.

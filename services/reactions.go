@@ -2,7 +2,6 @@ package services
 
 import (
 	"rally/models"
-	"sort"
 
 	"github.com/gofrs/uuid"
 )
@@ -37,10 +36,6 @@ func (s ReactionsService) ListDetailedReactionsToPost(user *models.User, post *m
 	for i, r := range reactions {
 		reactions[i].IsMadeByCurrentUser = isMadeByUser(r, user.ID)
 	}
-
-	sort.Slice(reactions, func(i, j int) bool {
-		return reactions[i].Emoji < reactions[j].Emoji
-	})
 	return reactions, nil
 }
 
