@@ -69,16 +69,18 @@ func (c *BoardsController) SetUp(ctx buffalo.Context) error {
 	c.RecentBoardsService = services.NewRecentBoardsService(c.Tx)
 	c.StarService = services.NewStarService(c.Tx)
 
-	var err error
-	if c.RecentBoards, err = c.RecentBoardsService.RecentBoards(&c.CurrentUser); err != nil {
-		log.Printf("Error loading recent boards: %v", err)
-	} else {
-		c.Set("recentBoards", c.RecentBoards)
-	}
+	c.Set("recentBoards", func() []models.Board {
+		recentBoards, err := c.RecentBoardsService.RecentBoards(&c.CurrentUser)
+		if err != nil {
+			return nil
+		}
+		return recentBoards
+	})
 
 	return nil
 }
 
+// TODO: Load board, post etc. only if the relevant RequireXYZ method called.
 func (c *BoardsController) RequireBoard() error {
 	if c.Board == nil {
 		return c.Error(http.StatusNotFound, fmt.Errorf("missing board ID"))

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	"net/url"
+	"rally/models"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -125,6 +126,17 @@ func init() {
 					"Salut! 👋", "Hola! 👋", "Privet! 👋", "Nǐ hǎo 👋", "Ciao! 👋", "Yā, Yō 👋", "Hallo! 👋", "Hello! 👋", "Cześć! 👋", "Helo! 👋", "Hey! 👋", "Hei! 👋",
 				}
 				return greetings[rand.Intn(len(greetings))]
+			},
+			"recentBoards": func(help plush.HelperContext) []models.Board {
+				c, ok := help.Context.Value("controller").(BoardsController)
+				if !ok {
+					return nil
+				}
+				recentBoards, err := c.RecentBoardsService.RecentBoards(&c.CurrentUser)
+				if err != nil {
+					return nil
+				}
+				return recentBoards
 			},
 		},
 	})
