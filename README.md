@@ -127,20 +127,21 @@ Good luck!
   - [X] Syntax highlighting
   - [X] Comments not added http://127.0.0.1:3000/boards/d6db70f4-90c5-4515-bca2-b0767bea6c49/posts/282c4323-134e-49d8-bf81-2a3de8c97b57
   - [X] Emoji toolbar button icon
-  - [ ] Test reactions store, service
-  - [ ] Implement storage JSON functions with Redis
-  - [ ] TODO POST /posts/:id/reactions/:key
-  - [ ] TODO DELETE /posts/id/reactions/:key
-  - [ ] TODO Render reactions
-  - [ ] TODO User can up 1 reaction
-  - [ ] TODO User can remove their reaction
-  - [ ] TODO Reaction with zero count disappears
-  - [ ] TODO User can add a new reaction
-  - [ ] TODO "Adding" an existing reactions just ups the existing one
-  - [ ] TODO Redis + PG store
-  - [ ] TODO Test everything
-- [ ] Option to limit login to google & use it.
+  - [X] Test reactions store, service
+  - [X] Implement storage JSON functions with Redis
+  - [X] POST /posts/:id/reactions/:key
+  - [X] DELETE /posts/id/reactions/:key
+  - [X] Render reactions (POC)
+  - [ ] User can up 1 reaction
+  - [ ] User can remove their reaction
+  - [ ] User list in emoji tooltip
+  - [ ] Reaction with zero count disappears
+  - [ ] User can add a new reaction
+  - [ ] "Adding" an existing reactions just ups the existing one
+  - [ ] Audit log
+  - [ ] Test everything
 - [ ] Info that drafts are not visible
+- [ ] Option to limit login to google & use it.
 - [ ] Avatars
 - [ ] Voting improvements
     - [ ] Reddit-style

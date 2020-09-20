@@ -60,6 +60,9 @@
 
 
 <div class="reactions">
+    <%= for (reaction) in reactions { %>
+    <%= reaction.Emoji %> <%= len(reaction.Users) %>
+    <% } %>
     <%= remoteLinkTo(boardPostReactionEmojiPath({board_id: post.BoardID, post_id: post.ID, emoji: "smile"}), {data-method: "POST"}) { %>
     React!
     <% } %>

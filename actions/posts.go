@@ -78,8 +78,15 @@ func (c PostsController) Show() error {
 	if err := c.RequirePost(); err != nil {
 		return err
 	}
+
+	reactions, err := c.ReactionsService.ListAggregateReactionsToPost(&c.CurrentUser, c.Post)
+	if err != nil {
+		return err
+	}
+
 	return responder.Wants("html", func(ctx buffalo.Context) error {
 		ctx.Set("post", c.Post)
+		ctx.Set("reactions", reactions)
 		return ctx.Render(http.StatusOK, r.HTML("/posts/show.plush.html"))
 	}).Wants("json", func(ctx buffalo.Context) error {
 		return ctx.Render(200, r.JSON(c.Post))
