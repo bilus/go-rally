@@ -2,6 +2,9 @@ package services
 
 import (
 	"rally/models"
+	"sort"
+
+	"github.com/gofrs/uuid"
 )
 
 type ReactionStore interface {
@@ -27,9 +30,29 @@ func (s ReactionsService) RemoveReactionToPost(user *models.User, post *models.P
 }
 
 func (s ReactionsService) ListDetailedReactionsToPost(user *models.User, post *models.Post) ([]models.Reaction, error) {
-	return s.store.ListReactionToPost(post)
+	reactions, err := s.store.ListReactionToPost(post)
+	if err != nil {
+		return nil, err
+	}
+	for i, r := range reactions {
+		reactions[i].IsMadeByCurrentUser = isMadeByUser(r, user.ID)
+	}
+
+	sort.Slice(reactions, func(i, j int) bool {
+		return reactions[i].Emoji < reactions[j].Emoji
+	})
+	return reactions, nil
 }
 
 func (s ReactionsService) ListAggregateReactionsToPost(user *models.User, post *models.Post) ([]models.Reaction, error) {
-	return s.store.ListReactionToPost(post)
+	return s.ListDetailedReactionsToPost(user, post)
+}
+
+func isMadeByUser(reaction models.Reaction, id uuid.UUID) bool {
+	for _, u := range reaction.Users {
+		if u.String() == id.String() {
+			return true
+		}
+	}
+	return false
 }

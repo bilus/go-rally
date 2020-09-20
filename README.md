@@ -132,12 +132,13 @@ Good luck!
   - [X] POST /posts/:id/reactions/:key
   - [X] DELETE /posts/id/reactions/:key
   - [X] Render reactions (POC)
-  - [ ] User can up 1 reaction
-  - [ ] User can remove their reaction
-  - [ ] User list in emoji tooltip
-  - [ ] Reaction with zero count disappears
+  - [X] User can up an existing reaction
+  - [X] User can remove their reaction
+  - [X] Reaction with zero count disappears
   - [ ] User can add a new reaction
   - [ ] "Adding" an existing reactions just ups the existing one
+  - [ ] User list in emoji tooltip
+  - [ ] Styling
   - [ ] Audit log
   - [ ] Test everything
 - [ ] Info that drafts are not visible

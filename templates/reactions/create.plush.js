@@ -1,1 +1,1 @@
-alert("created")
+$(".reactions").replaceWith('<%= partial("posts/reactions.html") %>')

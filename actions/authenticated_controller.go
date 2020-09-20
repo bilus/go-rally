@@ -35,5 +35,7 @@ func (c *AuthenticatedController) SetUp(ctx buffalo.Context) error {
 	c.CurrentUser = *user
 	c.DashboardService = services.NewDashboardService(c.Tx)
 
+	c.Set("currentUser", *user)
+
 	return nil
 }

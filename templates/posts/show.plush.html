@@ -58,17 +58,7 @@
     </div>
 </div>
 
-
-<div class="reactions">
-    <%= for (reaction) in reactions { %>
-    <%= reaction.Emoji %> <%= len(reaction.Users) %>
-    <% } %>
-    <%= remoteLinkTo(boardPostReactionEmojiPath({board_id: post.BoardID, post_id: post.ID, emoji: "smile"}), {data-method: "POST"}) { %>
-    React!
-    <% } %>
-</div>
-
-
+<%= partial("posts/reactions.html") %>
 
 <div id="comments" class="mt-5">
     <div class="spinner">

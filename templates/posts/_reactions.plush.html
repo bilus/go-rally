@@ -1,0 +1,23 @@
+<div class="reactions">
+    <%= for (reaction) in reactions { %>
+        <%= if (reaction.IsMadeByCurrentUser) { %>
+            <%= remoteLinkTo(boardPostReactionEmojiPath({board_id: post.BoardID, post_id: post.ID, emoji: reaction.Emoji}), {data-method: "DELETE"}) { %>
+                <%#= partial("posts/reaction.html") %>
+
+                <%= reaction.Emoji %> <%= if (len(reaction.Users) > 1) { %><span class="badge badge-pill badge-secondary badge-outline"><%= len(reaction.Users) %></span> <% } %>
+            <% } %>
+        <% } else { %>
+            <%= remoteLinkTo(boardPostReactionEmojiPath({board_id: post.BoardID, post_id: post.ID, emoji: reaction.Emoji}), {data-method: "POST"}) { %>
+                <%#= partial("posts/reaction.html") %>
+                <%= reaction.Emoji %> <%= if (len(reaction.Users) > 1) { %><span class="badge badge-pill badge-secondary badge-outline"><%= len(reaction.Users) %></span> <% } %>
+            <% } %>
+        <% } %>
+    <% } %>
+
+    <%= remoteLinkTo(boardPostReactionEmojiPath({board_id: post.BoardID, post_id: post.ID, emoji: ":)"}), {data-method: "POST"}) { %>
+    :)
+    <% } %>
+    <%= remoteLinkTo(boardPostReactionEmojiPath({board_id: post.BoardID, post_id: post.ID, emoji: ":("}), {data-method: "POST"}) { %>
+    :(
+    <% } %>
+</div>

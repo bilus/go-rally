@@ -1,1 +1,1 @@
-alert("destroyed")
+$(".reactions").replaceWith('<%= partial("posts/reactions.html") %>')

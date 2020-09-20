@@ -22,6 +22,13 @@ func (c PostsController) CreateReaction() error {
 		return c.Render(http.StatusUnprocessableEntity, r.JavaScript("/fail.js"))
 	}
 
+	reactions, err := c.ReactionsService.ListAggregateReactionsToPost(&c.CurrentUser, c.Post)
+	if err != nil {
+		return err
+	}
+
+	c.Set("reactions", reactions)
+	c.Set("post", c.Post)
 	return c.Render(http.StatusCreated, r.JavaScript("reactions/create.js"))
 }
 
@@ -42,5 +49,13 @@ func (c PostsController) DestroyReaction() error {
 		return c.Render(http.StatusUnprocessableEntity, r.JavaScript("/fail.js"))
 	}
 
+	reactions, err := c.ReactionsService.ListAggregateReactionsToPost(&c.CurrentUser, c.Post)
+	if err != nil {
+		return err
+	}
+	fmt.Println(reactions)
+
+	c.Set("reactions", reactions)
+	c.Set("post", c.Post)
 	return c.Render(http.StatusCreated, r.JavaScript("reactions/destroy.js"))
 }
