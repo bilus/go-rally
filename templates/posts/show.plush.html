@@ -72,15 +72,20 @@
 <script type="text/javascript">
  window.onload = function () {
      <%= if (!post.Draft) { %>
-         $.ajax({
-             method: 'GET',
-             url: '<%= postCommentsPath({post_id: post.ID}) %>',
-             dataType: 'script',
-             contentType: 'text/javascript',
-             beforeSend: function() {
-                 $("#comments spinner").show();
-             }
-         });
+         Main.remoteRequest('GET', '<%= postCommentsPath({post_id: post.ID}) %>',
+                            function() {
+                                $("#comments spinner").show();
+         })
          <% } %>
+
+     Main.onClick(".add-reaction", function(ev) {
+         Main.pickEmoji(ev.target, function(selection) {
+             console.log(selection)
+             Main.remoteRequest("POST",
+                                '<%= boardPostReactionEmojiPath({board_id: post.BoardID, post_id: post.ID, emoji: "' + selection.emoji + '" }) %>');
+         })
+         return false
+     })
+
  }
 </script>

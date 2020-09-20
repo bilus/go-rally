@@ -80,6 +80,8 @@ $(() => {
     document.querySelectorAll('div.highlight pre').forEach((el) => {
         hljs.highlightBlock(el);
     });
+
+
 });
 
 module.exports = {
@@ -94,4 +96,24 @@ module.exports = {
         });
         return em.markdown(md);
     },
+    remoteRequest: function(method, url, beforeSend) {
+        $.ajax({
+            method: method,
+            url: url,
+            dataType: 'script',
+            contentType: 'text/javascript',
+            beforeSend: beforeSend,
+        });
+    },
+    pickEmoji: function(targetEl, callback) {
+        const emojiPicker = new emoji.EmojiButton();
+        emojiPicker.on('emoji', callback)
+        emojiPicker.togglePicker(targetEl)
+    },
+    onClick(sel, callback) {
+        $(sel).click(callback);
+        sentinel.on(sel, function(el) {
+            $(el).click(callback)
+        })
+    }
 };

@@ -14,10 +14,7 @@
         <% } %>
     <% } %>
 
-    <%= remoteLinkTo(boardPostReactionEmojiPath({board_id: post.BoardID, post_id: post.ID, emoji: ":)"}), {data-method: "POST"}) { %>
-    :)
-    <% } %>
-    <%= remoteLinkTo(boardPostReactionEmojiPath({board_id: post.BoardID, post_id: post.ID, emoji: ":("}), {data-method: "POST"}) { %>
-    :(
-    <% } %>
+    <a href="#" class="add-reaction btn btn-sm btn-default">
+        <i class="icon-smile-o"></i>
+    </a>
 </div>
