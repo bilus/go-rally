@@ -11,7 +11,6 @@
         <link rel="icon" href="<%= assetPath("images/favicon.ico") %>">
 
         <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
-        <link href="/css/material-kit.min.css?v=2.0.7" rel="stylesheet" />
         <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
         <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
         <script src="https://cdn.jsdelivr.net/highlight.js/latest/highlight.min.js"></script>
@@ -32,6 +31,7 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav mr-auto mr-2 mt-lg-0">
+                        <%= if (recentBoards) { %>
                         <% let recentBoards = recentBoards() %>
                         <%= if (currentBoard && recentBoards) { %>
                         <li class="nav-item">

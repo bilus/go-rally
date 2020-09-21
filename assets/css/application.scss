@@ -1,10 +1,11 @@
-@import "~bootstrap/scss/bootstrap.scss";
+// @import "~bootstrap/scss/bootstrap.scss";
 
 @import "buffalo";
 @import "icons";
+@import "material-kit";
 
 html {
-    position: relative;
+    // position: relative;
     min-height: 100%;
 }
 
@@ -106,10 +107,46 @@ footer {
 }
 
 .reactions {
-    font-size: 1.5em;
+}
+
+.reactions .badge {
+    font-size: 0.8em;
+    border-radius: 8px;
 }
 
 .reactions .add-reaction {
-    font-size: 1em!important;
+    font-size: 1.3em!important;
     padding: 0!important;
+}
+
+
+
+
+
+.tooltip {
+  position: absolute!important;
+  z-index: 1070!important;
+  display: block!important;
+  margin: 0!important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"!important;
+  font-style: normal!important;
+  font-weight: 400!important;
+  line-height: 1.5!important;
+  text-align: left!important;
+  text-align: start!important;
+  text-decoration: none!important;
+  text-shadow: none!important;
+  text-transform: none!important;
+  letter-spacing: normal!important;
+  word-break: normal!important;
+  word-spacing: normal!important;
+  white-space: normal!important;
+  line-break: auto!important;
+  font-size: 0.875rem!important;
+  word-wrap: break-word!important;
+  opacity: 0!important;
+}
+
+.tooltip.show {
+  opacity: 0.9!important;
 }
