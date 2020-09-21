@@ -9,7 +9,11 @@ var markdownEditors = [];
 $(() => {
     hljs.configure({ languageDetectRe: '^highlight-.+$' });
 
-    $('[data-toggle="tooltip"]').tooltip()
+    $('[data-toggle="tooltip"]').tooltip({ html: true, animation: false });
+
+    sentinel.on('[data-toggle="tooltip"]', function(el) {
+        $(el).tooltip({ html: true, animation: false });
+    })
 
     $('.clickable').click(e => {
         const tr = $(e.target).closest(".clickable");
@@ -19,7 +23,7 @@ $(() => {
 
     function installMarkdownEditor(editor) {
         const editorHeight = $(editor).data("easymde-height");
-        const emojiPicker = new emoji.EmojiButton();
+        const emojiPicker = new emoji.EmojiButton({ showAnimation: false });
         const easyMDE = new EasyMDE({
             element: editor,
             forceSync: true,
@@ -107,7 +111,7 @@ module.exports = {
     },
     pickEmoji: function(targetEl, callback) {
         const emojiPicker = new emoji.EmojiButton({
-            position: 'auto', // TODO: Fix scrolling issue.
+            showAnimation: false,
         });
         emojiPicker.on('emoji', callback)
         emojiPicker.togglePicker(targetEl)
@@ -117,5 +121,8 @@ module.exports = {
         sentinel.on(sel, function(el) {
             $(el).click(callback)
         })
+    },
+    hideTooltips() {
+        $('[data-toggle="tooltip"]').tooltip('hide');
     }
 };

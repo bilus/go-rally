@@ -5,8 +5,9 @@ import (
 )
 
 type Reaction struct {
-	Emoji string      `json:"emoji"`
-	Users []uuid.UUID `json:"user_ids"`
+	Emoji   string      `json:"emoji"`
+	UserIDs []uuid.UUID `json:"user_ids"`
 
-	IsMadeByCurrentUser bool `json:"-"`
+	Users               []User `json:"users"`
+	IsMadeByCurrentUser bool   `json:"-"`
 }

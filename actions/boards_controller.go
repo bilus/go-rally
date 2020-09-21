@@ -2,11 +2,12 @@ package actions
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"rally/models"
 	"rally/services"
 	"rally/stores"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/gobuffalo/buffalo"
 	"github.com/gofrs/uuid"
@@ -18,9 +19,9 @@ type BoardsController struct {
 	Board        *models.Board
 	RecentBoards []models.Board
 
-	services.VotingService
-	services.RecentBoardsService
-	services.StarService
+	VotingService       services.VotingService
+	RecentBoardsService services.RecentBoardsService
+	StarService         services.StarService
 }
 
 func WithBoardsController(action func(c BoardsController) error) func(c buffalo.Context) error {
@@ -72,6 +73,7 @@ func (c *BoardsController) SetUp(ctx buffalo.Context) error {
 	c.Set("recentBoards", func() []models.Board {
 		recentBoards, err := c.RecentBoardsService.RecentBoards(&c.CurrentUser)
 		if err != nil {
+			log.Warnf("Error in recentBoards helper: %v", err)
 			return nil
 		}
 		return recentBoards

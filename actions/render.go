@@ -5,6 +5,7 @@ import (
 	"math/rand"
 	"net/url"
 	"rally/models"
+	"strings"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -127,16 +128,12 @@ func init() {
 				}
 				return greetings[rand.Intn(len(greetings))]
 			},
-			"recentBoards": func(help plush.HelperContext) []models.Board {
-				c, ok := help.Context.Value("controller").(BoardsController)
-				if !ok {
-					return nil
+			"formatUserList": func(users []models.User) string {
+				emails := make([]string, len(users))
+				for i, user := range users {
+					emails[i] = user.Email
 				}
-				recentBoards, err := c.RecentBoardsService.RecentBoards(&c.CurrentUser)
-				if err != nil {
-					return nil
-				}
-				return recentBoards
+				return strings.Join(emails, "<br />")
 			},
 		},
 	})

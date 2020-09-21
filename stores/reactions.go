@@ -34,7 +34,7 @@ func (s ReactionStore) RemoveReactionToPost(user *models.User, post *models.Post
 		})
 }
 
-func (s ReactionStore) ListReactionToPost(post *models.Post) ([]models.Reaction, error) {
+func (s ReactionStore) ListReactionsToPost(post *models.Post) ([]models.Reaction, error) {
 	info := &ReactionInfo{}
 	if _, err := s.storage.GetJSON(scopedKey("post-reactions", post.ID), info); err != nil {
 		return nil, err
@@ -52,12 +52,12 @@ func (i *ReactionInfo) addReaction(emoji string, user *models.User) error {
 		return nil
 	}
 	if reaction != nil {
-		reaction.Users = append(reaction.Users, user.ID)
+		reaction.UserIDs = append(reaction.UserIDs, user.ID)
 		return nil
 	}
 	i.Reactions = append(i.Reactions, models.Reaction{
-		Emoji: emoji,
-		Users: []uuid.UUID{user.ID},
+		Emoji:   emoji,
+		UserIDs: []uuid.UUID{user.ID},
 	})
 	return nil
 }
@@ -65,7 +65,7 @@ func (i *ReactionInfo) addReaction(emoji string, user *models.User) error {
 func (info *ReactionInfo) findUserReaction(emoji string, user *models.User) (*models.Reaction, int, bool) {
 	for i, r := range info.Reactions {
 		if r.Emoji == emoji {
-			for j, uuid := range r.Users {
+			for j, uuid := range r.UserIDs {
 				if uuid == user.ID {
 					return &info.Reactions[i], j, true
 				}
@@ -81,8 +81,8 @@ func (info *ReactionInfo) removeReaction(emoji string, user *models.User) error 
 	if !found {
 		return nil
 	}
-	reaction.Users = removeUUID(i, reaction.Users)
-	if len(reaction.Users) == 0 {
+	reaction.UserIDs = removeUUID(i, reaction.UserIDs)
+	if len(reaction.UserIDs) == 0 {
 		info.Reactions = removeReactionByEmoji(emoji, info.Reactions)
 	}
 	return nil

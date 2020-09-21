@@ -1,15 +1,20 @@
-<div class="reactions">
+<div class="reactions align-middle">
     <%= for (reaction) in reactions { %>
         <%= if (reaction.IsMadeByCurrentUser) { %>
+            <%#= partial("posts/reaction.html") %>
             <%= remoteLinkTo(boardPostReactionEmojiPath({board_id: post.BoardID, post_id: post.ID, emoji: reaction.Emoji}), {data-method: "DELETE"}) { %>
-                <%#= partial("posts/reaction.html") %>
-
-                <%= reaction.Emoji %> <%= if (len(reaction.Users) > 1) { %><span class="badge badge-pill badge-secondary badge-outline"><%= len(reaction.Users) %></span> <% } %>
+                <span class="badge badge-secondary badge-outline" data-toggle="tooltip" data-placement="bottom" title="<%= formatUserList(reaction.Users) %>">
+                    <%= reaction.Emoji %>
+                    <%= len(reaction.Users) %>
+                </span>
             <% } %>
         <% } else { %>
+            <%#= partial("posts/reaction.html") %>
             <%= remoteLinkTo(boardPostReactionEmojiPath({board_id: post.BoardID, post_id: post.ID, emoji: reaction.Emoji}), {data-method: "POST"}) { %>
-                <%#= partial("posts/reaction.html") %>
-                <%= reaction.Emoji %> <%= if (len(reaction.Users) > 1) { %><span class="badge badge-pill badge-secondary badge-outline"><%= len(reaction.Users) %></span> <% } %>
+                <span class="badge badge-secondary badge-outline" data-toggle="tooltip" data-placement="bottom" title="<%= formatUserList(reaction.Users) %>">
+                    <%= reaction.Emoji %>
+                    <%= len(reaction.Users) %>
+                </span>
             <% } %>
         <% } %>
     <% } %>

@@ -138,7 +138,7 @@ Good luck!
   - [X] User can add a new reaction
   - [X] "Adding" an existing reactions just ups the existing one
   - [X] Prevent emoji reordering
-  - [ ] User list in emoji tooltip
+  - [X] User list in emoji tooltip
   - [ ] Audit log
   - [ ] Styling
   - [ ] Test everything

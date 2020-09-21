@@ -79,7 +79,7 @@ func (c PostsController) Show() error {
 		return err
 	}
 
-	reactions, err := c.ReactionsService.ListAggregateReactionsToPost(&c.CurrentUser, c.Post)
+	reactions, err := c.ReactionsService.ListReactionsToPost(&c.CurrentUser, c.Post)
 	if err != nil {
 		return err
 	}

@@ -13,7 +13,7 @@ func (t StoresSuite) Test_ReactionStore_Empty() {
 	p := t.MustCreatePost(t.ValidPost(b, u))
 
 	s := NewReactionStore(testutil.NewFakeStorage())
-	reactions, err := s.ListReactionToPost(p)
+	reactions, err := s.ListReactionsToPost(p)
 	t.NoError(err)
 	t.Empty(reactions)
 }
@@ -28,15 +28,15 @@ func (t StoresSuite) Test_ReactionStore_AddingReactions() {
 	t.NoError(s.AddReactionToPost(u, p, "smile"))
 	t.NoError(s.AddReactionToPost(u, p, "sad"))
 
-	reactions, err := s.ListReactionToPost(p)
+	reactions, err := s.ListReactionsToPost(p)
 	t.NoError(err)
 	t.Len(reactions, 2)
 
 	t.ElementsMatch([]string{"smile", "sad"},
 		yogofn.Map(emoji, reactions).([]string))
 
-	t.Len(reactions[0].Users, 1)
-	t.Len(reactions[1].Users, 1)
+	t.Len(reactions[0].UserIDs, 1)
+	t.Len(reactions[1].UserIDs, 1)
 }
 
 func (t StoresSuite) Test_ReactionStore_AddingReactions_TwoUsers() {
@@ -52,7 +52,7 @@ func (t StoresSuite) Test_ReactionStore_AddingReactions_TwoUsers() {
 	t.NoError(s.AddReactionToPost(u1, p, "sad"))
 	t.NoError(s.AddReactionToPost(u2, p, "happy"))
 
-	reactions, err := s.ListReactionToPost(p)
+	reactions, err := s.ListReactionsToPost(p)
 	t.NoError(err)
 	t.Len(reactions, 3)
 
@@ -60,15 +60,15 @@ func (t StoresSuite) Test_ReactionStore_AddingReactions_TwoUsers() {
 		yogofn.Map(emoji, reactions).([]string))
 
 	t.True(yogofn.Any(func(r models.Reaction) bool {
-		return r.Emoji == "smile" && len(r.Users) == 2
+		return r.Emoji == "smile" && len(r.UserIDs) == 2
 	}, reactions))
 
 	t.True(yogofn.Any(func(r models.Reaction) bool {
-		return r.Emoji == "sad" && len(r.Users) == 1
+		return r.Emoji == "sad" && len(r.UserIDs) == 1
 	}, reactions))
 
 	t.True(yogofn.Any(func(r models.Reaction) bool {
-		return r.Emoji == "happy" && len(r.Users) == 1
+		return r.Emoji == "happy" && len(r.UserIDs) == 1
 	}, reactions))
 }
 
@@ -85,15 +85,15 @@ func (t StoresSuite) Test_ReactionStore_AddingReactions_MaxOneReactionPerUser() 
 	t.NoError(s.AddReactionToPost(u, p, "sad"))
 	t.NoError(s.AddReactionToPost(u, p, "sad"))
 
-	reactions, err := s.ListReactionToPost(p)
+	reactions, err := s.ListReactionsToPost(p)
 	t.NoError(err)
 	t.Len(reactions, 2)
 
 	t.ElementsMatch([]string{"smile", "sad"},
 		yogofn.Map(emoji, reactions).([]string))
 
-	t.Len(reactions[0].Users, 1)
-	t.Len(reactions[1].Users, 1)
+	t.Len(reactions[0].UserIDs, 1)
+	t.Len(reactions[1].UserIDs, 1)
 }
 
 func (t StoresSuite) Test_ReactionStore_RemovingReactions() {
@@ -113,12 +113,12 @@ func (t StoresSuite) Test_ReactionStore_RemovingReactions() {
 	t.NoError(s.RemoveReactionToPost(u1, p, "smile"))
 	t.NoError(s.RemoveReactionToPost(u2, p, "happy"))
 
-	reactions, err := s.ListReactionToPost(p)
+	reactions, err := s.ListReactionsToPost(p)
 	t.NoError(err)
 	t.Len(reactions, 2)
 
-	t.Len(reactions[0].Users, 1)
-	t.Len(reactions[1].Users, 1)
+	t.Len(reactions[0].UserIDs, 1)
+	t.Len(reactions[1].UserIDs, 1)
 }
 
 func emoji(r models.Reaction) string {

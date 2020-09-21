@@ -28,6 +28,9 @@ func (c *Controller) SetUp(ctx buffalo.Context) error {
 	if !ok {
 		return fmt.Errorf("no transaction found")
 	}
+	if tx == nil {
+		return fmt.Errorf("no transaction found")
+	}
 	c.Tx = tx
 	c.Context = ctx
 	return nil

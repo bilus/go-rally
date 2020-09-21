@@ -16,7 +16,7 @@ type PostsController struct {
 
 	Post *models.Post
 
-	services.ReactionsService
+	ReactionsService services.ReactionsService
 }
 
 func WithPostsController(action func(c PostsController) error) func(ctx buffalo.Context) error {
@@ -40,12 +40,14 @@ func (c *PostsController) SetUp(ctx buffalo.Context) error {
 		if err != nil {
 			return ctx.Error(http.StatusNotFound, err)
 		}
+
 		c.Post = &models.Post{}
 		if err := c.Tx.Eager().Find(c.Post, postID); err != nil {
 			return ctx.Error(http.StatusNotFound, err)
 		}
-		c.ReactionsService = services.NewReactionsService(stores.NewReactionStore(models.Redis))
+		c.ReactionsService = services.NewReactionsService(stores.NewReactionStore(models.Redis), c.Tx)
 	}
+
 	return nil
 }
 

@@ -22,7 +22,7 @@ func (c PostsController) CreateReaction() error {
 		return c.Render(http.StatusUnprocessableEntity, r.JavaScript("/fail.plush.js"))
 	}
 
-	reactions, err := c.ReactionsService.ListAggregateReactionsToPost(&c.CurrentUser, c.Post)
+	reactions, err := c.ReactionsService.ListReactionsToPost(&c.CurrentUser, c.Post)
 	if err != nil {
 		return err
 	}
@@ -49,7 +49,7 @@ func (c PostsController) DestroyReaction() error {
 		return c.Render(http.StatusUnprocessableEntity, r.JavaScript("/fail.plush.js"))
 	}
 
-	reactions, err := c.ReactionsService.ListAggregateReactionsToPost(&c.CurrentUser, c.Post)
+	reactions, err := c.ReactionsService.ListReactionsToPost(&c.CurrentUser, c.Post)
 	if err != nil {
 		return err
 	}

@@ -10,8 +10,8 @@ import (
 type AuthenticatedController struct {
 	Controller
 
-	CurrentUser models.User
-	services.DashboardService
+	CurrentUser      models.User
+	DashboardService services.DashboardService
 }
 
 func WithAuthenticatedController(action func(c AuthenticatedController) error) func(c buffalo.Context) error {
@@ -25,6 +25,7 @@ func WithAuthenticatedController(action func(c AuthenticatedController) error) f
 }
 
 func (c *AuthenticatedController) SetUp(ctx buffalo.Context) error {
+
 	if err := c.Controller.SetUp(ctx); err != nil {
 		return err
 	}
