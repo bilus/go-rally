@@ -141,17 +141,18 @@ Good luck!
   - [X] User list in emoji tooltip
   - [X] Styling
   - [X] Fix reactions reordered on remove due to the algorithm
-  - [ ] Audit log
-  - [ ] Test everything
-- [ ] Info that drafts are not visible
+  - [X] Audit log
+- [X] Info that drafts are not visible
 - [ ] Option to limit login to google & use it.
 - [ ] Avatars
+- [ ] Private boards
 - [ ] Voting improvements
     - [ ] Reddit-style
     - [ ] Can take votes back for X minutes
     - [ ] Vote limit can be turned off
     - [ ] Vote reefill schedule.
 - [ ] Deleted board is just marked as deleted.
+- [ ] Test everything
 - [ ] Refactor 2
     - [ ] Helpers use Controller (via wrapper)
     - [ ] Get rid of SetCurrentUser middleware
@@ -170,9 +171,6 @@ Good luck!
     - [ ] User defined pipelines?
       Board A -> Board B -> Board C
       Pipeline view
-- [ ] Private boards
-      See a list of who reacted, slack-like
-      Users can define conventions e.g. "I want to help"
 - [ ] Tenancy
 - [ ] Use websockets to show user activity in real-time
       "Gina just upvoted a post"
