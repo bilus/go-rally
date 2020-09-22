@@ -3,7 +3,7 @@
         <%= if (reaction.IsMadeByCurrentUser) { %>
             <%#= partial("posts/reaction.html") %>
             <%= remoteLinkTo(boardPostReactionEmojiPath({board_id: post.BoardID, post_id: post.ID, emoji: reaction.Emoji}), {data-method: "DELETE"}) { %>
-                <span class="badge badge-secondary badge-outline" data-toggle="tooltip" data-placement="bottom" title="<%= formatUserList(reaction.Users) %>">
+                <span class="badge badge-secondary" data-toggle="tooltip" data-placement="bottom" title="<%= formatUserList(reaction.Users) %>">
                     <%= reaction.Emoji %>
                     <%= len(reaction.Users) %>
                 </span>
@@ -11,7 +11,7 @@
         <% } else { %>
             <%#= partial("posts/reaction.html") %>
             <%= remoteLinkTo(boardPostReactionEmojiPath({board_id: post.BoardID, post_id: post.ID, emoji: reaction.Emoji}), {data-method: "POST"}) { %>
-                <span class="badge badge-secondary badge-outline" data-toggle="tooltip" data-placement="bottom" title="<%= formatUserList(reaction.Users) %>">
+                <span class="badge badge-secondary" data-toggle="tooltip" data-placement="bottom" title="<%= formatUserList(reaction.Users) %>">
                     <%= reaction.Emoji %>
                     <%= len(reaction.Users) %>
                 </span>

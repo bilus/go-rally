@@ -1,7 +1,7 @@
 <div class="py-4 mb-2">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/boards"><i class="icon-home"></i></a></li>
+            <li class="breadcrumb-item"><a href="/dashboard"><i class="icon-home"></i></a></li>
             <li class="breadcrumb-item active" aria-current="page">
                 <%= linkTo(boardPath( { board_id: post.BoardID }), { body: post.Board.Name }) %>
             </li>
@@ -32,7 +32,7 @@
                     <h3 class="d-inline-block w-100">
                         <%= safeTitle(post.Title) %>
                         <%= if (post.Draft) { %>
-                        <span class="badge badge-dark">Draft</span>
+                        <%= partial("/posts/draft.html") %>
                         <% } %>
                     </h3>
                     <h6 class="mt-0"><%= postAuthor(post) %> <span class="time-ago"><%= timeAgo(post.CreatedAt) %></span></h6>
