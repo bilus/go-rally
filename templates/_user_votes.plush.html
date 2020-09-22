@@ -1,7 +1,7 @@
 <%= if (board) { %>
     <%= if (isBoardVoteLimit) { %>
         <span class='user-votes <%= if (votesRemaining <= 0) { return "text-danger" } %>'>
-            Upvotes left: <%= votesRemaining %> <span data-toggle="tooltip" title="Votes are refilled periodically but unused votes do not roll over to the next period."><i class="icon-question-circle"></i></abbr>
+            Upvotes left: <%= votesRemaining %> <span data-toggle="tooltip" title="Votes can be refilled by the board's owners."><i class="icon-question-circle"></i></abbr>
         </span>
     <% } %>
 <% } else { %>

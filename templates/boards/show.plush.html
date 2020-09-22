@@ -32,8 +32,12 @@
 
             <div class="container">
                 <div class="row post-list-nav">
-                    <div class="col">
-                        <ul class="nav nav-pills nav-pills-warning">
+                    <h4 class="col-3 text-primary user-votes text-uppercase">
+                        <%= partial("user_votes.html") %>
+                    </h4>
+
+                    <div class="col-6">
+                        <ul class="nav nav-pills nav-pills-warning float-right">
                             <li class="nav-item">
                                 <%= linkTo(boardPath({ board_id: board.ID, order: "top" }), { body: "Top", class: "nav-link " + orderClass("top") }) %>
                             </li>
@@ -44,9 +48,8 @@
 
                         </ul>
                     </div>
-                    <h6 class="col text-right text-secondary user-votes">
-                        <%= partial("user_votes.html") %>
-                    </h6>
+                    <div class="col-3">
+                    </div>
                 </div>
 
                 <div class="row">
