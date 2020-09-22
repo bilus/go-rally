@@ -119,7 +119,7 @@ Good luck!
       - [X] Changelog gives 500
 
 - [X] Refactor
-- [ ] Reactions
+- [X] Reactions
   - [X] Pasting images into post broken
   - [X] Pasting images into comment broken
   - [X] Clear comment after submitting
@@ -148,12 +148,23 @@ Good luck!
 - [X] Styling
   - [X] Buttons & minor tweaks
   - [X] Round avatars
-- [ ] Private boards
+- [X] Private boards
   - [X] Option to make board private (with warning)
   - [X] Do not list private boards
   - [X] List user's own boards on dashboard
   - [X] Show that board is private
-  - [ ] Share popover
+  - [X] Share popover
+- [X] Fix visual glitches
+  - [X] Font size/readability
+  - [X] Wrong alignment of buttons after adding share
+  - [X] Wrong alignment of post edit+destroy buttons, need margin
+- [ ] Test everything
+- [ ] Deploy
+  - [ ] Changelog
+  - [ ] Backup PG
+  - [ ] Disable login form
+  - [ ] CLOUDINARY_ACCOUNT
+
 - [ ] Slugs for boards
 - [ ] Slugs for posts
 - [ ] Voting improvements
@@ -162,11 +173,6 @@ Good luck!
     - [ ] Vote limit can be turned off
     - [ ] Vote reefill schedule.
 - [ ] Deleted board is just marked as deleted.
-- [ ] Test everything
-- [ ] Deploy
-  - [ ] Backup PG
-  - [ ] Disable login form
-  - [ ] CLOUDINARY_ACCOUNT
 - [ ] Refactor 2
     - [ ] Helpers use Controller (via wrapper)
     - [ ] Get rid of SetCurrentUser middleware

@@ -1,5 +1,6 @@
 require("expose-loader?$!expose-loader?jQuery!jquery");
 require("bootstrap/dist/js/bootstrap.bundle.js");
+var ClipboardJS = require("clipboard");
 var sentinel = require("sentinel-js");
 
 var emoji = require('@joeattardi/emoji-button');
@@ -10,14 +11,22 @@ $(() => {
     hljs.configure({ languageDetectRe: '^highlight-.+$' });
 
     $('[data-toggle="tooltip"]').tooltip({ html: true, animation: false });
-
     sentinel.on('[data-toggle="tooltip"]', function(el) {
         $(el).tooltip({ html: true, animation: false });
     })
-    $('[data-toggle="popover"]').popover({ html: true, animation: false })
 
+    $('[data-toggle="popover"]').popover({ html: true, animation: false })
     sentinel.on('[data-toggle="popover"]', function(el) {
         $(el).popover({ html: true, animation: false });
+    })
+
+    sentinel.on('.copy-board', function(el) {
+        new ClipboardJS(el,
+            {
+                text: function(trigger) {
+                    return window.location;
+                }
+            });
     })
 
     $('.clickable').click(e => {

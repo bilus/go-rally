@@ -24,9 +24,11 @@
                                         <i class="icon-plus"></i>
                                         <% } %>
                                         <% } %>
-                                        <button type="button" class="btn btn-info btn-round btn-fab" data-toggle="popover" title="Share this board" data-content="<a href='javascript:;' class='btn btn-small btn-link btn-info' data-clipboard='true' data-clipboard-text='<%= boardPath({board_id: board.ID})%>'>copy permalink</a>">
-                                    <i class="icon-share-alt"></i>
-                                </button>
+                                        <button type="button" class="btn btn-info btn-round btn-fab"
+                                                data-toggle="popover" title="Share this board"
+                                                data-content="<a class='btn btn-small btn-link btn-info copy-board'>copy link <i class='icon-clipboard'></a>">
+                                            <i class="icon-share-alt"></i>
+                                        </button>
                             </div>
 
                         </h2>
