@@ -48,6 +48,7 @@ func (c AuthenticatedController) UserDashboard() error {
 	return responder.Wants("html", func(ctx buffalo.Context) error {
 		ctx.Set("starredBoards", dashboard.StarredBoards)
 		ctx.Set("showWelcome", dashboard.ShowWelcome)
+		ctx.Set("ownBoards", dashboard.OwnBoards)
 		return ctx.Render(http.StatusOK, r.HTML("/users/dashboard.plush.html"))
 	}).Wants("json", func(ctx buffalo.Context) error {
 		return ctx.Render(200, r.JSON(dashboard))

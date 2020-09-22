@@ -30,10 +30,10 @@
                 </div>
                 <div class="col-9">
                     <h3 class="d-inline-block w-100">
-                        <%= safeTitle(post.Title) %>
                         <%= if (post.Draft) { %>
                         <%= partial("/posts/draft.html") %>
                         <% } %>
+                        <%= safeTitle(post.Title) %>
                     </h3>
                     <h6 class="mt-0"><%= postAuthor(post) %> <span class="time-ago"><%= timeAgo(post.CreatedAt) %></span></h6>
                 </div>

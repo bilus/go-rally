@@ -17,6 +17,23 @@
 </div>
 
 <h3 class="d-inline-block">
+    Your boards
+</h3>
+
+<table class="table table-hover table-noborders">
+    <tbody>
+        <%= for (board) in ownBoards { %>
+            <tr class="clickable" data-href="<%= boardPath({ board_id: board.ID }) %>">
+                <td>
+                    <%= partial("/boards/board_name.plush.html") %>
+                </td>
+            </tr>
+        <% } %>
+    </tbody>
+</table>
+<% } %>
+
+<h3 class="d-inline-block">
     <i class="icon-star text-primary"></i>
     Starred boards
 </h3>
@@ -26,7 +43,7 @@
         <%= for (board) in starredBoards { %>
             <tr class="clickable" data-href="<%= boardPath({ board_id: board.ID }) %>">
                 <td>
-                    <%= board.Name %>
+                    <%= partial("/boards/board_name.plush.html") %>
                 </td>
             </tr>
         <% } %>

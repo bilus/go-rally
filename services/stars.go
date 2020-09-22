@@ -27,6 +27,7 @@ func (s StarService) ListStarredBoards(user *models.User, limit *int) ([]models.
 	} else {
 		q = s.db.Where("FALSE")
 	}
+	q = q.Where("is_private IS NOT TRUE")
 	if limit != nil {
 		q = q.Limit(*limit)
 	}

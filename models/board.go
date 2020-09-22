@@ -20,6 +20,7 @@ type Board struct {
 	VotingStrategyRaw json.RawMessage `json:"-" db:"voting_strategy" form:"-"`
 	CreatedAt         time.Time       `json:"created_at" db:"created_at"`
 	UpdatedAt         time.Time       `json:"updated_at" db:"updated_at"`
+	Private           bool            `json:"private" db:"is_private"`
 
 	// User-context fields.
 	UserStarred bool `json:"_user_starred" db:"-" form:"-"`

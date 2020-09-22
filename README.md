@@ -145,12 +145,14 @@ Good luck!
 - [X] Info that drafts are not visible
 - [X] Option to limit login to google & use it.
 - [X] Avatars
-- [ ] Styling
+- [X] Styling
   - [X] Buttons & minor tweaks
-  - [ ] Round avatars
+  - [X] Round avatars
 - [ ] Private boards
-  - [ ] Option to make board private (with warning)
-  - [ ] Do not list private boards
+  - [X] Option to make board private (with warning)
+  - [X] Do not list private boards
+  - [X] List user's own boards on dashboard
+  - [X] Show that board is private
   - [ ] Share popover
 - [ ] Slugs for boards
 - [ ] Slugs for posts

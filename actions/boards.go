@@ -19,6 +19,7 @@ func (c BoardsController) List() error {
 	// Default values are "page=1" and "per_page=20".
 	boards := &models.Boards{}
 	q := c.Tx.PaginateFromParams(c.Params())
+	q = q.Where("is_private IS NOT TRUE")
 	if err := q.All(boards); err != nil {
 		return err
 	}
@@ -66,19 +67,12 @@ func (c BoardsController) Show() error {
 		return err
 	}
 
-	// Retrieve all Boards from the DB
-	boards := &models.Boards{}
-	if err := c.Tx.All(boards); err != nil {
-		return err
-	}
-
 	return responder.Wants("html", func(ctx buffalo.Context) error {
 		ctx.Set("board", c.Board)
 		ctx.Set("pagination", q.Paginator)
 
 		ctx.Set("posts", posts)
 		ctx.Set("sidebar", c.Board.Description.String != "")
-		ctx.Set("boards", boards)
 
 		return ctx.Render(http.StatusOK, r.HTML("/boards/show.plush.html"))
 	}).Wants("json", func(ctx buffalo.Context) error {
@@ -225,7 +219,7 @@ func (c BoardsController) Destroy() error {
 		ctx.Flash().Add("success", T.Translate(ctx, "board.destroyed.success"))
 
 		// Redirect to the index page
-		return ctx.Redirect(http.StatusSeeOther, "/boards")
+		return ctx.Redirect(http.StatusSeeOther, "/dashboard")
 	}).Wants("json", func(ctx buffalo.Context) error {
 		return ctx.Render(http.StatusOK, r.JSON(c.Board))
 	}).Wants("xml", func(ctx buffalo.Context) error {

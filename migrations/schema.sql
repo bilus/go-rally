@@ -91,7 +91,8 @@ CREATE TABLE public.boards (
     description text,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    voting_strategy jsonb DEFAULT '{"board_max": 5}'::jsonb NOT NULL
+    voting_strategy jsonb DEFAULT '{"board_max": 5}'::jsonb NOT NULL,
+    is_private boolean DEFAULT false NOT NULL
 );
 
 

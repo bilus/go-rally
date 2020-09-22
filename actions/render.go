@@ -162,7 +162,6 @@ func avatarURL(user models.User, size string, round bool) string {
 func anonymousAvatarURL(size string, round bool) string {
 	return generateAvatarURL(anonymousAvatarSeed, size, round)
 }
-
 func sizeToPixels(size string) int {
 	if size == "large" {
 		return 64

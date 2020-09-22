@@ -6,7 +6,7 @@
                 <div class="row">
                     <div class="col align-middle pl-0">
                         <h2 class="d-inline-block w-100">
-                            <%= board.Name %>
+                            <%= partial("/boards/board_name.plush.html") %>
                             <%= partial("boards/star.html") %>
                             <div class="float-right">
                                 <%= if (canManageBoard(board)) { %>

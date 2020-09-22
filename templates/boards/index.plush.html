@@ -21,7 +21,7 @@
         <%= for (board) in boards { %>
             <tr class="clickable" data-href="<%= boardPath({ board_id: board.ID }) %>">
                 <td>
-                    <%= board.Name %>
+                    <%= partial("/boards/board_name.plush.html") %>
                 </td>
             </tr>
         <% } %>
