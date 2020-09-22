@@ -34,6 +34,7 @@ func (c UnauthenticatedController) AuthCallback() error {
 	if err != nil {
 		return c.Error(401, err)
 	}
+	fmt.Println(profile.RawData)
 	tx := c.Tx
 	q := tx.Where("google_user_id = ?", profile.UserID)
 	user := models.User{}
@@ -56,6 +57,11 @@ func (c UnauthenticatedController) AuthCallback() error {
 		} else {
 			return err
 		}
+	}
+
+	user.AvatarURL = nulls.NewString(profile.AvatarURL)
+	if err := c.Tx.UpdateColumns(&user, "avatar_url"); err != nil {
+		return err
 	}
 
 	return Login(&user, c)

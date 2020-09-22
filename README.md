@@ -143,7 +143,7 @@ Good luck!
   - [X] Fix reactions reordered on remove due to the algorithm
   - [X] Audit log
 - [X] Info that drafts are not visible
-- [ ] Option to limit login to google & use it.
+- [X] Option to limit login to google & use it.
 - [ ] Avatars
 - [ ] Private boards
 - [ ] Voting improvements
@@ -153,6 +153,9 @@ Good luck!
     - [ ] Vote reefill schedule.
 - [ ] Deleted board is just marked as deleted.
 - [ ] Test everything
+- [ ] Deploy
+  - [ ] Backup PG
+  - [ ] Disable login form
 - [ ] Refactor 2
     - [ ] Helpers use Controller (via wrapper)
     - [ ] Get rid of SetCurrentUser middleware

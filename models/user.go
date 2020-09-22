@@ -25,6 +25,8 @@ type User struct {
 
 	GoogleUserID nulls.String `json:"google_user_id" db:"google_user_id"`
 
+	AvatarURL nulls.String `json:"avatar_url" db:"avatar_url"`
+
 	Password             string `json:"-" db:"-"`
 	PasswordConfirmation string `json:"-" db:"-"`
 

@@ -64,9 +64,9 @@ func init() {
 				}
 				p := toPostPtr(post)
 				if p.Anonymous {
-					return avatarURL(anonymousAvatarSeed, size, false)
+					return anonymousAvatarURL(size, false)
 				}
-				return avatarURL(p.Author.Email, size, false)
+				return avatarURL(p.Author, size, false)
 			},
 			"commentAuthor": func(comment interface{}) string {
 				c := toCommentPtr(comment)
@@ -78,9 +78,9 @@ func init() {
 			"commentAvatarURL": func(comment interface{}) string {
 				c := toCommentPtr(comment)
 				if c.Anonymous {
-					return avatarURL(anonymousAvatarSeed, "small", false)
+					return anonymousAvatarURL("small", false)
 				}
-				return avatarURL(c.Author.Email, "small", false)
+				return avatarURL(c.Author, "small", false)
 			},
 			"avatarURL": avatarURL,
 			"maybePluralize": func(noun string, count int) string {
@@ -94,7 +94,7 @@ func init() {
 				if err != nil {
 					return ""
 				}
-				return avatarURL(u.Email, size, true)
+				return avatarURL(*u, size, true)
 			},
 			"isOriginalPosterComment": func(comment, post interface{}) bool {
 				c := toCommentPtr(comment)
@@ -139,15 +139,32 @@ func init() {
 	})
 }
 
-func avatarURL(seed, size string, round bool) string {
-	var px int
-	if size == "large" {
-		px = 64
-	} else if size == "small" {
-		px = 32
-	} else {
-		px = 24
+func avatarURL(user models.User, size string, round bool) string {
+	// TODO: Resizing doesn't really work for Google default profile pictures
+	// so we return an unresized url and <img> has width and height.
+	if user.AvatarURL.Valid {
+		return fmt.Sprintf("%v=s%v-p", user.AvatarURL.String, sizeToPixels(size))
 	}
+
+	return generateAvatarURL(user.Email, size, round)
+}
+
+func anonymousAvatarURL(size string, round bool) string {
+	return generateAvatarURL(anonymousAvatarSeed, size, round)
+}
+
+func sizeToPixels(size string) int {
+	if size == "large" {
+		return 64
+	} else if size == "small" {
+		return 32
+	} else {
+		return 24
+	}
+}
+
+func generateAvatarURL(seed, size string, round bool) string {
+	px := sizeToPixels(size)
 	var opts string
 	if round {
 		opts = "&b=%%23ffffff&m=8&r=50"
