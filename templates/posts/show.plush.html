@@ -14,7 +14,7 @@
     <%= partial("user_votes.html") %>
 </h6>
 
-<div class="media raised p-5 post-view" data-post-id="<%= post.ID %>">
+<div class="media post-view" data-post-id="<%= post.ID %>">
     <img class="mr-3" src='<%= postAvatarURL(post) %>' alt="<%= postAuthor(post) %>">
     <div class="media-body">
         <div class="container">
@@ -52,13 +52,13 @@
                 <div class="col-1"></div>
                 <div class="col-11">
                     <%= markdown(post.Body) %>
+                    <%= partial("posts/reactions.html") %>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<%= partial("posts/reactions.html") %>
 
 <div id="comments" class="mt-5">
     <div class="spinner">
