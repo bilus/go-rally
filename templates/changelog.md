@@ -2,21 +2,29 @@
 
 ## v0.3.0
 
-- Users can star boards, starred boards appearing on the user's dashboard.
-- Board selection navbar drop-down contains starred and most recent boards, in
-  that order, up to a limit.
-- Emojis.
-- Reactions
+### Added
+
+- Slack-style reactions to posts.
+- Support for starring boards.
+- Boards can be made private, shared using direct links.
+- User dashboard showing the user's own and starred boards.
+- A drop-down for board selection to the navigation bar.
+- "Insert emoji" button to markdown editor toolbar.
 - Markdown editor for comments.
-- Syntax highlighting for markdown code blocks.
+- Markdown code blocks are rendered with syntax highlighting.
+- A number of minor improvements, including ones to readability, look & feel.
 
 
 ## v0.2.1
+
+### Fixed
 
 - Fix discrepancy of number of votes per post.
 
 
 ## v0.2.0
+
+### Added
 
 - Logged in users can create any number of boards.
 - Easy switching between boards; remember the last visited board.
