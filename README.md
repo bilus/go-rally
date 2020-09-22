@@ -139,9 +139,9 @@ Good luck!
   - [X] "Adding" an existing reactions just ups the existing one
   - [X] Prevent emoji reordering
   - [X] User list in emoji tooltip
-  - [ ] Fix reactions reordered on remove due to the algorithm
+  - [X] Styling
+  - [X] Fix reactions reordered on remove due to the algorithm
   - [ ] Audit log
-  - [ ] Styling
   - [ ] Test everything
 - [ ] Info that drafts are not visible
 - [ ] Option to limit login to google & use it.

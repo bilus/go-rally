@@ -121,6 +121,30 @@ func (t StoresSuite) Test_ReactionStore_RemovingReactions() {
 	t.Len(reactions[1].UserIDs, 1)
 }
 
+func (t StoresSuite) Test_ReactionStore_PreventsOrder() {
+	u := t.MustCreateUser()
+	b := t.MustCreateBoardWithVoteLimit(99)
+	p := t.MustCreatePost(t.ValidPost(b, u))
+
+	s := NewReactionStore(testutil.NewFakeStorage())
+
+	t.NoError(s.AddReactionToPost(u, p, "smile"))
+	t.NoError(s.AddReactionToPost(u, p, "surprised"))
+	t.NoError(s.AddReactionToPost(u, p, "sad"))
+	t.NoError(s.AddReactionToPost(u, p, "happy"))
+
+	t.NoError(s.RemoveReactionToPost(u, p, "smile"))
+	t.NoError(s.RemoveReactionToPost(u, p, "sad"))
+
+	t.NoError(s.AddReactionToPost(u, p, "joy"))
+
+	reactions, err := s.ListReactionsToPost(p)
+	t.NoError(err)
+
+	t.Equal([]string{"surprised", "happy", "joy"},
+		yogofn.Map(emoji, reactions).([]string))
+}
+
 func emoji(r models.Reaction) string {
 	return r.Emoji
 }

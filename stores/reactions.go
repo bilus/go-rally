@@ -114,8 +114,9 @@ func findReactionByEmoji(emoji string, reactions []models.Reaction) (int, bool) 
 }
 
 func removeReaction(i int, reactions []models.Reaction) []models.Reaction {
-	reactions[i] = reactions[len(reactions)-1]      // Copy last element to index i.
-	reactions[len(reactions)-1] = models.Reaction{} // Erase last element (write zero value).
+	// Prevent order.
+	copy(reactions[i:], reactions[i+1:])            // Shift reactions[i+1:] left one index.
+	reactions[len(reactions)-1] = models.Reaction{} // Erase last element (write zero value)..
 	reactions = reactions[:len(reactions)-1]        // Truncate slice.
 	return reactions
 }
