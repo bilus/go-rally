@@ -105,6 +105,21 @@ tr.spacer {
     min-width: 60px!important;
 }
 
+
+.nav-pills-secondary{
+    .nav-item {
+        .nav-link.active{
+            &,
+            &:focus,
+            &:hover{
+                background-color: $secondary;
+                @include shadow-big-color($secondary);
+                color: $white-color;
+            }
+        }
+    }
+}
+
 #comment-list li {
     margin-bottom: 2em;
 }
