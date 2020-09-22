@@ -11,10 +11,10 @@
     <td class="title align-middle clickable" data-href='<%= boardPostPath({board_id: post.BoardID, post_id: post.ID}) %>'>
         <h4>
             <%= linkTo(boardPostPath({ board_id: post.BoardID, post_id: post.ID }), {class: ""}) { %>
-            <%= safeTitle(post.Title) %>
-            <% } %>
             <%= if (post.Draft) { %>
             <%= partial("/posts/draft.html") %>
+            <% } %>
+            <%= safeTitle(post.Title) %>
             <% } %>
         </h4>
     </td>

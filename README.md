@@ -144,8 +144,16 @@ Good luck!
   - [X] Audit log
 - [X] Info that drafts are not visible
 - [X] Option to limit login to google & use it.
-- [ ] Avatars
+- [X] Avatars
+- [ ] Styling
+  - [ ] Buttons & minor tweaks
+  - [ ] Round avatars
 - [ ] Private boards
+  - [ ] Option to make board private (with warning)
+  - [ ] Do not list private boards
+  - [ ] Share popover
+- [ ] Slugs for boards
+- [ ] Slugs for posts
 - [ ] Voting improvements
     - [ ] Reddit-style
     - [ ] Can take votes back for X minutes

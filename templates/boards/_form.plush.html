@@ -9,10 +9,10 @@
 <div class="input-group mb-3">
     <input class="form-control" id="board-VotingStrategy.BoardMax" name="VotingStrategy.BoardMax" type="text" value="<%= board.VotingStrategy.BoardMax %>">
     <div class="input-group-append">
-        <%= remoteLinkTo(boardRefillPath({board_id: board.ID}), {data-method: "POST", data-disable-with: "<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span> Refilling...", class: "btn btn-outline-secondary"}) { %>
+        <%= remoteLinkTo(boardRefillPath({board_id: board.ID}), {data-method: "POST", data-disable-with: "<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span> Refilling...", class: "btn btn-round btn-outline-secondary"}) { %>
         Refill votes
         <% } %>
     </div>
 </div>
 <% } %>
-<button class="btn btn-success" role="submit">Save</button>
+<button class="btn btn-round btn-success" role="submit">Save</button>

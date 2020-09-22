@@ -24,16 +24,16 @@
       <%= formFor(user, {action: authPath()}) { %>
         <%= f.InputTag("Email") %>
         <%= f.InputTag("Password", {type: "password"}) %>
-        <button class="btn btn-success btn-sm">Sign In</button>
-        <%= linkTo(authProviderPath({ provider: "google" }), { class: "btn btn-secondary btn-sm" }) { %>
+        <button class="btn btn-round btn-success btn-sm">Sign In</button>
+        <%= linkTo(authProviderPath({ provider: "google" }), { class: "btn btn-round btn-secondary btn-sm" }) { %>
         <i class="icon-google"></i> Google
         <% } %>
         <%= if (signupEnabled) {%>
-          <%= linkTo(newUsersPath(), {class: "btn btn-link btn-sm"}){ %>Sign up<% } %>
+          <%= linkTo(newUsersPath(), {class: "btn btn-round btn-link btn-sm"}){ %>Sign up<% } %>
         <% } %>
       <% } %>
     <% } else { %>
-        <%= linkTo(authProviderPath({ provider: "google" }), { class: "btn btn-primary btn-sm" }) { %>
+        <%= linkTo(authProviderPath({ provider: "google" }), { class: "btn btn-round btn-primary btn-sm" }) { %>
         <i class="icon-google"></i> Google
         <% } %>
     <% } %>

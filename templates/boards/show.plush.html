@@ -1,6 +1,7 @@
 <div class="container">
     <div class="row">
-        <div class='<%= if (sidebar) { return "col-9" } else { return "col-12" } %>'>
+        <div class='col-12'>
+
             <div class="container py-4 mb-2">
                 <div class="row">
                     <div class="col align-middle pl-0">
@@ -9,17 +10,17 @@
                             <%= partial("boards/star.html") %>
                             <div class="float-right">
                                 <%= if (canManageBoard(board)) { %>
-                                    <%= remoteLinkTo(boardPostsPath({ board_id: board.ID }), {class: "btn btn-primary", data-method: "POST", title: "Create new post"}) { %>
+                                    <%= remoteLinkTo(boardPostsPath({ board_id: board.ID }), {class: "btn btn-round btn-primary", data-method: "POST", title: "Create new post"}) { %>
                                         New post
                                     <% } %>
-                                    <%= linkTo(editBoardPath({ board_id: board.ID }), {class: "btn btn-warning", title: "Board settings"}) { %>
+                                    <%= linkTo(editBoardPath({ board_id: board.ID }), {class: "btn btn-round btn-fab btn-warning", title: "Board settings"}) { %>
                                         <i class="icon-cog"></i>
                                     <% } %>
-                                    <%= linkTo(boardPath({ board_id: board.ID }), {class: "btn btn-danger", "data-method": "DELETE", "data-confirm": "Are you sure?", "title": "Delete board"}) { %>
+                                    <%= linkTo(boardPath({ board_id: board.ID }), {class: "btn btn-round btn-fab btn-danger", "data-method": "DELETE", "data-confirm": "Are you sure?", "title": "Delete board"}) { %>
                                         <i class="icon-trash-o"></i>
                                     <% } %>
                                 <% } else { %>
-                                    <%= remoteLinkTo(boardPostsPath({ board_id: board.ID }), {class: "btn btn-primary", data-method: "POST"}) { %>
+                                    <%= remoteLinkTo(boardPostsPath({ board_id: board.ID }), {class: "btn btn-round btn-fab btn-primary", data-method: "POST"}) { %>
                                         <i class="icon-plus"></i>
                                     <% } %>
                                 <% } %>
@@ -49,25 +50,27 @@
                 </div>
 
                 <div class="row">
-                    <table class="table table-hover table-small table-noborders mt-3">
-                        <tbody>
-                            <%= for (post) in posts { %>
-                            <tr class="spacer"></tr>
-                            <%= partial("boards/post.html", { "post": post }) %>
-                            <% } %>
-                        </tbody>
-                    </table>
+                    <div class='<%= if (sidebar) { return "col-9" } else { return "col-12" } %> pl-0'>
+                        <table class="table table-hover table-small table-noborders mt-3">
+                            <tbody>
+                                <%= for (post) in posts { %>
+                                <tr class="spacer"></tr>
+                                <%= partial("boards/post.html", { "post": post }) %>
+                                <% } %>
+                            </tbody>
+                        </table>
 
-                    <div class="text-center">
-                        <%= paginator(pagination) %>
+                        <div class="text-center">
+                            <%= paginator(pagination) %>
+                        </div>
                     </div>
+                    <%= if (sidebar) { %>
+                    <div class="col-3">
+                        <p class="d-inline-block"><%= markdown(board.Description.String) %></p>
+                    </div>
+                    <% } %>
                 </div>
             </div>
         </div>
-        <%= if (sidebar) { %>
-        <div class="col-3">
-            <p class="d-inline-block"><%= markdown(board.Description.String) %></p>
-        </div>
-        <% } %>
     </div>
 </div>

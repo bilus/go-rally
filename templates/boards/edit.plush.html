@@ -16,5 +16,5 @@
 
 <%= formFor(board, {action: boardPath({ board_id: board.ID }), method: "PUT"}) { %>
   <%= partial("boards/form.html") %>
-  <%= linkTo(boardPath({ board_id: board.ID }), {class: "btn btn-secondary", body: "Cancel"}) %>
+  <%= linkTo(boardPath({ board_id: board.ID }), {class: "btn btn-round btn-secondary", body: "Cancel"}) %>
 <% } %>

@@ -1,7 +1,7 @@
 <%= if (showWelcome) { %>
 <h3 class="d-inline-block"><%= greeting() %></h3>
 <p class="lead">There are no boards yet...
-    <%= linkTo(newBoardsPath(), {class: "btn btn-primary btn-small"}) { %>
+    <%= linkTo(newBoardsPath(), {class: "btn btn-round btn-primary btn-small"}) { %>
     Create New Board
     <% } %>
 </p>
@@ -10,8 +10,8 @@
 <div class="py-4 mb-2">
   <h3 class="d-inline-block"><%= greeting() %></h3>
   <div class="float-right">
-      <%= linkTo(newBoardsPath(), {class: "btn btn-primary", title: "Create new board"}) { %>
-      <i class="icon-plus"></i>
+      <%= linkTo(newBoardsPath(), {class: "btn btn-primary btn-round", title: "Create new board", data-toggle: "tooltip"}) { %>
+      New board
       <% } %>
   </div>
 </div>
