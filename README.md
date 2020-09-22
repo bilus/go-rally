@@ -146,7 +146,7 @@ Good luck!
 - [X] Option to limit login to google & use it.
 - [X] Avatars
 - [ ] Styling
-  - [ ] Buttons & minor tweaks
+  - [X] Buttons & minor tweaks
   - [ ] Round avatars
 - [ ] Private boards
   - [ ] Option to make board private (with warning)
@@ -164,6 +164,7 @@ Good luck!
 - [ ] Deploy
   - [ ] Backup PG
   - [ ] Disable login form
+  - [ ] CLOUDINARY_ACCOUNT
 - [ ] Refactor 2
     - [ ] Helpers use Controller (via wrapper)
     - [ ] Get rid of SetCurrentUser middleware

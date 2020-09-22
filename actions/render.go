@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	"net/url"
+	"os"
 	"rally/models"
 	"strings"
 	"time"
@@ -140,10 +141,19 @@ func init() {
 }
 
 func avatarURL(user models.User, size string, round bool) string {
+	//
 	// TODO: Resizing doesn't really work for Google default profile pictures
 	// so we return an unresized url and <img> has width and height.
 	if user.AvatarURL.Valid {
-		return fmt.Sprintf("%v=s%v-p", user.AvatarURL.String, sizeToPixels(size))
+		cloudinaryID, ok := os.LookupEnv("CLOUDINARY_ACCOUNT")
+		if !ok {
+			log.Warn("CLOUDINARY_ACCOUNT environment variable not set, avatars will be ugly, resized by <img>")
+			return user.AvatarURL.String
+		}
+		w := sizeToPixels(size)
+		h := w
+		cloudinaryURL := "https://res.cloudinary.com/%v/image/fetch/c_thumb,f_auto,fl_alpha,h_%v,r_30,w_%v/%v"
+		return fmt.Sprintf(cloudinaryURL, cloudinaryID, h, w, user.AvatarURL.String)
 	}
 
 	return generateAvatarURL(user.Email, size, round)
