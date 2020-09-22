@@ -1,7 +1,7 @@
 <%= remoteFormFor(comment, {action: postCommentsPath({post_id: comment.PostID}), method: "POST"}) { %>
 <%= f.TextAreaTag("Body", {rows: 4, label: "New comment", class: "markdown-editor", data-image-upload-endpoint: postImagesPath({post_id: comment.PostID}), data-easymde-height: "100px"}) %>
 <%= f.CheckboxTag("Anonymous", {label: "Anonymous comment", unchecked: false}) %>
-<button class="btn btn-sm btn-success" role="submit">Submit</button>
+<button class="btn btn-sm btn-round btn-success" role="submit">Submit</button>
 <% } %>
 
 

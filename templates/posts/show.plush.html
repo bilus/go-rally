@@ -39,8 +39,8 @@
                 </div>
                 <div class="col-2 text-right">
                     <%= if (canManagePost(post)) { %>
-                    <%= linkTo(editBoardPostPath({ board_id: post.BoardID, post_id: post.ID }), {class: "btn btn-primary btn-sm", body: "Edit"}) %>
-                    <%= linkTo(boardPostPath({ board_id: post.BoardID, post_id: post.ID }), {class: "btn btn-danger btn-sm", "data-method": "DELETE", "data-confirm": "Are you sure?"}) { %>
+                    <%= linkTo(editBoardPostPath({ board_id: post.BoardID, post_id: post.ID }), {class: "btn btn-round btn-primary", body: "Edit"}) %>
+                    <%= linkTo(boardPostPath({ board_id: post.BoardID, post_id: post.ID }), {class: "btn btn-round btn-fab btn-danger", "data-method": "DELETE", "data-confirm": "Are you sure?"}) { %>
                     <i class="icon-trash-o"></i>
                     <% } %>
                     <% } %>
@@ -50,10 +50,11 @@
             </div>
             <div class="row">
                 <div class="col-1"></div>
-                <div class="col-11">
+                <div class="col-9">
                     <%= markdown(post.Body) %>
                     <%= partial("posts/reactions.html") %>
                 </div>
+                <div class="col-2"></div>
             </div>
         </div>
     </div>

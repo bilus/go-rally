@@ -22,9 +22,9 @@
                                 <% } else { %>
                                     <%= remoteLinkTo(boardPostsPath({ board_id: board.ID }), {class: "btn btn-round btn-fab btn-primary", data-method: "POST"}) { %>
                                         <i class="icon-plus"></i>
-                                    <% } %>
-                                <% } %>
-                                <button type="button" class="btn btn-info btn-round btn-fab" data-toggle="popover" title="Share this board" data-content="Use this <a href='<%= boardPath({board_id: board.ID})%>'>direct link</a>">
+                                        <% } %>
+                                        <% } %>
+                                        <button type="button" class="btn btn-info btn-round btn-fab" data-toggle="popover" title="Share this board" data-content="<a href='javascript:;' class='btn btn-small btn-link btn-info' data-clipboard='true' data-clipboard-text='<%= boardPath({board_id: board.ID})%>'>copy permalink</a>">
                                     <i class="icon-share-alt"></i>
                                 </button>
                             </div>
@@ -36,11 +36,11 @@
 
             <div class="container">
                 <div class="row post-list-nav">
-                    <h4 class="col-3 text-primary user-votes text-uppercase">
+                    <h4 class="col-3 pl-0 text-primary user-votes text-uppercase">
                         <%= partial("user_votes.html") %>
                     </h4>
 
-                    <div class="col-6">
+                    <div class="col">
                         <ul class="nav nav-pills nav-pills-secondary float-right">
                             <li class="nav-item">
                                 <%= linkTo(boardPath({ board_id: board.ID, order: "top" }), { body: "Top", class: "nav-link " + orderClass("top") }) %>
@@ -52,12 +52,14 @@
 
                         </ul>
                     </div>
-                    <div class="col-3">
+                    <%= if (sidebar) { %>
+                    <div class="col-4">
                     </div>
+                    <% } %>
                 </div>
 
                 <div class="row">
-                    <div class='<%= if (sidebar) { return "col-9" } else { return "col-12" } %> pl-0'>
+                    <div class='col pl-0'>
                         <table class="table table-hover table-small table-noborders mt-3">
                             <tbody>
                                 <%= for (post) in posts { %>
@@ -72,7 +74,7 @@
                         </div>
                     </div>
                     <%= if (sidebar) { %>
-                    <div class="col-3">
+                    <div class="col-4">
                         <p class="d-inline-block"><%= markdown(board.Description.String) %></p>
                     </div>
                     <% } %>
