@@ -14,6 +14,11 @@ $(() => {
     sentinel.on('[data-toggle="tooltip"]', function(el) {
         $(el).tooltip({ html: true, animation: false });
     })
+    $('[data-toggle="popover"]').popover({ html: true, animation: false })
+
+    sentinel.on('[data-toggle="popover"]', function(el) {
+        $(el).popover({ html: true, animation: false });
+    })
 
     $('.clickable').click(e => {
         const tr = $(e.target).closest(".clickable");
