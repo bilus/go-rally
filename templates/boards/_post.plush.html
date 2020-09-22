@@ -1,4 +1,4 @@
-<tr class='post-row raised  <%= if (post.Draft) { return "post-draft" } %>' data-post-id="<%= post.ID %>">
+<tr class='post-row <%= if (post.Draft) { return "post-draft raised" } %>' data-post-id="<%= post.ID %>">
     <td class="align-middle text-center font-weight-bold votes">
         <%= remoteLinkTo(boardPostVotesPath({ board_id: post.BoardID, post_id: post.ID}), { "data-method": "POST" }) { %>
         <i class="icon-caret-up"></i>
