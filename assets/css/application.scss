@@ -150,7 +150,7 @@ footer {
 
 .reactions .add-reaction {
     font-size: 1.3em!important;
-    padding: 0!important;
+    padding: 4px 0 0 0!important;
 }
 
 .reactions .badge {
@@ -207,4 +207,8 @@ footer {
 .user-votes {
   font-size: 11px;
   font-weight: 500;
+}
+
+input.form-control,.form-group label {
+  font-size: 16px;
 }
