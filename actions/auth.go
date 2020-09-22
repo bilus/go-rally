@@ -65,6 +65,7 @@ func (c UnauthenticatedController) AuthCallback() error {
 func (c UnauthenticatedController) AuthNew() error {
 	c.Set("user", models.User{})
 	c.Set("signupEnabled", isSignupEnabled())
+	c.Set("loginFormEnabled", isLoginFormEnabled())
 	return c.Render(200, r.HTML("auth/new.plush.html"))
 }
 
