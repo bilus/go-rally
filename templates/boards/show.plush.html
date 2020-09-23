@@ -65,7 +65,6 @@
                         <table class="table table-hover table-small table-noborders mt-3">
                             <tbody>
                                 <%= for (post) in posts { %>
-                                <tr class="spacer"></tr>
                                 <%= partial("boards/post.html", { "post": post }) %>
                                 <% } %>
                             </tbody>
