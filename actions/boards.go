@@ -3,8 +3,7 @@ package actions
 import (
 	"net/http"
 	"rally/models"
-
-	log "github.com/sirupsen/logrus"
+	"rally/services"
 
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/x/responder"
@@ -13,79 +12,60 @@ import (
 // List gets all Boards. This function is mapped to the path
 // GET /boards
 func (c BoardsController) List() error {
-
-	// Retrieve all Boards from the DB
-	// Paginate results. Params "page" and "per_page" control pagination.
-	// Default values are "page=1" and "per_page=20".
-	boards := &models.Boards{}
-	q := c.Tx.PaginateFromParams(c.Params())
-	q = q.Where("is_private IS NOT TRUE")
-	if err := q.All(boards); err != nil {
+	result, err := c.BoardsService.QueryBoards(
+		services.QueryBoardsParams{
+			User:       c.CurrentUser,
+			Pagination: c.PaginationParams,
+		})
+	if err != nil {
 		return err
 	}
-
 	return responder.Wants("html", func(ctx buffalo.Context) error {
-		ctx.Set("pagination", q.Paginator)
-		ctx.Set("boards", boards)
+		ctx.Set("pagination", result.Pagination)
+		ctx.Set("boards", result.Boards)
 		return ctx.Render(http.StatusOK, r.HTML("/boards/index.plush.html"))
 	}).Wants("json", func(ctx buffalo.Context) error {
-		return ctx.Render(200, r.JSON(boards))
+		return ctx.Render(200, r.JSON(result.Boards))
 	}).Wants("xml", func(ctx buffalo.Context) error {
-		return ctx.Render(200, r.XML(boards))
+		return ctx.Render(200, r.XML(result.Boards))
 	}).Respond(c)
 }
 
 // Show gets the data for one Board. This function is mapped to
 // the path GET /boards/{board_id}
 func (c BoardsController) Show() error {
-	if err := c.RequireBoard(); err != nil {
-		return err
-	}
-
 	c.SetLastBoardID(c.Board.ID)
-
-	// Load board's posts.
-	// Paginate results. Params "page" and "per_page" control pagination.
-	// Default values are "page=1" and "per_page=20".
-	posts := &models.Posts{}
-	q := c.Tx.PaginateFromParams(c.Params())
-	q = q.Where("(NOT draft OR (draft AND author_id = ?)) AND board_id = ?", c.CurrentUser.ID, c.Board.ID)
-
-	order := c.Param("order")
-	if order == "" {
-		order = "top"
-	}
-	c.Set("orderClass", orderClass(order))
-	if order == "newest" {
-		q = q.Order("draft DESC, created_at DESC")
-	} else {
-		q = q.Order("draft DESC, votes DESC")
-	}
-
-	// Retrieve all Posts from the DB
-	if err := q.Eager().All(posts); err != nil {
+	result, err := c.BoardsService.QueryBoardByID(
+		services.QueryBoardParams{
+			User:             c.CurrentUser,
+			BoardID:          c.Board.ID,
+			IncludePosts:     true,
+			NewestPostsFirst: c.Param("order") == "newest",
+			PostPagination:   c.PaginationParams,
+		})
+	if err != nil {
 		return err
 	}
-
+	c.Set("orderClass", orderClass(c.Param("order")))
 	return responder.Wants("html", func(ctx buffalo.Context) error {
-		ctx.Set("board", c.Board)
-		ctx.Set("pagination", q.Paginator)
+		ctx.Set("board", result.Board)
+		ctx.Set("pagination", result.PostPagination)
 
-		ctx.Set("posts", posts)
-		ctx.Set("sidebar", c.Board.Description.String != "")
+		ctx.Set("posts", result.Board.Posts)
+		ctx.Set("sidebar", result.Board.Description.String != "")
 
 		return ctx.Render(http.StatusOK, r.HTML("/boards/show.plush.html"))
 	}).Wants("json", func(ctx buffalo.Context) error {
-		return ctx.Render(200, r.JSON(c.Board))
+		return ctx.Render(200, r.JSON(result.Board))
 	}).Wants("xml", func(ctx buffalo.Context) error {
-		return ctx.Render(200, r.XML(c.Board))
+		return ctx.Render(200, r.XML(result.Board))
 	}).Respond(c)
 }
 
 // New renders the form for creating a new Board.
 // This function is mapped to the path GET /boards/new
 func (c BoardsController) New() error {
-	c.Set("board", models.DefaultBoard())
+	c.Set("board", c.BoardsService.DefaultBoard())
 	return c.Render(http.StatusOK, r.HTML("/boards/new.plush.html"))
 }
 
@@ -93,44 +73,29 @@ func (c BoardsController) New() error {
 // path POST /boards
 func (c BoardsController) Create() error {
 	// Bind board to the html form elements
-	board := &models.Board{}
-	if err := c.Bind(board); err != nil {
+	params := services.CreateBoardParams{}
+	if err := c.Bind(&params.BoardAttributes); err != nil {
 		return err
 	}
 
-	// Validate the data from the html form
-	verrs, err := c.Tx.ValidateAndCreate(board)
+	result, err := c.BoardsService.CreateBoard(params)
 	if err != nil {
 		return err
 	}
 
-	if verrs.HasAny() {
+	if result.ValidationErrors.HasAny() {
 		return responder.Wants("html", func(ctx buffalo.Context) error {
 			// Make the errors available inside the html template
-			ctx.Set("errors", verrs)
+			ctx.Set("errors", result.ValidationErrors)
 
 			// Render again the new.html template that the user can
 			// correct the input.
-			ctx.Set("board", board)
+			ctx.Set("board", result.Board)
 
 			return ctx.Render(http.StatusUnprocessableEntity, r.HTML("/boards/new.plush.html"))
 		}).Wants("json", func(ctx buffalo.Context) error {
-			return ctx.Render(http.StatusUnprocessableEntity, r.JSON(verrs))
-		}).Wants("xml", func(ctx buffalo.Context) error {
-			return ctx.Render(http.StatusUnprocessableEntity, r.XML(verrs))
+			return ctx.Render(http.StatusUnprocessableEntity, r.JSON(result.ValidationErrors))
 		}).Respond(c)
-	}
-
-	// Make the current user the owner of the board.
-	member := &models.BoardMember{
-		BoardID: board.ID,
-		UserID:  c.CurrentUser.ID,
-		IsOwner: true,
-	}
-
-	if err := c.Tx.Create(member); err != nil {
-		log.Errorf("Error creating owner for board %v: %v", board.ID, err)
-		return err
 	}
 
 	return responder.Wants("html", func(ctx buffalo.Context) error {
@@ -138,55 +103,53 @@ func (c BoardsController) Create() error {
 		ctx.Flash().Add("success", T.Translate(ctx, "board.created.success"))
 
 		// and redirect to the show page
-		return ctx.Redirect(http.StatusSeeOther, "/boards/%v", board.ID)
+		return ctx.Redirect(http.StatusSeeOther, "/boards/%v", result.Board.ID)
 	}).Wants("json", func(ctx buffalo.Context) error {
-		return ctx.Render(http.StatusCreated, r.JSON(board))
-	}).Wants("xml", func(ctx buffalo.Context) error {
-		return ctx.Render(http.StatusCreated, r.XML(board))
+		return ctx.Render(http.StatusCreated, r.JSON(result.Board))
 	}).Respond(c)
 }
 
 // Edit renders a edit form for a Board. This function is
 // mapped to the path GET /boards/{board_id}/edit
 func (c BoardsController) Edit() error {
-	if err := c.RequireBoardWithWriteAccess(); err != nil {
+	result, err := c.BoardsService.QueryBoardByID(services.QueryBoardParams{
+		User:                    c.CurrentUser,
+		BoardID:                 c.Board.ID,
+		RequestOwnerLevelAccess: true,
+	})
+	if err != nil {
 		return err
 	}
-	c.Set("board", c.Board)
+	c.Set("board", result.Board)
 	return c.Render(http.StatusOK, r.HTML("/boards/edit.plush.html"))
 }
 
 // Update changes a Board in the DB. This function is mapped to
 // the path PUT /boards/{board_id}
 func (c BoardsController) Update() error {
-	if err := c.RequireBoardWithWriteAccess(); err != nil {
-		return err
-	}
+	result, err := c.BoardsService.UpdateBoard(
+		services.UpdateBoardParams{
+			User:    c.CurrentUser,
+			BoardID: c.Board.ID,
+			F:       func(b *models.Board) error { return c.Bind(b) },
+		})
 
-	// Bind Board to the html form elements
-	if err := c.Bind(c.Board); err != nil {
-		return err
-	}
-
-	verrs, err := c.Tx.ValidateAndUpdate(c.Board)
 	if err != nil {
 		return err
 	}
 
-	if verrs.HasAny() {
+	if result.ValidationErrors.HasAny() {
 		return responder.Wants("html", func(ctx buffalo.Context) error {
 			// Make the errors available inside the html template
-			ctx.Set("errors", verrs)
+			ctx.Set("errors", result.ValidationErrors)
 
 			// Render again the edit.html template that the user can
 			// correct the input.
-			ctx.Set("board", c.Board)
+			ctx.Set("board", result.Board)
 
 			return ctx.Render(http.StatusUnprocessableEntity, r.HTML("/boards/edit.plush.html"))
 		}).Wants("json", func(ctx buffalo.Context) error {
-			return ctx.Render(http.StatusUnprocessableEntity, r.JSON(verrs))
-		}).Wants("xml", func(ctx buffalo.Context) error {
-			return ctx.Render(http.StatusUnprocessableEntity, r.XML(verrs))
+			return ctx.Render(http.StatusUnprocessableEntity, r.JSON(result.ValidationErrors))
 		}).Respond(c)
 	}
 
@@ -195,22 +158,21 @@ func (c BoardsController) Update() error {
 		ctx.Flash().Add("success", T.Translate(ctx, "board.updated.success"))
 
 		// and redirect to the show page
-		return ctx.Redirect(http.StatusSeeOther, "/boards/%v", c.Board.ID)
+		return ctx.Redirect(http.StatusSeeOther, "/boards/%v", result.Board.ID)
 	}).Wants("json", func(ctx buffalo.Context) error {
-		return ctx.Render(http.StatusOK, r.JSON(c.Board))
-	}).Wants("xml", func(ctx buffalo.Context) error {
-		return ctx.Render(http.StatusOK, r.XML(c.Board))
+		return ctx.Render(http.StatusOK, r.JSON(result.Board))
 	}).Respond(c)
 }
 
 // Destroy deletes a Board from the DB. This function is mapped
 // to the path DELETE /boards/{board_id}
 func (c BoardsController) Destroy() error {
-	if err := c.RequireBoardWithWriteAccess(); err != nil {
-		return err
-	}
-
-	if err := c.Tx.Destroy(c.Board); err != nil {
+	result, err := c.BoardsService.DeleteBoard(
+		services.DeleteBoardParams{
+			User:    c.CurrentUser,
+			BoardID: c.Board.ID,
+		})
+	if err != nil {
 		return err
 	}
 
@@ -221,8 +183,6 @@ func (c BoardsController) Destroy() error {
 		// Redirect to the index page
 		return ctx.Redirect(http.StatusSeeOther, "/dashboard")
 	}).Wants("json", func(ctx buffalo.Context) error {
-		return ctx.Render(http.StatusOK, r.JSON(c.Board))
-	}).Wants("xml", func(ctx buffalo.Context) error {
-		return ctx.Render(http.StatusOK, r.XML(c.Board))
+		return ctx.Render(http.StatusOK, r.JSON(result.Board))
 	}).Respond(c)
 }

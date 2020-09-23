@@ -24,6 +24,8 @@ type Board struct {
 
 	// User-context fields.
 	UserStarred bool `json:"_user_starred" db:"-" form:"-"`
+
+	Posts []Post `json:"posts" db:"-" form:"-"`
 }
 
 type VotingStrategy struct {

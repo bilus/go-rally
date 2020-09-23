@@ -19,6 +19,7 @@ type BoardsController struct {
 	Board        *models.Board
 	RecentBoards []models.Board
 
+	BoardsService       services.BoardsService
 	VotingService       services.VotingService
 	RecentBoardsService services.RecentBoardsService
 	StarService         services.StarService
@@ -69,6 +70,7 @@ func (c *BoardsController) SetUp(ctx buffalo.Context) error {
 
 	c.RecentBoardsService = services.NewRecentBoardsService(c.Tx)
 	c.StarService = services.NewStarService(c.Tx)
+	c.BoardsService = services.NewBoardsService(c.Tx)
 
 	c.Set("recentBoards", func() []models.Board {
 		recentBoards, err := c.RecentBoardsService.RecentBoards(&c.CurrentUser)
