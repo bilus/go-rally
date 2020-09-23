@@ -25,3 +25,6 @@
         <%= timeAgo(post.CreatedAt) %>
     </td>
 </tr>
+<%= if (post.Draft) { %>
+<tr class="spacer"></tr>
+<% } %>

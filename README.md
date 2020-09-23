@@ -158,22 +158,27 @@ Good luck!
   - [X] Font size/readability
   - [X] Wrong alignment of buttons after adding share
   - [X] Wrong alignment of post edit+destroy buttons, need margin
-- [ ] Test everything
-- [ ] Deploy
-  - [ ] Changelog
-  - [ ] Backup PG
-  - [ ] Disable login form
-  - [ ] CLOUDINARY_ACCOUNT
-
-- [ ] Slugs for boards
-- [ ] Slugs for posts
+- [X] Test everything
+- [X] Deploy
+  - [X] Changelog
+  - [X] Backup PG
+  - [X] Disable login form
+  - [X] CLOUDINARY_ACCOUNT
+- [X] Misaligned sort controls for post list
+- [X] Overlapping drafts
+- [ ] Slugs
+  - [ ] Slugs for boards
+  - [ ] Slugs for posts
 - [ ] Voting improvements
     - [ ] Reddit-style
     - [ ] Can take votes back for X minutes
     - [ ] Vote limit can be turned off
     - [ ] Vote reefill schedule.
 - [ ] Deleted board is just marked as deleted.
+- [ ] Better recent drop-down
 - [ ] Refactor 2
+    - [ ] Services for everything!
+    - [ ] Store wrapping PG access
     - [ ] Helpers use Controller (via wrapper)
     - [ ] Get rid of SetCurrentUser middleware
     - [ ] Clean up authentication

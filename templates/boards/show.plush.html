@@ -43,7 +43,7 @@
                     </h4>
 
                     <div class="col">
-                        <ul class="nav nav-pills nav-pills-secondary float-right">
+                        <ul class='nav nav-pills nav-pills-secondary float-right <%= if (sidebar) { return "mr-4" } %>'>
                             <li class="nav-item">
                                 <%= linkTo(boardPath({ board_id: board.ID, order: "top" }), { body: "Top", class: "nav-link " + orderClass("top") }) %>
                             </li>
