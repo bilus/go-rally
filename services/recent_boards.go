@@ -17,10 +17,10 @@ func NewRecentBoardsService(db *pop.Connection) RecentBoardsService {
 
 // RecentBoards returns boards for the navbar selection dropdown.
 func (s RecentBoardsService) RecentBoards(user *models.User) ([]models.Board, error) {
-	// TODO: Loads all boards.
-	// Use Redis ZSET
+	// TODO: User's own private boards are not shown.
+	// TODO: Loads all boards. Use Redis ZSET?
 	allBoards := models.Boards{}
-	err := s.db.All(&allBoards)
+	err := s.db.Where("is_private IS NOT TRUE").All(&allBoards)
 	if err != nil {
 		return nil, err
 	}
