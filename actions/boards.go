@@ -73,7 +73,9 @@ func (c BoardsController) New() error {
 // path POST /boards
 func (c BoardsController) Create() error {
 	// Bind board to the html form elements
-	params := services.CreateBoardParams{}
+	params := services.CreateBoardParams{
+		User: c.CurrentUser,
+	}
 	if err := c.Bind(&params.BoardAttributes); err != nil {
 		return err
 	}

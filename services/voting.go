@@ -3,7 +3,6 @@ package services
 import (
 	"fmt"
 	"rally/models"
-	"rally/stores"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -11,10 +10,36 @@ import (
 var ErrLimit = fmt.Errorf("limit reached")
 var ErrNoLimit = fmt.Errorf("board has no vote limit")
 
+type VotingState struct {
+	UserBoardVotes int
+	UserPostVotes  int
+	TotalPostVotes int
+}
+
+func (state *VotingState) Decode(xs []int) error {
+	if len(xs) != 3 {
+		return fmt.Errorf("internal error: incorrect payload size for VotingState")
+	}
+	state.UserBoardVotes = xs[0]
+	state.UserPostVotes = xs[1]
+	state.TotalPostVotes = xs[2]
+	return nil
+}
+
+func (state *VotingState) Encode(xs []int) error {
+	if len(xs) != 3 {
+		return fmt.Errorf("internal error: incorrect payload size for services.VotingState")
+	}
+	xs[0] = state.UserBoardVotes
+	xs[1] = state.UserPostVotes
+	xs[2] = state.TotalPostVotes
+	return nil
+}
+
 type Store interface {
 	GetUserBoardVotes(user *models.User, board *models.Board) (int, error)
 	SetUserBoardVotes(user *models.User, board *models.Board, numVotes int) error
-	UpdateVotes(user *models.User, post *models.Post, f func(state *stores.VotingState) error) error
+	UpdateVotes(user *models.User, post *models.Post, f func(state *VotingState) error) error
 }
 
 type VotingService struct {
@@ -47,7 +72,7 @@ func (s VotingService) VotesRemaining(user *models.User, board *models.Board) (i
 
 func (s VotingService) Downvote(user *models.User, post *models.Post) (int, bool, error) {
 	var totalPostVotes int
-	err := s.store.UpdateVotes(user, post, func(state *stores.VotingState) error {
+	err := s.store.UpdateVotes(user, post, func(state *VotingState) error {
 		if state.UserBoardVotes <= 0 {
 			return ErrLimit
 		}
@@ -72,7 +97,7 @@ func (s VotingService) Downvote(user *models.User, post *models.Post) (int, bool
 
 func (s VotingService) Upvote(user *models.User, post *models.Post) (int, bool, error) {
 	var totalPostVotes int
-	err := s.store.UpdateVotes(user, post, func(state *stores.VotingState) error {
+	err := s.store.UpdateVotes(user, post, func(state *VotingState) error {
 		if s.strategy.BoardMax.Valid {
 			if state.UserBoardVotes >= s.strategy.BoardMax.Int {
 				totalPostVotes = state.TotalPostVotes // Return value.

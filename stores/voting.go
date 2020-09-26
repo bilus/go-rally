@@ -1,38 +1,12 @@
 package stores
 
 import (
-	"fmt"
 	"rally/models"
+	"rally/services"
 )
 
 type VotingStore struct {
 	s Storage
-}
-
-type VotingState struct {
-	UserBoardVotes int
-	UserPostVotes  int
-	TotalPostVotes int
-}
-
-func (state *VotingState) Decode(xs []int) error {
-	if len(xs) != 3 {
-		return fmt.Errorf("internal error: incorrect payload size for VotingState")
-	}
-	state.UserBoardVotes = xs[0]
-	state.UserPostVotes = xs[1]
-	state.TotalPostVotes = xs[2]
-	return nil
-}
-
-func (state *VotingState) Encode(xs []int) error {
-	if len(xs) != 3 {
-		return fmt.Errorf("internal error: incorrect payload size for VotingState")
-	}
-	xs[0] = state.UserBoardVotes
-	xs[1] = state.UserPostVotes
-	xs[2] = state.TotalPostVotes
-	return nil
 }
 
 func NewVotingStore(storage Storage) VotingStore {
@@ -55,12 +29,12 @@ func (vs VotingStore) SetUserBoardVotes(user *models.User, board *models.Board, 
 	return vs.s.SetInt(boardVotesKey, numVotes)
 }
 
-func (vs VotingStore) UpdateVotes(user *models.User, post *models.Post, f func(state *VotingState) error) error {
+func (vs VotingStore) UpdateVotes(user *models.User, post *models.Post, f func(state *services.VotingState) error) error {
 	boardVotesKey := key(user.ID, post.BoardID)
 	postVotesKey := key(user.ID, post.ID)
 	totalPostVotesKey := key(post.ID)
 	return vs.update(func(xs []int) error {
-		state := &VotingState{}
+		state := &services.VotingState{}
 		if err := state.Decode(xs); err != nil {
 			return err
 		}

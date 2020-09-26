@@ -70,7 +70,7 @@ func (c *BoardsController) SetUp(ctx buffalo.Context) error {
 
 	c.RecentBoardsService = services.NewRecentBoardsService(c.Tx)
 	c.StarService = services.NewStarService(c.Tx)
-	c.BoardsService = services.NewBoardsService(c.Tx)
+	c.BoardsService = services.NewBoardsService(stores.NewBoardsStore(c.Tx))
 
 	c.Set("recentBoards", func() []models.Board {
 		recentBoards, err := c.RecentBoardsService.RecentBoards(&c.CurrentUser)

@@ -4,10 +4,8 @@ import (
 	"fmt"
 	"rally/models"
 
-	"github.com/gobuffalo/pop/v5"
 	"github.com/gobuffalo/validate/v3"
 	"github.com/gofrs/uuid"
-	log "github.com/sirupsen/logrus"
 )
 
 var ErrUnauthorized = fmt.Errorf("Unauthorized")
@@ -21,13 +19,24 @@ type PaginationResult interface {
 	Paginate() string
 }
 
-type BoardsService struct {
-	Tx *pop.Connection
+type BoardsStore interface {
+	ListBoards(user models.User, pg PaginationParams) ([]models.Board, PaginationResult, error)
+	FindBoardByID(boardID uuid.UUID) (models.Board, bool, error)
+	IsOwner(boardID, userID uuid.UUID) (bool, error)
+	ListBoardPosts(boardID, userID uuid.UUID, newestFirst bool, pg PaginationParams) ([]models.Post, PaginationResult, error)
+	CreateBoard(board *models.Board) error
+	AddBoardOwner(boardID, userID uuid.UUID) error
+	SaveBoard(board models.Board) error
+	DeleteBoard(board models.Board) error
 }
 
-func NewBoardsService(tx *pop.Connection) BoardsService {
+type BoardsService struct {
+	store BoardsStore
+}
+
+func NewBoardsService(store BoardsStore) BoardsService {
 	return BoardsService{
-		Tx: tx,
+		store: store,
 	}
 }
 
@@ -41,16 +50,9 @@ type QueryBoardsResult struct {
 	Pagination PaginationResult
 }
 
-func (s *BoardsService) QueryBoards(params QueryBoardsParams) (QueryBoardsResult, error) {
-	result := QueryBoardsResult{}
-	q := s.Tx.Q()
-	q = q.Where("NOT is_private OR id IN (SELECT board_id FROM board_members AS m WHERE user_id = ? AND is_owner)", params.User.ID)
-	q = q.PaginateFromParams(params.Pagination)
-	if err := q.All(&result.Boards); err != nil {
-		return result, err
-	}
-	result.Pagination = q.Paginator
-	return result, nil
+func (s *BoardsService) QueryBoards(params QueryBoardsParams) (result QueryBoardsResult, err error) {
+	result.Boards, result.Pagination, err = s.store.ListBoards(params.User, params.Pagination)
+	return
 }
 
 type QueryBoardParams struct {
@@ -70,37 +72,29 @@ type QueryBoardResult struct {
 	PostPagination PaginationResult
 }
 
-func (s *BoardsService) QueryBoardByID(params QueryBoardParams) (QueryBoardResult, error) {
-	result := QueryBoardResult{}
-	if err := s.Tx.Find(&result.Board, params.BoardID); err != nil {
-		log.Errorf("Error looking for board %v: %w", params.BoardID, err)
-		return result, ErrNotFound
+func (s *BoardsService) QueryBoardByID(params QueryBoardParams) (result QueryBoardResult, err error) {
+	var found bool
+	result.Board, found, err = s.store.FindBoardByID(params.BoardID)
+	if err != nil {
+		return
+	}
+	if !found {
+		err = ErrNotFound
+		return
 	}
 	if params.RequestOwnerLevelAccess {
-		isOwner, err := s.Tx.Where("board_id = ? AND user_id = ? AND is_owner",
-			params.BoardID, params.User.ID).Exists(&models.BoardMember{})
+		var isOwner bool
+		isOwner, err = s.store.IsOwner(params.BoardID, params.User.ID)
 		if err != nil {
-			return result, err
+			return
 		}
 		if !isOwner {
-			return result, ErrUnauthorized
+			err = ErrUnauthorized
+			return
 		}
 	}
 	if params.IncludePosts {
-		q := s.Tx.PaginateFromParams(params.PostPagination)
-		q = q.Where("(NOT draft OR (draft AND author_id = ?)) AND board_id = ?", params.User.ID, params.BoardID)
-		if params.NewestPostsFirst {
-			q = q.Order("draft DESC, created_at DESC")
-		} else {
-			q = q.Order("draft DESC, votes DESC")
-		}
-
-		// Retrieve all Posts from the DB
-		if err := q.Eager().All(&result.Board.Posts); err != nil {
-			return result, err
-		}
-
-		result.PostPagination = q.Paginator
+		result.Board.Posts, result.PostPagination, err = s.store.ListBoardPosts(params.BoardID, params.User.ID, params.NewestPostsFirst, params.PostPagination)
 	}
 	return result, nil
 }
@@ -119,32 +113,18 @@ type CreateBoardResult struct {
 	ValidationErrors *validate.Errors
 }
 
-func (s *BoardsService) CreateBoard(params CreateBoardParams) (CreateBoardResult, error) {
-	result := CreateBoardResult{
-		Board: params.BoardAttributes,
+func (s *BoardsService) CreateBoard(params CreateBoardParams) (result CreateBoardResult, err error) {
+	result.Board = params.BoardAttributes
+	result.ValidationErrors, err = result.Board.ValidateCreate(nil) // TODO
+	if err != nil || result.ValidationErrors.HasAny() {
+		return
 	}
-	verrs, err := s.Tx.ValidateAndCreate(&result.Board)
+	err = s.store.CreateBoard(&result.Board)
 	if err != nil {
-		return result, err
+		return
 	}
-	result.ValidationErrors = verrs
-	if verrs.HasAny() {
-		return result, nil
-	}
-
-	// Make the current user the owner of the board.
-	member := models.BoardMember{
-		BoardID: result.Board.ID,
-		UserID:  params.User.ID,
-		IsOwner: true,
-	}
-
-	if err := s.Tx.Create(&member); err != nil {
-		log.Errorf("Error creating owner for board %v: %v", result.Board.ID, err)
-		return result, err
-	}
-
-	return result, nil
+	err = s.store.AddBoardOwner(result.Board.ID, params.User.ID)
+	return
 }
 
 type UpdateBoardParams struct {
@@ -158,26 +138,29 @@ type UpdateBoardResult struct {
 	ValidationErrors *validate.Errors
 }
 
-func (s *BoardsService) UpdateBoard(params UpdateBoardParams) (UpdateBoardResult, error) {
-	result := UpdateBoardResult{}
-
-	qr, err := s.QueryBoardByID(QueryBoardParams{
+func (s *BoardsService) UpdateBoard(params UpdateBoardParams) (result UpdateBoardResult, err error) {
+	var qr QueryBoardResult
+	qr, err = s.QueryBoardByID(QueryBoardParams{
 		User:                    params.User,
 		BoardID:                 params.BoardID,
 		RequestOwnerLevelAccess: true,
 	})
 	if err != nil {
-		return result, err
+		return
 	}
 
 	result.Board = qr.Board
 
-	if err := params.F(&result.Board); err != nil {
-		return result, err
+	if err = params.F(&result.Board); err != nil {
+		return
 	}
 
-	result.ValidationErrors, err = s.Tx.ValidateAndUpdate(&result.Board)
-	return result, err
+	result.ValidationErrors, err = result.Board.ValidateUpdate(nil)
+	if err != nil || result.ValidationErrors.HasAny() {
+		return
+	}
+	err = s.store.SaveBoard(result.Board)
+	return
 }
 
 type DeleteBoardParams struct {
@@ -189,19 +172,21 @@ type DeleteBoardResult struct {
 	Board models.Board
 }
 
-func (s *BoardsService) DeleteBoard(params DeleteBoardParams) (DeleteBoardResult, error) {
-	result := DeleteBoardResult{}
-
-	qr, err := s.QueryBoardByID(QueryBoardParams{
+func (s *BoardsService) DeleteBoard(params DeleteBoardParams) (result DeleteBoardResult, err error) {
+	var qr QueryBoardResult
+	qr, err = s.QueryBoardByID(QueryBoardParams{
 		User:                    params.User,
 		BoardID:                 params.BoardID,
 		RequestOwnerLevelAccess: true,
 	})
 	if err != nil {
-		return result, err
+		return
+	}
+	err = s.store.DeleteBoard(result.Board)
+	if err != nil {
+		return
 	}
 
 	result.Board = qr.Board
-
-	return result, s.Tx.Destroy(&result.Board)
+	return
 }
