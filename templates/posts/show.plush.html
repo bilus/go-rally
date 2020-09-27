@@ -51,7 +51,7 @@
             <div class="row">
                 <div class="col-1"></div>
                 <div class="col-9">
-                    <%= markdown(post.Body) %>
+                    <div class="post-body mb-5"><%= markdown(post.Body) %></div>
                     <%= partial("posts/reactions.html") %>
                 </div>
                 <div class="col-2"></div>
@@ -81,7 +81,6 @@
 
      Main.onClick(".add-reaction", function(ev) {
          Main.pickEmoji(ev.target, function(selection) {
-             console.log(selection)
              Main.remoteRequest("POST",
                                 '<%= boardPostReactionEmojiPath({board_id: post.BoardID, post_id: post.ID, emoji: "' + selection.emoji + '" }) %>');
          })

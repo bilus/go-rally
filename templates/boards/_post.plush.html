@@ -8,7 +8,7 @@
         <i class="icon-caret-down"></i>
         <% } %>
     </td>
-    <td class="title align-middle clickable" data-href='<%= boardPostPath({board_id: post.BoardID, post_id: post.ID}) %>'>
+    <td class="title align-middle">
         <h4>
             <%= linkTo(boardPostPath({ board_id: post.BoardID, post_id: post.ID }), {class: ""}) { %>
             <%= if (post.Draft) { %>
@@ -17,6 +17,7 @@
             <%= safeTitle(post.Title) %>
             <% } %>
         </h4>
+        <%= partial("posts/reactions.html", {post: post}) %>
     </td>
     <td class="align-middle font-weight-light text-nowrap text-truncate">
         <img class="mr-3" width="32" height="32" src='<%= postAvatarURL(post, "small") %>' alt="<%= postAuthor(post) %>" data-toggle="tooltip" title="<%= postAuthor(post) %>">
@@ -28,3 +29,17 @@
 <%= if (post.Draft) { %>
 <tr class="spacer"></tr>
 <% } %>
+
+<script type="text/javascript">
+ onReady(function () {
+     // Duplicated in posts/show.plush.html
+     // Generated for every post separately.
+     Main.onClick('[data-post-id="<%= post.ID %>"] .add-reaction', function(ev) {
+         Main.pickEmoji(ev.target, function(selection) {
+             Main.remoteRequest("POST",
+                                '<%= boardPostReactionEmojiPath({board_id: post.BoardID, post_id: post.ID, emoji: "' + selection.emoji + '" }) %>');
+         })
+         return false
+     })
+ })
+</script>

@@ -1,4 +1,4 @@
-<div class="reactions align-middle mt-5">
+<div class="reactions align-middle" data-post-id="<%= post.ID %>">
     <%= for (reaction) in post.Reactions { %>
         <%= if (reaction.IsMadeByCurrentUser) { %>
             <%#= partial("posts/reaction.html") %>

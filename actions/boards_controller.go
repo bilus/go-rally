@@ -47,6 +47,7 @@ func (c *BoardsController) SetUp(ctx buffalo.Context) error {
 			return ctx.Error(http.StatusNotFound, err)
 		}
 		c.Board = &models.Board{}
+		c.Board.ID = boardID
 		if err := c.Tx.Find(c.Board, boardID); err != nil {
 			return ctx.Error(http.StatusNotFound, err)
 		}
@@ -70,7 +71,9 @@ func (c *BoardsController) SetUp(ctx buffalo.Context) error {
 
 	c.RecentBoardsService = services.NewRecentBoardsService(c.Tx)
 	c.StarService = services.NewStarService(c.Tx)
-	c.BoardsService = services.NewBoardsService(stores.NewBoardsStore(c.Tx))
+	c.BoardsService = services.NewBoardsService(stores.NewBoardsStore(c.Tx),
+		// TODO: Duplicated in PostsController.
+		services.NewReactionsService(stores.NewReactionStore(models.Redis), c.Tx))
 
 	c.Set("recentBoards", func() []models.Board {
 		recentBoards, err := c.RecentBoardsService.RecentBoards(&c.CurrentUser)

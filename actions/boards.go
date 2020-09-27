@@ -41,6 +41,7 @@ func (c BoardsController) Show() error {
 			BoardID:          c.Board.ID,
 			IncludePosts:     true,
 			NewestPostsFirst: c.Param("order") == "newest",
+			IncludeReactions: true,
 			PostPagination:   c.PaginationParams,
 		})
 	if err != nil {

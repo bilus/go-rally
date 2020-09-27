@@ -31,12 +31,14 @@ type BoardsStore interface {
 }
 
 type BoardsService struct {
-	store BoardsStore
+	store            BoardsStore
+	reactionsService ReactionsService
 }
 
-func NewBoardsService(store BoardsStore) BoardsService {
+func NewBoardsService(store BoardsStore, reactionsService ReactionsService) BoardsService {
 	return BoardsService{
-		store: store,
+		store:            store,
+		reactionsService: reactionsService,
 	}
 }
 
@@ -63,6 +65,7 @@ type QueryBoardParams struct {
 
 	IncludePosts     bool
 	NewestPostsFirst bool
+	IncludeReactions bool
 	PostPagination   PaginationParams
 }
 
@@ -95,8 +98,19 @@ func (s *BoardsService) QueryBoardByID(params QueryBoardParams) (result QueryBoa
 	}
 	if params.IncludePosts {
 		result.Board.Posts, result.PostPagination, err = s.store.ListBoardPosts(params.BoardID, params.User.ID, params.NewestPostsFirst, params.PostPagination)
+		if err != nil {
+			return
+		}
+		if params.IncludeReactions {
+			for i, post := range result.Board.Posts {
+				result.Board.Posts[i].Reactions, err = s.reactionsService.ListReactionsToPost(&params.User, &post)
+				if err != nil {
+					return
+				}
+			}
+		}
 	}
-	return result, nil
+	return
 }
 
 func (s *BoardsService) DefaultBoard() models.Board {
