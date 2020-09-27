@@ -172,7 +172,7 @@ Good luck!
       - [X] Extract
       - [X] Store
 - [X] Reactions for every post
-- [ ] BIGGER upvotes left
+- [X] BIGGER upvotes left
 - [ ] Archiving posts
   - [ ] Archive button
   - [ ] Post author & board owner can archive

@@ -34,20 +34,24 @@ func (c BoardsController) List() error {
 // Show gets the data for one Board. This function is mapped to
 // the path GET /boards/{board_id}
 func (c BoardsController) Show() error {
+	order := c.Param("order")
+	if order == "" {
+		order = "top"
+	}
 	c.SetLastBoardID(c.Board.ID)
 	result, err := c.BoardsService.QueryBoardByID(
 		services.QueryBoardParams{
 			User:             c.CurrentUser,
 			BoardID:          c.Board.ID,
 			IncludePosts:     true,
-			NewestPostsFirst: c.Param("order") == "newest",
+			NewestPostsFirst: order == "newest",
 			IncludeReactions: true,
 			PostPagination:   c.PaginationParams,
 		})
 	if err != nil {
 		return err
 	}
-	c.Set("orderClass", orderClassHelperFunc(c.Param("order")))
+	c.Set("orderClass", orderClassHelperFunc(order))
 	return responder.Wants("html", func(ctx buffalo.Context) error {
 		ctx.Set("board", result.Board)
 		ctx.Set("pagination", result.PostPagination)
