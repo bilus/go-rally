@@ -1,6 +1,6 @@
 <%= if (board) { %>
     <%= if (isBoardVoteLimit) { %>
-        <span class='user-votes <%= if (votesRemaining <= 0) { return "text-danger" } %>'>
+        <span class='badge badge-pill badge-outline-primary user-votes <%= if (votesRemaining <= 0) { return "text-danger" } %>'>
             Upvotes left: <%= votesRemaining %> <span data-toggle="tooltip" title="Votes can be refilled by the board's owners."><i class="icon-question-circle"></i></abbr>
         </span>
     <% } %>

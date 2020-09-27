@@ -5,79 +5,79 @@
 @import "material-kit";
 
 html {
-    // position: relative;
-    min-height: 100%;
+  // position: relative;
+  min-height: 100%;
 }
 
 body {
-    margin: 0;
-    padding: 0;
-    background: #fff!important;
+  margin: 0;
+  padding: 0;
+  background: #fff!important;
 }
 
 nav.navbar {
-    border-radius: 0!important;
+  border-radius: 0!important;
 }
 
 .order-active {
-    color: black;
+  color: black;
 }
 
 .media-small .media-body {
-    font-size: 0.9rem;
+  font-size: 0.9rem;
 }
 
 .time-ago {
-    color: grey!important;
+  color: grey!important;
 }
 
 .table-noborders td {
-    border-top: none!important;
+  border-top: none!important;
 }
 
 .num-votes {
-    margin: 0;
-    font-weight: bold;
-    margin: -10px 0;
+  margin: 0;
+  font-weight: bold;
+  margin: -10px 0;
 }
 
 .votes a {
-    color: black;
-    font-size: 2em;
+  color: black;
+  font-size: 2em;
 }
 
 .spinner {
-    display: none;
+  display: none;
 }
 
 .main {
-    padding-bottom: 30px!important;
+  padding-bottom: 30px!important;
 }
 
 .editor-toolbar .separator {
-    padding: 0!important; /* conflict between easymd & material theme */
+  padding: 0!important; /* conflict between easymd & material theme */
 }
 
 .clickable {
-    cursor: pointer!important;
+  cursor: pointer!important;
 }
 
 .raised {
-//   border-radius: 2x;
-// -webkit-box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.21);
-// -moz-box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.21);
-// box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.21);
+  //   border-radius: 2x;
+  // -webkit-box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.21);
+  // -moz-box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.21);
+  // box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.21);
   box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
   border-radius: 6px;
 }
 
 tr.spacer {
-    height: 1em;
+  height: 1em;
 }
 
 .post-view {
-    // min-height: 400px!important;
-    overflow: scroll;
+  // min-height: 400px!important;
+  overflow: scroll;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
@@ -92,73 +92,73 @@ tr.spacer {
 }
 
 .post-list-nav .col {
-    padding-left: 0;
+  padding-left: 0;
 }
 
 .post-list-nav .nav-pills {
-    padding: 0;
+  padding: 0;
 }
 
 .post-list-nav .nav-pills .nav-link {
-    padding: 3px!important;
-    font-size: 11px!important;
-    min-width: 60px!important;
+  padding: 3px!important;
+  font-size: 11px!important;
+  min-width: 60px!important;
 }
 
 
 .nav-pills-secondary{
-    .nav-item {
-        .nav-link.active{
-            &,
-            &:focus,
-            &:hover{
-                background-color: $secondary;
-                @include shadow-big-color($secondary);
-                color: $white-color;
-            }
-        }
+  .nav-item {
+    .nav-link.active{
+      &,
+      &:focus,
+      &:hover{
+        background-color: $secondary;
+        @include shadow-big-color($secondary);
+        color: $white-color;
+      }
     }
+  }
 }
 
 #comment-list li {
-    margin-bottom: 2em;
+  margin-bottom: 2em;
 }
 
 #comment-list .mic {
-    display: none;
+  display: none;
 }
 
 #comment-list .comment-original-poster .mic {
-    display: inline;
+  display: inline;
 }
 
 .icon-large {
-    font-size: 1.5em;
+  font-size: 1.5em;
 }
 
 footer {
-    margin-top: 30px;
+  margin-top: 30px;
 }
 
 .reactions {
 }
 
 .reactions .badge {
-    font-size: 0.8em;
-    border-radius: 8px;
+  font-size: 0.8em;
+  border-radius: 8px;
 }
 
 .reactions .add-reaction {
-    font-size: 1.3em!important;
-    padding: 4px 0 0 0!important;
+  font-size: 1.3em!important;
+  padding: 4px 0 0 0!important;
 }
 
 .reactions .badge {
-    background-color: #EBEBEB;
+  background-color: #EBEBEB;
 }
 
 .reactions .badge {
-    color: #999;
+  color: #999;
 }
 
 
@@ -191,13 +191,13 @@ footer {
 }
 
 .breadcrumb {
-    background-color: white;
-    padding-left: 0;
+  background-color: white;
+  padding-left: 0;
 }
 
 .post-row.post-draft {
-    background-image: linear-gradient(125deg, #f5f5f5 23.81%, #ededed 23.81%, #ededed 50%, #f5f5f5 50%, #f5f5f5 73.81%, #ededed 73.81%, #ededed 100%);
-    background-size: 25.64px 36.61px;
+  background-image: linear-gradient(125deg, #f5f5f5 23.81%, #ededed 23.81%, #ededed 50%, #f5f5f5 50%, #f5f5f5 73.81%, #ededed 73.81%, #ededed 100%);
+  background-size: 25.64px 36.61px;
 }
 
 .post-row td.votes {
@@ -213,10 +213,30 @@ footer {
 }
 
 .user-votes {
-  font-size: 11px;
+  font-size: 15px;
   font-weight: 500;
 }
 
 input.form-control,.form-group label {
   font-size: 16px;
+}
+
+.badge-outline-primary {
+  color: $primary;
+  border: 1px solid $primary
+}
+
+.badge-outline-info {
+  color: $info;
+  border: 1px solid $info
+}
+
+.badge-outline-danger {
+  color: $danger;
+  border: 1px solid $danger
+}
+
+.badge-outline-warning {
+  color: $warning;
+  border: 1px solid $warning
 }
