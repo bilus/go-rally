@@ -47,6 +47,10 @@ func App() *buffalo.App {
 			Host:        getEnv("APP_HOST", ""),
 		})
 
+		if ENV == "development" {
+			app.Middleware.Remove(app.PanicHandler)
+		}
+
 		// Automatically redirect to SSL
 		app.Use(forceSSL())
 
