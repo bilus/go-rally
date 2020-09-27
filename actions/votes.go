@@ -37,7 +37,7 @@ func (c PostsController) VotesCreate() error {
 	}
 
 	c.Set("post", c.Post)
-	c.Set("board", &c.Post.Board)
+	c.Set("board", &c.Board)
 	return c.Render(http.StatusOK, r.JavaScript("votes/create.plush.js"))
 }
 
@@ -68,7 +68,7 @@ func (c PostsController) VotesDestroy() error {
 	}
 
 	c.Set("post", c.Post)
-	c.Set("board", &c.Post.Board)
+	c.Set("board", &c.Board)
 	return c.Render(http.StatusOK, r.JavaScript("votes/destroy.plush.js"))
 }
 

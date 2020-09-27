@@ -23,6 +23,7 @@ func (c PostsController) Show() error {
 
 	return responder.Wants("html", func(ctx buffalo.Context) error {
 		ctx.Set("post", c.Post)
+		ctx.Set("board", c.Board)
 		return ctx.Render(http.StatusOK, r.HTML("/posts/show.plush.html"))
 	}).Wants("json", func(ctx buffalo.Context) error {
 		return ctx.Render(200, r.JSON(c.Post))

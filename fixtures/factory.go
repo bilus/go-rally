@@ -26,7 +26,6 @@ func (f Factory) ValidPost(board *models.Board, author *models.User) *models.Pos
 		Body:     randomdata.Paragraph(),
 		Votes:    0,
 		BoardID:  board.ID,
-		Board:    *board,
 		AuthorID: author.ID,
 		Author:   *author,
 	}
