@@ -29,7 +29,6 @@ type Post struct {
 	Anonymous bool `json:"anonymous" db:"anonymous"` // TODO: When set, Author should not be marshalled to JSON.
 
 	BoardID uuid.UUID `json:"-" db:"board_id"`
-	Board   Board     `json:"board" belongs_to:"board" db:"-"`
 
 	// Optionally looaded.
 	Reactions []Reaction `json:"reactions,omitempty" db:"-" from:"-"`
