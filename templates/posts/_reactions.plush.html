@@ -1,5 +1,5 @@
 <div class="reactions align-middle mt-5">
-    <%= for (reaction) in reactions { %>
+    <%= for (reaction) in post.Reactions { %>
         <%= if (reaction.IsMadeByCurrentUser) { %>
             <%#= partial("posts/reaction.html") %>
             <%= remoteLinkTo(boardPostReactionEmojiPath({board_id: post.BoardID, post_id: post.ID, emoji: reaction.Emoji}), {data-method: "DELETE"}) { %>

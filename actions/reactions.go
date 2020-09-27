@@ -30,10 +30,10 @@ func (c PostsController) CreateReaction() error {
 	if err != nil {
 		return err
 	}
+	c.Post.Reactions = reactions
 
 	c.logReactionAuditEvent("add_reaction", emoji)
 
-	c.Set("reactions", reactions)
 	c.Set("post", c.Post)
 	return c.Render(http.StatusCreated, r.JavaScript("reactions/create.plush.js"))
 }
@@ -59,10 +59,10 @@ func (c PostsController) DestroyReaction() error {
 	if err != nil {
 		return err
 	}
+	c.Post.Reactions = reactions
 
 	c.logReactionAuditEvent("remove_reaction", emoji)
 
-	c.Set("reactions", reactions)
 	c.Set("post", c.Post)
 	return c.Render(http.StatusCreated, r.JavaScript("reactions/destroy.plush.js"))
 }

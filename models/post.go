@@ -30,6 +30,9 @@ type Post struct {
 
 	BoardID uuid.UUID `json:"-" db:"board_id"`
 	Board   Board     `json:"board" belongs_to:"board" db:"-"`
+
+	// Optionally looaded.
+	Reactions []Reaction `json:"reactions,omitempty" db:"-" from:"-"`
 }
 
 // String is not required by pop and may be deleted
