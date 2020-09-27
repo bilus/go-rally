@@ -10,6 +10,8 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/gobuffalo/buffalo"
+	"github.com/gobuffalo/buffalo/render"
+	"github.com/gobuffalo/plush/v4"
 	"github.com/gofrs/uuid"
 )
 
@@ -40,18 +42,25 @@ func (c *BoardsController) SetUp(ctx buffalo.Context) error {
 		return err
 	}
 
+	c.BoardsService = services.NewBoardsService(stores.NewBoardsStore(c.Tx),
+		// TODO: Duplicated in PostsController.
+		services.NewReactionsService(stores.NewReactionStore(models.Redis), c.Tx))
+
 	boardIDParam := ctx.Param("board_id")
 	if boardIDParam != "" {
 		boardID, err := uuid.FromString(boardIDParam)
 		if err != nil {
 			return ctx.Error(http.StatusNotFound, err)
 		}
-		c.Board = &models.Board{}
-		c.Board.ID = boardID
-		if err := c.Tx.Find(c.Board, boardID); err != nil {
+		// TODO: It's only here because of actions outside boards.go
+		result, err := c.BoardsService.QueryBoardByID(services.QueryBoardParams{
+			User:    c.CurrentUser,
+			BoardID: boardID,
+		})
+		if err != nil {
 			return ctx.Error(http.StatusNotFound, err)
 		}
-
+		c.Board = &result.Board
 		c.Set("currentBoard", c.Board)
 
 		c.VotingService = services.NewVotingService(stores.NewVotingStore(models.Redis),
@@ -71,9 +80,6 @@ func (c *BoardsController) SetUp(ctx buffalo.Context) error {
 
 	c.RecentBoardsService = services.NewRecentBoardsService(c.Tx)
 	c.StarService = services.NewStarService(c.Tx)
-	c.BoardsService = services.NewBoardsService(stores.NewBoardsStore(c.Tx),
-		// TODO: Duplicated in PostsController.
-		services.NewReactionsService(stores.NewReactionStore(models.Redis), c.Tx))
 
 	c.Set("recentBoards", func() []models.Board {
 		recentBoards, err := c.RecentBoardsService.RecentBoards(&c.CurrentUser)
@@ -84,6 +90,25 @@ func (c *BoardsController) SetUp(ctx buffalo.Context) error {
 		return recentBoards
 	})
 
+	c.RegisterHelpers(render.Helpers{
+		"canManagePost": func(post interface{}) bool {
+			p := toPostPtr(post)
+			return c.authorizePostManagement(p) == nil
+		},
+		"canManageBoard": func(board interface{}) bool {
+			b := toBoardPtr(board)
+			return c.authorizeBoardManagement(b) == nil
+		},
+		"isBoardStarred": func(board interface{}, help plush.HelperContext) bool {
+			b := toBoardPtr(board)
+			u, err := CurrentUser(help)
+			if err != nil {
+				log.Errorf("Unable to retrieve current user to determine if board starred: %v", err)
+				return false
+			}
+			return u.IsBoardStarred(b)
+		},
+	})
 	return nil
 }
 
@@ -99,9 +124,26 @@ func (c *BoardsController) RequireBoardWithWriteAccess() error {
 	if err := c.RequireBoard(); err != nil {
 		return err
 	}
-	if err := authorizeBoardManagement(c.Board, c); err != nil {
+	if err := c.authorizeBoardManagement(c.Board); err != nil {
 		return c.Error(http.StatusUnauthorized, err)
 	}
 
 	return nil
+}
+
+func (c BoardsController) authorizeBoardManagement(board *models.Board) error {
+	if !board.UserIsOwner {
+		return fmt.Errorf("no permission to manage board %q", board.ID)
+	}
+	return nil
+}
+
+func (c BoardsController) authorizePostManagement(post *models.Post) error {
+	if c.authorizeBoardManagement(c.Board) == nil {
+		return nil
+	}
+	if post.AuthorID == c.CurrentUser.ID {
+		return nil
+	}
+	return fmt.Errorf("no permission to manage post %q", post.ID)
 }

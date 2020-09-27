@@ -56,7 +56,7 @@ func (c *CommentsController) RequireCommentWithWriteAccess() error {
 	if err := c.RequireComment(); err != nil {
 		return err
 	}
-	if err := authorizeCommentManagement(c.Comment, c); err != nil {
+	if err := c.authorizeCommentManagement(c.Comment); err != nil {
 		return c.Error(http.StatusUnauthorized, err)
 	}
 
