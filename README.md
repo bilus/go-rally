@@ -164,13 +164,14 @@ Good luck!
   - [X] Backup PG
   - [X] Disable login form
   - [X] CLOUDINARY_ACCOUNT
+
 - [X] Misaligned sort controls for post list
 - [X] Overlapping drafts
 - [X] Refactor BoardsController
     - [X] BoardsService
       - [X] Extract
       - [X] Store
-- [ ] Reactions for every post
+- [X] Reactions for every post
 - [ ] BIGGER upvotes left
 - [ ] Archiving posts
   - [ ] Archive button
