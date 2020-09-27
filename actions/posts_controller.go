@@ -8,6 +8,7 @@ import (
 	"rally/stores"
 
 	"github.com/gobuffalo/buffalo"
+	"github.com/gobuffalo/buffalo/render"
 	"github.com/gofrs/uuid"
 )
 
@@ -48,6 +49,12 @@ func (c *PostsController) SetUp(ctx buffalo.Context) error {
 		c.ReactionsService = services.NewReactionsService(stores.NewReactionStore(models.Redis), c.Tx)
 	}
 
+	c.RegisterHelpers(render.Helpers{
+		"canManageComment": func(comment interface{}) bool {
+			ct := toCommentPtr(comment)
+			return c.authorizeCommentManagement(ct) == nil
+		},
+	})
 	return nil
 }
 
@@ -63,9 +70,16 @@ func (c *PostsController) RequirePostWithWriteAccess() error {
 	if err := c.RequirePost(); err != nil {
 		return err
 	}
-	if err := authorizePostManagement(c.Post, c); err != nil {
+	if err := c.authorizePostManagement(c.Post); err != nil {
 		return c.Error(http.StatusUnauthorized, err)
 	}
 
 	return nil
+}
+
+func (c PostsController) authorizeCommentManagement(comment *models.Comment) error {
+	if comment.AuthorID == c.CurrentUser.ID {
+		return nil
+	}
+	return fmt.Errorf("no permission to manage comment %q", comment.ID)
 }

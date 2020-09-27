@@ -23,7 +23,8 @@ type Board struct {
 	Private           bool            `json:"private" db:"is_private"`
 
 	// User-context fields.
-	UserStarred bool `json:"_user_starred" db:"-" form:"-"`
+	UserStarred bool `json:"-" db:"-" form:"-"`
+	UserIsOwner bool `json:"-" db:"-" form:"-"`
 
 	Posts []Post `json:"posts" db:"-" form:"-"`
 }

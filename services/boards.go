@@ -85,13 +85,13 @@ func (s *BoardsService) QueryBoardByID(params QueryBoardParams) (result QueryBoa
 		err = ErrNotFound
 		return
 	}
+	result.Board.UserIsOwner, err = s.store.IsOwner(params.BoardID,
+		params.User.ID)
+	if err != nil {
+		return
+	}
 	if params.RequestOwnerLevelAccess {
-		var isOwner bool
-		isOwner, err = s.store.IsOwner(params.BoardID, params.User.ID)
-		if err != nil {
-			return
-		}
-		if !isOwner {
+		if !result.Board.UserIsOwner {
 			err = ErrUnauthorized
 			return
 		}
