@@ -166,29 +166,31 @@ Good luck!
   - [X] CLOUDINARY_ACCOUNT
 - [X] Misaligned sort controls for post list
 - [X] Overlapping drafts
+- [X] Refactor BoardsController
+    - [X] BoardsService
+      - [X] Extract
+      - [X] Store
 - [ ] Reactions for every post
 - [ ] BIGGER upvotes left
-- [ ] Refactor 2
-    - [ ] BoardsService
-      - [X] Extract
-      - [ ] Store
-    - [ ] Ditch RequireBoard etc.
-    - [ ] Services for everything!
-    - [ ] Helpers use Controller (via wrapper)
-    - [ ] Get rid of SetCurrentUser middleware
-    - [ ] Clean up authentication
-- [ ] Slugs
-  - [ ] Slugs for boards
-  - [ ] Slugs for posts
 - [ ] Archiving posts
   - [ ] Archive button
   - [ ] Post author & board owner can archive
   - [ ] Show archived posts
+- [ ] Slugs
+  - [ ] Slugs for boards
+  - [ ] Slugs for posts
 - [ ] Voting improvements
     - [ ] Reddit-style
     - [ ] Can take votes back for X minutes
     - [ ] Vote limit can be turned off
     - [ ] Vote reefill schedule.
+- [ ] Refactor
+    - [ ] Services for everything!
+    - [ ] Helpers use Controller (via wrapper)
+    - [ ] Ditch RequireXXX methods
+    - [ ] Do not load board in controller unless RequiredBoardX called
+    - [ ] Get rid of SetCurrentUser middleware
+    - [ ] Clean up authentication
 - [ ] Deleted board is just marked as deleted.
 - [ ] Better recent drop-down
 - [ ] Board management

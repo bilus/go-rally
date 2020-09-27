@@ -46,7 +46,7 @@ func (c BoardsController) Show() error {
 	if err != nil {
 		return err
 	}
-	c.Set("orderClass", orderClass(c.Param("order")))
+	c.Set("orderClass", orderClassHelperFunc(c.Param("order")))
 	return responder.Wants("html", func(ctx buffalo.Context) error {
 		ctx.Set("board", result.Board)
 		ctx.Set("pagination", result.PostPagination)
@@ -187,4 +187,13 @@ func (c BoardsController) Destroy() error {
 	}).Wants("json", func(ctx buffalo.Context) error {
 		return ctx.Render(http.StatusOK, r.JSON(result.Board))
 	}).Respond(c)
+}
+
+func orderClassHelperFunc(activeOrder string) func(order string) string {
+	return func(order string) string {
+		if order == activeOrder {
+			return "active"
+		}
+		return ""
+	}
 }

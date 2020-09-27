@@ -9,71 +9,7 @@ import (
 	"github.com/gobuffalo/x/responder"
 )
 
-// List gets all Posts.
-// GET /posts
-func (c PostsController) List() error {
-	// Paginate results. Params "page" and "per_page" control pagination.
-	// Default values are "page=1" and "per_page=20".
-	q := c.Tx.PaginateFromParams(c.Params())
-
-	drafts := c.Param("drafts") == "true"
-	if drafts {
-		currentUser, err := CurrentUser(c)
-		if err != nil {
-			return err
-		}
-		q = q.Where("draft AND author_id = ?", currentUser.ID)
-	} else {
-		q = q.Where("NOT draft")
-	}
-
-	// Can nest under /boards/:board_id
-	if c.Board != nil {
-		q = q.Where("board_id = ?", c.Board.ID)
-	}
-
-	order := c.Param("order")
-	if order == "" {
-		order = "top"
-	}
-	c.Set("orderClass", orderClass(order))
-	if order == "newest" {
-		q = q.Order("created_at DESC")
-	} else {
-		q = q.Order("votes DESC")
-	}
-
-	// Retrieve all Posts from the DB
-	posts := &models.Posts{}
-	if err := q.Eager().All(posts); err != nil {
-		return err
-	}
-
-	return responder.Wants("html", func(ctx buffalo.Context) error {
-		// Add the paginator to the context so it can be used in the template.
-		ctx.Set("pagination", q.Paginator)
-
-		ctx.Set("posts", posts)
-		ctx.Set("drafts", drafts)
-		return ctx.Render(http.StatusOK, r.HTML("posts/index.plush.html"))
-	}).Wants("json", func(ctx buffalo.Context) error {
-		return ctx.Render(200, r.JSON(posts))
-	}).Wants("xml", func(ctx buffalo.Context) error {
-		return ctx.Render(200, r.XML(posts))
-	}).Respond(c)
-}
-
-func orderClass(activeOrder string) func(order string) string {
-	return func(order string) string {
-		if order == activeOrder {
-			return "active"
-		}
-		return ""
-	}
-}
-
-// Show gets the data for one Post. This function is mapped to
-// the path GET /posts/{post_id}
+// Show gets the data for one Post.
 func (c PostsController) Show() error {
 	if err := c.RequirePost(); err != nil {
 		return err
@@ -95,8 +31,7 @@ func (c PostsController) Show() error {
 	}).Respond(c)
 }
 
-// Create adds a Post to the DB. This function is mapped to the
-// path POST /posts
+// Create adds a Post to the DB.
 func (c PostsController) Create() error {
 	if err := c.RequireBoard(); err != nil {
 		return err
@@ -123,8 +58,7 @@ func (c PostsController) Create() error {
 	return c.Render(http.StatusOK, r.JavaScript("/posts/create.plush.js"))
 }
 
-// Edit renders a edit form for a Post. This function is
-// mapped to the path GET /posts/{post_id}/edit
+// Edit renders a edit form for a Post.
 func (c PostsController) Edit() error {
 	if err := c.RequirePostWithWriteAccess(); err != nil {
 		return err
@@ -133,8 +67,7 @@ func (c PostsController) Edit() error {
 	return c.Render(http.StatusOK, r.HTML("/posts/edit.plush.html"))
 }
 
-// Update changes a Post in the DB. This function is mapped to
-// the path PUT /posts/{post_id}
+// Update changes a Post in the DB.
 func (c PostsController) Update() error {
 	if err := c.RequirePostWithWriteAccess(); err != nil {
 		return err
@@ -179,8 +112,7 @@ func (c PostsController) Update() error {
 	}).Respond(c)
 }
 
-// Destroy deletes a Post from the DB. This function is mapped
-// to the path DELETE /posts/{post_id}
+// Destroy deletes a Post from the DB.
 func (c PostsController) Destroy() error {
 	if err := c.RequirePostWithWriteAccess(); err != nil {
 		return err
