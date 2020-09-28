@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.4.0
+
+### Added
+
+- Post reactions can now be added/removed from the board itself.
+- Posts can be archived (permanent deletion is still an option); users have an
+  option to see all archived posts for a board.
+
+### Fixed
+
+- Cosmetic visual glitches.
+
 
 ## v0.3.1
 
