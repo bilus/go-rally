@@ -28,21 +28,31 @@
                     <i class="icon-caret-down"></i>
                     <% } %>
                 </div>
-                <div class="col-9">
-                    <h3 class="d-inline-block w-100">
+                <div class="col-8">
+                    <h3 class="w-100 align-middle">
                         <%= if (post.Draft) { %>
                         <%= partial("/posts/draft.html") %>
+                        <% } %>
+                        <%= if (post.Archived) { %>
+                        <%= partial("/posts/archived.html") %>
                         <% } %>
                         <%= safeTitle(post.Title) %>
                     </h3>
                     <h6 class="mt-0"><%= postAuthor(post) %> <span class="time-ago"><%= timeAgo(post.CreatedAt) %></span></h6>
                 </div>
-                <div class="col-2 text-right">
+                <div class="col-3 text-right">
                     <%= if (canManagePost(post)) { %>
-                    <%= linkTo(editBoardPostPath({ board_id: post.BoardID, post_id: post.ID }), {class: "btn btn-round btn-primary", body: "Edit"}) %>
-                    <%= linkTo(boardPostPath({ board_id: post.BoardID, post_id: post.ID }), {class: "btn btn-round btn-fab btn-danger", "data-method": "DELETE", "data-confirm": "Are you sure?"}) { %>
-                    <i class="icon-trash-o"></i>
-                    <% } %>
+                        <%= if (post.Archived) { %>
+                            <%= linkTo(boardPostPath({ board_id: post.BoardID, post_id: post.ID, archived: false }), {class: "btn btn-round btn-primary", data-method: "PUT", body: "Restore"}) %>
+                            <%= linkTo(boardPostPath({ board_id: post.BoardID, post_id: post.ID }), {class: "btn btn-round btn-fab btn-danger", "data-method": "DELETE", "data-confirm": "Are you sure?", title: "Permanently delete the post", data-toggle: "tooltip"}) { %>
+                                <i class="icon-trash-o"></i>
+                            <% } %>
+                        <% } else { %>
+                            <%= linkTo(editBoardPostPath({ board_id: post.BoardID, post_id: post.ID }), {class: "btn btn-round btn-primary", body: "Edit"}) %>
+                            <%= linkTo(boardPostPath({ board_id: post.BoardID, post_id: post.ID, archived: true }), {class: "btn btn-round btn-fab btn-danger", "data-method": "PUT", title: "Archive the post", data-toggle: "tooltip"}) { %>
+                                <i class="icon-archive"></i>
+                            <% } %>
+                        <% } %>
                     <% } %>
                 </div>
 

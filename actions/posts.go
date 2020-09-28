@@ -65,6 +65,7 @@ func (c PostsController) Edit() error {
 		return err
 	}
 	c.Set("post", c.Post)
+	c.Set("board", c.Board)
 	return c.Render(http.StatusOK, r.HTML("/posts/edit.plush.html"))
 }
 
@@ -78,6 +79,12 @@ func (c PostsController) Update() error {
 	if err := c.Bind(c.Post); err != nil {
 		return err
 	}
+	if c.Param("archived") == "true" {
+		c.Post.Archived = true
+	} else if c.Param("archived") == "false" {
+		c.Post.Archived = false
+	}
+
 	verrs, err := c.Tx.ValidateAndUpdate(c.Post)
 	if err != nil {
 		return err
