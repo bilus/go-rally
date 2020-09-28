@@ -129,7 +129,8 @@ CREATE TABLE public.posts (
     author_id uuid NOT NULL,
     draft boolean DEFAULT false NOT NULL,
     anonymous boolean DEFAULT false NOT NULL,
-    board_id uuid DEFAULT 'fc52e850-1024-448f-bd7f-140ea5cbdf8e'::uuid NOT NULL
+    board_id uuid DEFAULT 'fc52e850-1024-448f-bd7f-140ea5cbdf8e'::uuid NOT NULL,
+    archived boolean DEFAULT false NOT NULL
 );
 
 

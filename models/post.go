@@ -26,6 +26,7 @@ type Post struct {
 	Author   User      `json:"author,omitempty" belongs_to:"user" db:"-"`
 
 	Draft     bool `json:"draft" db:"draft"`
+	Archived  bool `json:"archived" db:"archived"`
 	Anonymous bool `json:"anonymous" db:"anonymous"` // TODO: When set, Author should not be marshalled to JSON.
 
 	BoardID uuid.UUID `json:"-" db:"board_id"`
