@@ -51,6 +51,7 @@ func (s BoardsStore) ListBoardPosts(boardID, userID uuid.UUID, newestFirst bool,
 	posts := []models.Post{}
 	q := s.tx.PaginateFromParams(pg)
 	q = q.Where("(NOT draft OR (draft AND author_id = ?)) AND board_id = ?", userID, boardID)
+	q = q.Where("NOT archived")
 	if newestFirst {
 		q = q.Order("draft DESC, created_at DESC")
 	} else {
