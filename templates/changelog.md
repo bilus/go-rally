@@ -1,5 +1,13 @@
 # Changelog
 
+
+## v0.3.1
+
+### Fixed
+
+- Fix dashboard crashing for users without own boards.
+
+
 ## v0.3.0
 
 ### Added
