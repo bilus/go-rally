@@ -34,9 +34,9 @@ func (c BoardsController) List() error {
 // Show gets the data for one Board. This function is mapped to
 // the path GET /boards/{board_id}
 func (c BoardsController) Show() error {
-	order := c.Param("order")
-	if order == "" {
-		order = "top"
+	viewMode := c.Param("view")
+	if viewMode == "" {
+		viewMode = "top"
 	}
 	c.SetLastBoardID(c.Board.ID)
 	result, err := c.BoardsService.QueryBoardByID(
@@ -44,14 +44,15 @@ func (c BoardsController) Show() error {
 			User:             c.CurrentUser,
 			BoardID:          c.Board.ID,
 			IncludePosts:     true,
-			NewestPostsFirst: order == "newest",
+			NewestPostsFirst: viewMode == "newest",
+			ArchivedPosts:    viewMode == "archived",
 			IncludeReactions: true,
 			PostPagination:   c.PaginationParams,
 		})
 	if err != nil {
 		return err
 	}
-	c.Set("orderClass", orderClassHelperFunc(order))
+	c.Set("viewModeClass", viewModeClassHelperFunc(viewMode))
 	return responder.Wants("html", func(ctx buffalo.Context) error {
 		ctx.Set("board", result.Board)
 		ctx.Set("pagination", result.PostPagination)
@@ -194,7 +195,7 @@ func (c BoardsController) Destroy() error {
 	}).Respond(c)
 }
 
-func orderClassHelperFunc(activeOrder string) func(order string) string {
+func viewModeClassHelperFunc(activeOrder string) func(order string) string {
 	return func(order string) string {
 		if order == activeOrder {
 			return "active"

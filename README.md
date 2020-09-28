@@ -173,10 +173,10 @@ Good luck!
       - [X] Store
 - [X] Reactions for every post
 - [X] BIGGER upvotes left
-- [ ] Archiving posts
-  - [ ] Archive button
-  - [ ] Post author & board owner can archive
-  - [ ] Show archived posts
+- [X] Archiving posts
+  - [X] Archive button
+  - [X] Post author & board owner can archive
+  - [X] Show archived posts
 - [ ] Slugs
   - [ ] Slugs for boards
   - [ ] Slugs for posts

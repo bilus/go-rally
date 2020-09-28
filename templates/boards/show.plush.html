@@ -45,11 +45,14 @@
                     <div class="col">
                         <ul class='nav nav-pills nav-pills-secondary float-right <%= if (sidebar) { return "mr-4" } %>'>
                             <li class="nav-item">
-                                <%= linkTo(boardPath({ board_id: board.ID, order: "top" }), { body: "Top", class: "nav-link " + orderClass("top") }) %>
+                                <%= linkTo(boardPath({ board_id: board.ID, view: "top" }), { body: "Top", class: "nav-link " + viewModeClass("top") }) %>
                             </li>
 
                             <li class="nav-item">
-                                <%= linkTo(boardPath({ board_id: board.ID, order: "newest" }), { body: "Newest", class: "nav-link " + orderClass("newest") }) %>
+                                <%= linkTo(boardPath({ board_id: board.ID, view: "newest" }), { body: "Newest", class: "nav-link " + viewModeClass("newest") }) %>
+                            </li>
+                            <li class="nav-item">
+                                <%= linkTo(boardPath({ board_id: board.ID, view: "archived" }), { body: "Archived", class: "nav-link " + viewModeClass("archived") }) %>
                             </li>
 
                         </ul>
