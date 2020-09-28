@@ -58,8 +58,10 @@ func (s DashboardService) ownBoards(user models.User) ([]models.Board, error) {
 	}, ownerships).([]interface{})
 
 	boards := []models.Board{}
-	if err := s.db.Where("id IN (?)", uids...).All(&boards); err != nil {
-		return nil, err
+	if len(uids) > 0 {
+		if err := s.db.Where("id IN (?)", uids...).All(&boards); err != nil {
+			return nil, err
+		}
 	}
 	return boards, nil
 }
