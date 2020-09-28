@@ -44,8 +44,10 @@ func (s ReactionsService) ListReactionsToPost(user *models.User, post *models.Po
 
 	// TODO: Cache user data in Redis or pull all users with a single query.
 	for i, r := range reactions {
-		if err := s.Tx.Where("id IN (?)", interfaces(r.UserIDs)...).All(&reactions[i].Users); err != nil {
-			return nil, err
+		if len(r.UserIDs) > 0 {
+			if err := s.Tx.Where("id IN (?)", interfaces(r.UserIDs)...).All(&reactions[i].Users); err != nil {
+				return nil, err
+			}
 		}
 	}
 	return reactions, nil
