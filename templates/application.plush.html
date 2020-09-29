@@ -81,9 +81,11 @@
 
                     <ul class="navbar-nav mr-auto mr-2 mr-lg-0">
                         <%= if (current_user) { %>
+                        <%= if (userAvatarURL) { %>
                         <span class="navbar-text">
                             <img width="24" height="24" src='<%= userAvatarURL("tiny") %>' alt='<%= current_user.Email %>' data-toggle="tooltip" title='<%= current_user.Email %>'></img>
                         </span>
+                        <% } %>
 
                         <li class="nav-item">
                             <%= linkTo(authPath(), {data-method: "DELETE", class: "nav-link"}){ %>Sign out<% } %>
