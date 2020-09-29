@@ -196,6 +196,10 @@ func (c CommentsController) Destroy() error {
 		return err
 	}
 
+	if err := c.Tx.Destroy(c.Comment); err != nil {
+		return err
+	}
+
 	return responder.Wants("html", func(ctx buffalo.Context) error {
 		// If there are no errors set a flash message
 		ctx.Flash().Add("success", T.Translate(ctx, "comment.destroyed.success"))
@@ -203,7 +207,13 @@ func (c CommentsController) Destroy() error {
 		// Redirect to the index page
 		return ctx.Redirect(http.StatusSeeOther, "/comments")
 	}).Wants("javascript", func(ctx buffalo.Context) error {
+		ctx.Set("post", c.Post)
 		ctx.Set("comment", c.Comment)
+		comments := &models.Comments{}
+		if err := listComments(pop.Q(c.Tx), c.Post.ID, comments); err != nil {
+			return err
+		}
+		ctx.Set("comments", comments)
 		return ctx.Render(http.StatusOK, r.JavaScript("comments/destroy.plush.js"))
 	}).Wants("json", func(ctx buffalo.Context) error {
 		return ctx.Render(http.StatusOK, r.JSON(c.Comment))

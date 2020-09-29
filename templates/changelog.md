@@ -1,5 +1,11 @@
 # Changelog
 
+
+## v0.4.1
+
+- Fix comments cannot be deleted.
+
+
 ## v0.4.0
 
 ### Added
