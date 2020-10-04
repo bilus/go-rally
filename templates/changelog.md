@@ -1,7 +1,15 @@
 # Changelog
 
+## v0.5.0
+
+### Added
+
+- Show comment count next to posts listed for a board.
+
 
 ## v0.4.1
+
+### Fixed
 
 - Fix comments cannot be deleted.
 
