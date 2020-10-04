@@ -240,3 +240,9 @@ input.form-control,.form-group label {
   color: $warning;
   border: 1px solid $warning
 }
+
+.comment-count {
+  font-size: 1em;
+  color: grey;
+  text-transform: capitalize!important;
+}

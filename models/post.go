@@ -19,6 +19,9 @@ type Post struct {
 	// Votes cache values in Redis.
 	Votes int `json:"votes" db:"votes" form:"-"`
 
+	// CommentCount caches post comment count.
+	CommentCount int `json:"comment_count" db:"comment_count" form:"-"`
+
 	CreatedAt time.Time `json:"created_at" db:"created_at" form:"-"`
 	UpdatedAt time.Time `json:"updated_at" db:"updated_at" form:"-"`
 

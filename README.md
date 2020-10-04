@@ -177,7 +177,8 @@ Good luck!
   - [X] Archive button
   - [X] Post author & board owner can archive
   - [X] Show archived posts
-- [ ] Archiving boards
+- [X] Archiving boards
+- [ ] Comment count
 - [ ] Slugs
   - [ ] Slugs for boards
   - [ ] Slugs for posts

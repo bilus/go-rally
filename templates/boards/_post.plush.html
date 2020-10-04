@@ -8,7 +8,7 @@
         <i class="icon-caret-down"></i>
         <% } %>
     </td>
-    <td class="title align-middle">
+    <td class="align-middle">
         <h4>
             <%= linkTo(boardPostPath({ board_id: post.BoardID, post_id: post.ID }), {class: ""}) { %>
             <%= if (post.Draft) { %>
@@ -17,6 +17,7 @@
             <%= safeTitle(post.Title) %>
             <% } %>
         </h4>
+        <div class="comment-count"><%= t("comment_count", post.CommentCount) %></div>
         <%= partial("posts/reactions.html", {post: post}) %>
     </td>
     <td class="align-middle font-weight-light text-nowrap text-truncate">
