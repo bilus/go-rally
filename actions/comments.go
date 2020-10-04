@@ -90,6 +90,11 @@ func (c CommentsController) Create() error {
 		return err
 	}
 
+	err = c.Tx.RawQuery("UPDATE posts SET comment_count = comment_count + 1 WHERE id = ?", comment.PostID).Exec()
+	if err != nil {
+		return err
+	}
+
 	if verrs.HasAny() {
 		return responder.Wants("html", func(ctx buffalo.Context) error {
 			ctx.Set("errors", verrs)
@@ -197,6 +202,11 @@ func (c CommentsController) Destroy() error {
 	}
 
 	if err := c.Tx.Destroy(c.Comment); err != nil {
+		return err
+	}
+
+	err := c.Tx.RawQuery("UPDATE posts SET comment_count = comment_count - 1 WHERE id = ?", c.Comment.PostID).Exec()
+	if err != nil {
 		return err
 	}
 

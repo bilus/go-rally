@@ -55,7 +55,7 @@
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                                 <%= for (board) in recentBoards { %>
                                     <%= linkTo(boardPath({ board_id: board.ID }), { class: "dropdown-item" }) { %>
-                                <span class="mr-1"">
+                                <span class="mr-1">
                                     <%= partial("/boards/board_name.plush.html") %>
                                 </span>
                                 <%= if (board.UserStarred) { %>
