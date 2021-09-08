@@ -77,15 +77,19 @@ func (c UnauthenticatedController) AuthNew() error {
 
 // AuthCreate attempts to log the user in with an existing account.
 func (c UnauthenticatedController) AuthCreate() error {
-	u := &models.User{}
-	if err := c.Bind(u); err != nil {
+	creds := struct {
+		Email    string `form:"email"`
+		Password string `form:"password"`
+	}{}
+	if err := c.Bind(&creds); err != nil {
 		return errors.WithStack(err)
 	}
 
 	tx := c.Tx
 
 	// find a user with the email
-	err := tx.Where("email = ?", strings.ToLower(strings.TrimSpace(u.Email))).First(u)
+	u := &models.User{}
+	err := tx.Where("email = ?", strings.ToLower(strings.TrimSpace(creds.Email))).First(u)
 
 	// helper function to handle bad attempts
 	bad := func() error {
@@ -111,7 +115,7 @@ func (c UnauthenticatedController) AuthCreate() error {
 	}
 
 	// confirm that the given password matches the hashed password from the db
-	err = bcrypt.CompareHashAndPassword([]byte(u.PasswordHash.String), []byte(u.Password))
+	err = bcrypt.CompareHashAndPassword([]byte(u.PasswordHash.String), []byte(creds.Password))
 	if err != nil {
 		return bad()
 	}
