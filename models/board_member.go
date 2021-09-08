@@ -7,14 +7,15 @@ import (
 	"github.com/gofrs/uuid"
 	"time"
 )
+
 // BoardMember is used by pop to map your board_members database table to your go code.
 type BoardMember struct {
-    ID uuid.UUID `json:"id" db:"id"`
-    BoardID uuid.UUID `json:"board_id" db:"board_id"`
-    UserID uuid.UUID `json:"user_id" db:"user_id"`
-    IsOwner bool `json:"is_owner" db:"is_owner"`
-    CreatedAt time.Time `json:"created_at" db:"created_at"`
-    UpdatedAt time.Time `json:"updated_at" db:"updated_at"`
+	ID        uuid.UUID `json:"id" db:"id"`
+	BoardID   uuid.UUID `json:"board_id" db:"board_id"`
+	UserID    uuid.UUID `json:"user_id" db:"user_id"`
+	IsOwner   bool      `json:"is_owner" db:"is_owner"`
+	CreatedAt time.Time `json:"created_at" db:"created_at"`
+	UpdatedAt time.Time `json:"updated_at" db:"updated_at"`
 }
 
 // String is not required by pop and may be deleted
