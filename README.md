@@ -2,6 +2,11 @@
 
 Thank you for choosing Buffalo for your web development needs.
 
+## Prerequisites
+
+1. node v14
+2. yarn 
+
 ## Database Setup
 
 It looks like you chose to set up your application using a database! Fantastic!

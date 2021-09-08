@@ -1,6 +1,6 @@
 module rally
 
-go 1.12
+go 1.16
 
 require (
 	github.com/Pallinder/go-randomdata v1.2.0
@@ -11,10 +11,6 @@ require (
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/go-sql-driver/mysql v1.6.0 // indirect
 	github.com/gobuffalo/buffalo v0.17.2
-	github.com/gobuffalo/buffalo-auth v1.3.1 // indirect
-	github.com/gobuffalo/buffalo-goth v1.3.0 // indirect
-	github.com/gobuffalo/buffalo-heroku v1.0.9 // indirect
-	github.com/gobuffalo/buffalo-pop v1.23.1 // indirect
 	github.com/gobuffalo/buffalo-pop/v2 v2.3.0
 	github.com/gobuffalo/envy v1.9.0
 	github.com/gobuffalo/fizz v1.13.0 // indirect
