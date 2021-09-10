@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.5.1
+
+### Fixed
+
+- Fix 500 instead of validation error message when saving a post with empty
+  body.
+
+
 ## v0.5.0
 
 ### Added

@@ -98,6 +98,7 @@ func (c PostsController) Update() error {
 			// Render again the edit.html template that the user can
 			// correct the input.
 			ctx.Set("post", c.Post)
+			ctx.Set("board", c.Board)
 
 			return ctx.Render(http.StatusUnprocessableEntity, r.HTML("/posts/edit.plush.html"))
 		}).Wants("json", func(ctx buffalo.Context) error {
