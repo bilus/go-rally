@@ -6,6 +6,7 @@
 
 - Fix 500 instead of validation error message when saving a post with empty
   body.
+- Fix panic while trying to delete a board.
 
 
 ## v0.5.0

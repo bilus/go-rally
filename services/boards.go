@@ -2,6 +2,7 @@ package services
 
 import (
 	"fmt"
+	"log"
 	"rally/models"
 
 	"github.com/gobuffalo/validate/v3"
@@ -188,6 +189,7 @@ type DeleteBoardResult struct {
 }
 
 func (s *BoardsService) DeleteBoard(params DeleteBoardParams) (result DeleteBoardResult, err error) {
+	log.Println("DeleteBoard1")
 	var qr QueryBoardResult
 	qr, err = s.QueryBoardByID(QueryBoardParams{
 		User:                    params.User,
@@ -197,6 +199,7 @@ func (s *BoardsService) DeleteBoard(params DeleteBoardParams) (result DeleteBoar
 	if err != nil {
 		return
 	}
+	result.Board = qr.Board
 	err = s.store.DeleteBoard(result.Board)
 	if err != nil {
 		return

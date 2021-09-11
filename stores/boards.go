@@ -89,5 +89,5 @@ func (s BoardsStore) SaveBoard(board models.Board) error {
 }
 
 func (s BoardsStore) DeleteBoard(board models.Board) error {
-	return s.tx.Destroy(board)
+	return s.tx.Destroy(&board)
 }
