@@ -1,6 +1,0 @@
-- id: "board.created.success"
-  translation: "Board was successfully created."
-- id: "board.updated.success"
-  translation: "Board was successfully updated."
-- id: "board.destroyed.success"
-  translation: "Board was successfully destroyed."
