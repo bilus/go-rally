@@ -1,8 +1,0 @@
-create_table("attachments") {
-	t.Column("id", "uuid", {primary: true})
-	t.Column("post_id", "uuid", {})
-    t.ForeignKey("post_id", {"posts": ["id"]}, {"on_delete": "cascade"})
-	t.Column("filename", "string", {})
-    t.Column("created_at", "timestamp with time zone", {})
-    t.Column("updated_at", "timestamp with time zone", {})
-}

@@ -1,7 +1,0 @@
-create_table("boards") {
-	t.Column("id", "uuid", {primary: true})
-	t.Column("name", "string", {})
-	t.Column("description", "text", {null: true})
-    t.Column("created_at", "timestamp with time zone", {})
-    t.Column("updated_at", "timestamp with time zone", {})
-}

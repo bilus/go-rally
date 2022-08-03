@@ -1,8 +1,0 @@
-create_table("board_members") {
-	t.Column("id", "uuid", {primary: true})
-	t.Column("board_id", "uuid", {})
-	t.Column("user_id", "uuid", {})
-	t.Column("is_owner", "bool", {})
-    t.Column("created_at", "timestamp with time zone", {})
-    t.Column("updated_at", "timestamp with time zone", {})
-}
