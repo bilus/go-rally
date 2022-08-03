@@ -1,9 +1,0 @@
-<%= if (board) { %>
-    <%= if (isBoardVoteLimit) { %>
-        <span class='badge badge-pill badge-outline-primary user-votes <%= if (votesRemaining <= 0) { return "badge-outline-danger" } %>'>
-            Upvotes left: <%= votesRemaining %> <span data-toggle="tooltip" title="The remaining number of your votes on this board. You can upvote the same post more than once. Votes can be refilled by the board's owner."><i class="icon-question-circle"></i></abbr></span>
-        </span>
-    <% } %>
-<% } else { %>
-<span>&nbsp;</span>
-<% } %>
