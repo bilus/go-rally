@@ -1,6 +1,0 @@
-<%= f.InputTag("Title") %>
-<%= f.TextAreaTag("Body", {rows: 10, class: "markdown-editor", data-image-upload-endpoint: postImagesPath({post_id: post.ID})}) %>
-<%= f.CheckboxTag("Anonymous", {label: "Anonymous post", unchecked: false}) %>
-<%= f.CheckboxTag("Draft", {label: "Draft  &nbsp;&nbsp;&nbsp;  ⚠️ Invisible to other users", unchecked: false}) %>
-
-<button class="btn btn-round btn-success" role="submit">Save</button>
